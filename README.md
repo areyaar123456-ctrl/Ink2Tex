@@ -73,6 +73,7 @@ Target repository: [areyaar123456-ctrl/Ink2Tex](https://github.com/areyaar123456
 
 **Publication status:** the project and APKs are published on `main`. [Download the entire repository as a ZIP](https://github.com/areyaar123456-ctrl/Ink2Tex/archive/refs/heads/main.zip), or use the individual APK links below. See [publishing notes](docs/GITHUB_PUBLICATION.md).
 
+- [Download the complete project and APK ZIP](https://raw.githubusercontent.com/areyaar123456-ctrl/Ink2Tex/main/downloads/Ink2TeX-All-Files.zip).
 - [Download the committed ARM64 debug APK](https://github.com/areyaar123456-ctrl/Ink2Tex/raw/refs/heads/main/downloads/Ink2TeX-debug-arm64.apk).
 - [Download the compiled device-test APK](https://github.com/areyaar123456-ctrl/Ink2Tex/raw/refs/heads/main/downloads/Ink2TeX-device-tests.apk).
 - [APK checksums](https://github.com/areyaar123456-ctrl/Ink2Tex/blob/main/downloads/SHA256SUMS.txt).
