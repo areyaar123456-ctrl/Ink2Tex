@@ -1,0 +1,20 @@
+# Engineering map
+
+One Android application Gradle module contains separate Kotlin packages for the core boundaries. A full vendored native runtime makes the source archive buildable without an unpinned Git checkout or git submodule fetch. Extracting Gradle library modules is future maintenance work, not a runtime dependency.
+
+- `capture`: user-consented projection, single virtual display, a capture thread and private ImageReader ownership, foreground service lifecycle, native Android overlay windows and Quick Settings tile.
+- `crop`: frozen-image coordinate system independent of view transform, rectangular corner handles and movement, two-finger pan/pinch, freeform mask and bounded full-resolution crop decoding.
+- `preprocessing`: SAF import, bounded PDF rasterization and region-decoded overlapping tiles. Ordinary pages up to 4096×4096 are one model input, sampled only to meet the four-megapixel Java budget; mtmd applies the model's own token budget after that.
+- `ocr`: common suspend interface, progress/diagnostics StateFlow, model routing and queue workers. `LocalOcrEngine` owns a single native executor and an operation/session mutex. Cancellation marks a native atomic flag. The executor retains ownership until native code returns; unloading is serialized and finally cleanup is noncancellable. Native vision preprocessing/encoding is not instantaneously interruptible.
+- `app/src/main/cpp`: small JNI bridge and the same portable C++ core used by the host evaluation executable. Model-specific prompting is explicitly restricted to Qwen3.5 OCR. No generic “every GGUF works” loader is exposed.
+- `modelmanager`: immutable catalogue, byte/size/hash rules, app-private staging, ETag/Range resume and WorkManager download state. Readiness follows a validation inference and atomic fingerprint marker. Installation validation and OCR acquire the same native session lock.
+- `storage`: Room documents and source image paths, DataStore preferences. Multiple proof documents may reference an image; deleting one document removes a physical image only after checking remaining references. Models and capture data are excluded from backup by disabling application backup.
+- `stitching`: exact-text boundary merging plus a standalone conservative pixel-overlap helper. The pixel helper is not wired into the active workflow or validated on captured Nebo pages; guided scanning sequences the original images. Defaults preserve all text. Deduplication is an explicit user action and requires at least three identical lines spanning at least 80 characters. Fuzzy semantic deduplication is deliberately absent because it could alter a proof.
+- `export`: exact Markdown export, basic TeX wrapping, private temporary shares, local HTML/KaTeX preview and Android's Print framework for PDF. Markdown math is protected from Markdown emphasis parsing. Raw model HTML is escaped, URLs are sanitized, and WebView allows only intercepted bundled resources with no JavaScript bridge.
+- `ui`: AndroidViewModel/StateFlow, Compose tablet navigation, home/model/history/settings/diagnostics/editor, independent comparison results and guided proof capture.
+
+## Failure and resource boundaries
+
+Only one inference/validation session holds a loaded native model. No installed model is auto-loaded at startup. Model mmap/native allocations and vision encoding are bounded but **not isolated in a separate process**; a native runtime bug can still terminate the app process. A separate inference process is desirable before a production release. Worker and document state preserve source images for retry. Android can terminate the projection service; it is never restarted using stale consent.
+
+No confidence scores, GPU throughput or memory peaks are invented. Diagnostics expose actual wall-clock timings, token counts, Java/native heap allocation and system available RAM. The three-gigabyte model admission threshold is a policy, not a measurement. Job quotas, OEM background restrictions, foreground-service declarations and sustained thermals need device validation.

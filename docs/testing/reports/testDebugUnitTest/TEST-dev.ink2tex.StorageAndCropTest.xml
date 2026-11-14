@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="dev.ink2tex.StorageAndCropTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-14T11:00:18.783Z" hostname="facf080c67d3" time="35.94">
+  <properties/>
+  <testcase name="checksumDetectsCorruption" classname="dev.ink2tex.StorageAndCropTest" time="31.123"/>
+  <testcase name="cancellationStatusCannotOverwriteManualCorrections" classname="dev.ink2tex.StorageAndCropTest" time="3.205"/>
+  <testcase name="freeformMaskKeepsInkInsideAndWhitesOutside" classname="dev.ink2tex.StorageAndCropTest" time="0.606"/>
+  <testcase name="deletingASectionDoesNotBreakACombinedProof" classname="dev.ink2tex.StorageAndCropTest" time="0.613"/>
+  <testcase name="rectangleCropUsesOriginalCoordinates" classname="dev.ink2tex.StorageAndCropTest" time="0.175"/>
+  <testcase name="filesWithoutValidationMarkerCannotBecomeReady" classname="dev.ink2tex.StorageAndCropTest" time="0.129"/>
+  <testcase name="allDownloadableModelsIncludePinnedWeightsAndVisionChecksums" classname="dev.ink2tex.StorageAndCropTest" time="0.088"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

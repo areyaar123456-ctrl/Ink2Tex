@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "audited": "2026-11-14",
+  "runtimeCommit": "32bdc3a89e6528d3e419024c833c5dabf32c7541",
+  "models": [
+    {
+      "id": "ovis2-q8",
+      "name": "OvisOCR2 Quality",
+      "developer": "ATH-MaaS \u00b7 GGUF by MDfox",
+      "description": "Whole-page text and mathematics \u2192 Markdown. Community GGUF; CPU inference. Handwriting accuracy must be reviewed.",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://huggingface.co/ATH-MaaS/OvisOCR2",
+      "quantization": "Q8_0 + BF16 vision",
+      "compatibility": "Available \u00b7 ARM64 CPU; device validation required",
+      "reason": "Packaged Qwen3.5/mtmd adapter. Downloads include the tokenizer in GGUF and a matching vision projector. RAM and latency on Moto Pad are unmeasured.",
+      "runtime": "qwen35-ocr",
+      "prompt": "\nExtract all readable content from the image in natural human reading order and output the result as a single Markdown document. For charts or images, represent them using an HTML image tag: <img src=\"images/bbox_{left}_{top}_{right}_{bottom}.jpg\" />, where left, top, right, bottom are bounding box coordinates scaled to [0, 1000). Format formulas as LaTeX. Format tables as HTML: <table>...</table>. Transcribe all other text as standard Markdown. Preserve the original text without translation or paraphrasing.",
+      "ramReserveBytes": 3221225472,
+      "components": [
+        {
+          "name": "OvisOCR2-Q8_0.gguf",
+          "url": "https://huggingface.co/MDfox/OvisOCR2-GGUF-SOTA-20260823/resolve/dfe9304de35b13527bf899e2229699224861bb6d/OvisOCR2-Q8_0.gguf",
+          "size": 811843520,
+          "sha256": "866996df182dd2f67ee12dab301a795b20e6e5334a030bf11c736e7a110bfad0"
+        },
+        {
+          "name": "mmproj-OvisOCR2-BF16.gguf",
+          "url": "https://huggingface.co/MDfox/OvisOCR2-GGUF-SOTA-20260823/resolve/dfe9304de35b13527bf899e2229699224861bb6d/mmproj-OvisOCR2-BF16.gguf",
+          "size": 207346336,
+          "sha256": "842015fc8bb09d8b953a04b1ba329510e7259081422a9dab50f41ce4fac430a1"
+        }
+      ]
+    },
+    {
+      "id": "ovis2-q6",
+      "name": "OvisOCR2 Compact",
+      "developer": "ATH-MaaS \u00b7 GGUF by MDfox",
+      "description": "Whole-page text and mathematics \u2192 Markdown. Community GGUF; CPU inference. Handwriting accuracy must be reviewed.",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://huggingface.co/ATH-MaaS/OvisOCR2",
+      "quantization": "Q6_K + BF16 vision",
+      "compatibility": "Available \u00b7 ARM64 CPU; device validation required",
+      "reason": "Packaged Qwen3.5/mtmd adapter. Downloads include the tokenizer in GGUF and a matching vision projector. RAM and latency on Moto Pad are unmeasured.",
+      "runtime": "qwen35-ocr",
+      "prompt": "\nExtract all readable content from the image in natural human reading order and output the result as a single Markdown document. For charts or images, represent them using an HTML image tag: <img src=\"images/bbox_{left}_{top}_{right}_{bottom}.jpg\" />, where left, top, right, bottom are bounding box coordinates scaled to [0, 1000). Format formulas as LaTeX. Format tables as HTML: <table>...</table>. Transcribe all other text as standard Markdown. Preserve the original text without translation or paraphrasing.",
+      "ramReserveBytes": 3221225472,
+      "components": [
+        {
+          "name": "OvisOCR2-Q6_K.gguf",
+          "url": "https://huggingface.co/MDfox/OvisOCR2-GGUF-SOTA-20260823/resolve/dfe9304de35b13527bf899e2229699224861bb6d/OvisOCR2-Q6_K.gguf",
+          "size": 629744064,
+          "sha256": "d04fef6d3eaf1cc2eeeffb9686f67c0b3f55986ada1c6634e2ba26820e4c6833"
+        },
+        {
+          "name": "mmproj-OvisOCR2-BF16.gguf",
+          "url": "https://huggingface.co/MDfox/OvisOCR2-GGUF-SOTA-20260823/resolve/dfe9304de35b13527bf899e2229699224861bb6d/mmproj-OvisOCR2-BF16.gguf",
+          "size": 207346336,
+          "sha256": "842015fc8bb09d8b953a04b1ba329510e7259081422a9dab50f41ce4fac430a1"
+        }
+      ]
+    },
+    {
+      "id": "paddle16",
+      "name": "PaddleOCR-VL-1.6",
+      "developer": "PaddlePaddle",
+      "description": "Official GGUF base and projector exist. Its region-specific prompts require a verified automatic layout/recognition pipeline for mixed proofs; that pipeline is not packaged in this release. Downloading weights alone would not implement it.",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.6",
+      "quantization": "Not selected",
+      "compatibility": "Not yet compatible",
+      "reason": "Official GGUF base and projector exist. Its region-specific prompts require a verified automatic layout/recognition pipeline for mixed proofs; that pipeline is not packaged in this release. Downloading weights alone would not implement it.",
+      "runtime": "",
+      "prompt": "",
+      "ramReserveBytes": 0,
+      "components": []
+    },
+    {
+      "id": "teleocr",
+      "name": "TeleOCR / NaviDC-OCR",
+      "developer": "XingChen-AGI / StarDoc-AI",
+      "description": "Verified Qwen2.5-VL model with custom processing. No complete pinned and validated Android artifact/processor pair is included. Python trust_remote_code is never executed by this app.",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://huggingface.co/XingChen-AGI/TeleOCR",
+      "quantization": "Not selected",
+      "compatibility": "Not yet compatible",
+      "reason": "Verified Qwen2.5-VL model with custom processing. No complete pinned and validated Android artifact/processor pair is included. Python trust_remote_code is never executed by this app.",
+      "runtime": "",
+      "prompt": "",
+      "ramReserveBytes": 0,
+      "components": []
+    },
+    {
+      "id": "glm",
+      "name": "GLM-OCR",
+      "developer": "Z.ai",
+      "description": "ggml-org GGUF text and vision artifacts exist. Base model has task-specific prompts; official mixed-page parsing uses PP-DocLayoutV3. That layout pipeline and its GLM adapter are not implemented here.",
+      "license": "MIT",
+      "licenseUrl": "https://huggingface.co/zai-org/GLM-OCR",
+      "quantization": "Not selected",
+      "compatibility": "Not yet compatible",
+      "reason": "ggml-org GGUF text and vision artifacts exist. Base model has task-specific prompts; official mixed-page parsing uses PP-DocLayoutV3. That layout pipeline and its GLM adapter are not implemented here.",
+      "runtime": "",
+      "prompt": "",
+      "ramReserveBytes": 0,
+      "components": []
+    },
+    {
+      "id": "glm-v5",
+      "name": "GLM-OCR handwritten math v5.0",
+      "developer": "ctogaurav / realgauravvyas",
+      "description": "Identity and v5 GGUF pair verified. The fine-tune intentionally omits cancelled work and printed headers and emits a full TeX document. This conflicts with strict faithful transcription; no integration is advertised.",
+      "license": "MIT",
+      "licenseUrl": "https://huggingface.co/ctogaurav/GLM_OCR",
+      "quantization": "Not selected",
+      "compatibility": "Not yet compatible",
+      "reason": "Identity and v5 GGUF pair verified. The fine-tune intentionally omits cancelled work and printed headers and emits a full TeX document. This conflicts with strict faithful transcription; no integration is advertised.",
+      "runtime": "",
+      "prompt": "",
+      "ramReserveBytes": 0,
+      "components": []
+    },
+    {
+      "id": "hunyuan15",
+      "name": "HunyuanOCR 1.5",
+      "developer": "Tencent Hunyuan",
+      "description": "Version 1.5 verified; upstream CPU llama.cpp conversion documented. The older ggml-org HunyuanOCR artifacts are not established as 1.5. A version-matched Android adapter, redistribution review and validation remain required.",
+      "license": "Tencent Hunyuan Community",
+      "licenseUrl": "https://huggingface.co/tencent/HunyuanOCR",
+      "quantization": "Not selected",
+      "compatibility": "Not yet compatible",
+      "reason": "Version 1.5 verified; upstream CPU llama.cpp conversion documented. The older ggml-org HunyuanOCR artifacts are not established as 1.5. A version-matched Android adapter, redistribution review and validation remain required.",
+      "runtime": "",
+      "prompt": "",
+      "ramReserveBytes": 0,
+      "components": []
+    },
+    {
+      "id": "lighton3",
+      "name": "LightOnOCR-3-0.8B",
+      "developer": "LightOn AI",
+      "description": "Verified Qwen3.5 architecture and empty-prompt transcription. The inspected NANI-Nithin community GGUF repository contains language weights but no vision projector. No complete validated pair is included. Older LightOnOCR-1B support does not verify version 3.",
+      "license": "Apache-2.0",
+      "licenseUrl": "https://huggingface.co/lightonai/LightOnOCR-3-0.8B",
+      "quantization": "Not selected",
+      "compatibility": "Not yet compatible",
+      "reason": "Verified Qwen3.5 architecture and empty-prompt transcription. The inspected NANI-Nithin community GGUF repository contains language weights but no vision projector. No complete validated pair is included. Older LightOnOCR-1B support does not verify version 3.",
+      "runtime": "",
+      "prompt": "",
+      "ramReserveBytes": 0,
+      "components": []
+    }
+  ]
+}

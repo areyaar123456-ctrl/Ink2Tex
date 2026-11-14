@@ -1,0 +1,5 @@
+Verified: OvisOCR2-Q8_0.gguf 866996df182dd2f67ee12dab301a795b20e6e5334a030bf11c736e7a110bfad0
+Verified: mmproj-OvisOCR2-BF16.gguf 842015fc8bb09d8b953a04b1ba329510e7259081422a9dab50f41ce4fac430a1
+Not downloaded: OvisOCR2-Q6_K.gguf
+Verified: mmproj-OvisOCR2-BF16.gguf 842015fc8bb09d8b953a04b1ba329510e7259081422a9dab50f41ce4fac430a1
+Registry invariants passed: 8 entries

@@ -1,0 +1,375 @@
+{
+  "_id": "6acccc3eeb7016a886ed65f2",
+  "id": "NANI-Nithin/LightOnOCR-3-0.8B-GGUF",
+  "private": false,
+  "pipeline_tag": "text-generation",
+  "library_name": "gguf",
+  "tags": [
+    "gguf",
+    "llama.cpp",
+    "quantized",
+    "text-generation",
+    "base_model:lightonai/LightOnOCR-3-0.8B",
+    "base_model:quantized:lightonai/LightOnOCR-3-0.8B",
+    "endpoints_compatible",
+    "region:us",
+    "conversational"
+  ],
+  "downloads": 1446,
+  "likes": 5,
+  "modelId": "NANI-Nithin/LightOnOCR-3-0.8B-GGUF",
+  "author": "NANI-Nithin",
+  "sha": "a9a7000b6523cabd6a31d2f26fc8e239e4f57beb",
+  "lastModified": "2026-10-12T12:14:19.000Z",
+  "gated": false,
+  "disabled": false,
+  "widgetData": [
+    {
+      "text": "Hi, what can you help me with?"
+    },
+    {
+      "text": "What is 84 * 3 / 2?"
+    },
+    {
+      "text": "Tell me an interesting fact about the universe!"
+    },
+    {
+      "text": "Explain quantum computing in simple terms."
+    }
+  ],
+  "model-index": null,
+  "config": {},
+  "cardData": {
+    "base_model": "lightonai/LightOnOCR-3-0.8B",
+    "library_name": "gguf",
+    "pipeline_tag": "text-generation",
+    "tags": [
+      "gguf",
+      "llama.cpp",
+      "quantized"
+    ]
+  },
+  "gguf": {
+    "total": 752393024,
+    "architecture": "qwen35",
+    "context_length": 262144,
+    "chat_template": "{%- set image_count = namespace(value=0) %}\n{%- set video_count = namespace(value=0) %}\n{%- macro render_content(content, do_vision_count, is_system_content=false) %}\n    {%- if content is string %}\n        {{- content }}\n    {%- elif content is iterable and content is not mapping %}\n        {%- for item in content %}\n            {%- if 'image' in item or 'image_url' in item or item.type == 'image' %}\n                {%- if is_system_content %}\n                    {{- raise_exception('System message cannot contain images.') }}\n                {%- endif %}\n                {%- if do_vision_count %}\n                    {%- set image_count.value = image_count.value + 1 %}\n                {%- endif %}\n                {%- if add_vision_id %}\n                    {{- 'Picture ' ~ image_count.value ~ ': ' }}\n                {%- endif %}\n                {{- '<|vision_start|><|image_pad|><|vision_end|>' }}\n            {%- elif 'video' in item or item.type == 'video' %}\n                {%- if is_system_content %}\n                    {{- raise_exception('System message cannot contain videos.') }}\n                {%- endif %}\n                {%- if do_vision_count %}\n                    {%- set video_count.value = video_count.value + 1 %}\n                {%- endif %}\n                {%- if add_vision_id %}\n                    {{- 'Video ' ~ video_count.value ~ ': ' }}\n                {%- endif %}\n                {{- '<|vision_start|><|video_pad|><|vision_end|>' }}\n            {%- elif 'text' in item %}\n                {{- item.text }}\n            {%- else %}\n                {{- raise_exception('Unexpected item type in content.') }}\n            {%- endif %}\n        {%- endfor %}\n    {%- elif content is none or content is undefined %}\n        {{- '' }}\n    {%- else %}\n        {{- raise_exception('Unexpected content type.') }}\n    {%- endif %}\n{%- endmacro %}\n{%- if not messages %}\n    {{- raise_exception('No messages provided.') }}\n{%- endif %}\n{%- if tools and tools is iterable and tools is not mapping %}\n    {{- '<|im_start|>system\\n' }}\n    {{- \"# Tools\\n\\nYou have access to the following functions:\\n\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\" }}\n    {{- '\\n\\nIf you choose to call a function ONLY reply in the following format with NO suffix:\\n\\n<tool_call>\\n<function=example_function_name>\\n<parameter=example_parameter_1>\\nvalue_1\\n</parameter>\\n<parameter=example_parameter_2>\\nThis is the value for the second parameter\\nthat can span\\nmultiple lines\\n</parameter>\\n</function>\\n</tool_call>\\n\\n<IMPORTANT>\\nReminder:\\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\\n- Required parameters MUST be specified\\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\\n</IMPORTANT>' }}\n    {%- if messages[0].role == 'system' %}\n        {%- set content = render_content(messages[0].content, false, true)|trim %}\n        {%- if content %}\n            {{- '\\n\\n' + content }}\n        {%- endif %}\n    {%- endif %}\n    {{- '<|im_end|>\\n' }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {%- set content = render_content(messages[0].content, false, true)|trim %}\n        {{- '<|im_start|>system\\n' + content + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" %}\n        {%- set content = render_content(message.content, false)|trim %}\n        {%- if not(content.startswith('<tool_response>') and content.endswith('</tool_response>')) %}\n            {%- set ns.multi_step_tool = false %}\n            {%- set ns.last_query_index = index %}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if ns.multi_step_tool %}\n    {{- raise_exception('No user query found in messages.') }}\n{%- endif %}\n{%- for message in messages %}\n    {%- set content = render_content(message.content, true)|trim %}\n    {%- if message.role == \"system\" %}\n        {%- if not loop.first %}\n            {{- raise_exception('System message must be at the beginning.') }}\n        {%- endif %}\n    {%- elif message.role == \"user\" %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- else %}\n            {%- if '</think>' in content %}\n                {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n                {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n            {%- endif %}\n        {%- endif %}\n        {%- set reasoning_content = reasoning_content|trim %}\n        {%- if loop.index0 > ns.last_query_index %}\n            {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content + '\\n</think>\\n\\n' + content }}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        {%- if message.tool_calls and message.tool_calls is iterable and message.tool_calls is not mapping %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if tool_call.function is defined %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {%- if loop.first %}\n                    {%- if content|trim %}\n                        {{- '\\n\\n<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                    {%- else %}\n                        {{- '<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                    {%- endif %}\n                {%- else %}\n                    {{- '\\n<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                {%- endif %}\n                {%- if tool_call.arguments is defined %}\n                    {%- for args_name, args_value in tool_call.arguments|items %}\n                        {{- '<parameter=' + args_name + '>\\n' }}\n                        {%- set args_value = args_value | tojson | safe if args_value is mapping or (args_value is sequence and args_value is not string) else args_value | string %}\n                        {{- args_value }}\n                        {{- '\\n</parameter>\\n' }}\n                    {%- endfor %}\n                {%- endif %}\n                {{- '</function>\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.previtem and loop.previtem.role != \"tool\" %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content }}\n        {{- '\\n</tool_response>' }}\n        {%- if not loop.last and loop.nextitem.role != \"tool\" %}\n            {{- '<|im_end|>\\n' }}\n        {%- elif loop.last %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- else %}\n        {{- raise_exception('Unexpected message role.') }}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is true %}\n        {{- '<think>\\n' }}\n    {%- else %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- endif %}\n{%- endif %}",
+    "eos_token": "<|im_end|>",
+    "totalFileSize": 1516744320
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "097cbc297e98e91395b65b6927fbb6885987b4c4",
+      "size": 3475
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-BF16.gguf",
+      "blobId": "9edd225fe60cbaf304685fcc8f82a5d4d0cfa0a4",
+      "size": 1516744320,
+      "lfs": {
+        "sha256": "747a305209fa9d179357fb97fa54ea98f5352158445745781b810dc93b68c51d",
+        "size": 1516744320,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ1_M.gguf",
+      "blobId": "e0d0a1bddbb6007f6eeb1bcffc8cb479edb3e135",
+      "size": 338331616,
+      "lfs": {
+        "sha256": "0308887652bffd55ee8a9b47c2cfa50a5022b2fb0d16af83518e50e8298a2e5b",
+        "size": 338331616,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ1_S.gguf",
+      "blobId": "556fc67e75f0e6fe52908f175e5e565dd44388e3",
+      "size": 329949664,
+      "lfs": {
+        "sha256": "eef5ee9195de40aec59d91d18dfc60e41963a7e048ccffb251775b3d6d4c6ceb",
+        "size": 329949664,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ2_M.gguf",
+      "blobId": "314da3fa9844b693aba418bbc828f7af39ba72d4",
+      "size": 377934304,
+      "lfs": {
+        "sha256": "4492b40daca573c173401c49837b1d2f45fe9636994007b5fffbdec40ced63e2",
+        "size": 377934304,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ2_S.gguf",
+      "blobId": "eba3a84431a767a317e240af5f246b4c2e1de9d4",
+      "size": 366758368,
+      "lfs": {
+        "sha256": "c98edb1746ea1d97fa1b6a2ebf650f4816e3602bdb596a7af5f6d5a990f7a950",
+        "size": 366758368,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ2_XS.gguf",
+      "blobId": "00a876277a19f898fbfe616b2a6fe6b34d542d1d",
+      "size": 363870688,
+      "lfs": {
+        "sha256": "f98f256f9adb7d8c89a10acfa8183a160042d55800be47c76e6eab786d848a34",
+        "size": 363870688,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ2_XXS.gguf",
+      "blobId": "2f90351431adbc8e571083e70bb18fdfe4accca9",
+      "size": 352301536,
+      "lfs": {
+        "sha256": "432d6e1c99051c4b5042d34df9f52c123f56799ae9d0e3f4d274316325a5d6d2",
+        "size": 352301536,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ3_M.gguf",
+      "blobId": "b286b0660e140c67c3ebe5b1de7886cfede8c001",
+      "size": 453955040,
+      "lfs": {
+        "sha256": "afb9a5094a4e62959785c5effe54e3e4a630622f4d6b01efc8ccc87faf0bbd44",
+        "size": 453955040,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ3_S.gguf",
+      "blobId": "18a17dde53a1ed5696d6ab0c04801d0dc73776c0",
+      "size": 450821600,
+      "lfs": {
+        "sha256": "7e0f3ec2ec61769c0f95ebde25affc73d2c2a62843cab17627225f078eb26bef",
+        "size": 450821600,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ3_XS.gguf",
+      "blobId": "f51507c369c441dfcded77e76917d662e3b54a94",
+      "size": 443301344,
+      "lfs": {
+        "sha256": "63c07db26dcbe07cddda24ac72aee924b441fa6de94df2954ea1e8ba7d4db97f",
+        "size": 443301344,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ3_XXS.gguf",
+      "blobId": "0ee12abf3aa72630fe2a75b6e6a53aec76f60141",
+      "size": 398000608,
+      "lfs": {
+        "sha256": "4ab31753924693ffeb49bf6484f736c115aecb3e2aab5e11eebc4e05858173ff",
+        "size": 398000608,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ4_NL.gguf",
+      "blobId": "4fedb824441c2aa735729f59becd10577f67084a",
+      "size": 516001760,
+      "lfs": {
+        "sha256": "dbb83a358133bb7033a81b1f403ad59a3334e9a80ad1903aa6a6520d79c72e0c",
+        "size": 516001760,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-IQ4_XS.gguf",
+      "blobId": "0da0b4e61ddf791826275d1e820dab82cd2d5a41",
+      "size": 504088544,
+      "lfs": {
+        "sha256": "9d15c5518f2a8ab377f83d33a599735d50ff9000e077e762a77de938ac67e674",
+        "size": 504088544,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q1_0.gguf",
+      "blobId": "d8a037b00334bc74eebd1d7348f091d158ad1db3",
+      "size": 291521504,
+      "lfs": {
+        "sha256": "a61f149992397015a092fbb4c433c29e2479f6f59129458c7ca86c0a005ff481",
+        "size": 291521504,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q2_0.gguf",
+      "blobId": "04fc5beba9206d7a4bd1a986dafe37831526e450",
+      "size": 361498592,
+      "lfs": {
+        "sha256": "8ff9204df0510f94a769624392cd47b614a7530669123338f2413bc0a36a26fd",
+        "size": 361498592,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q2_K.gguf",
+      "blobId": "10ca7c061255dfe84912a3872b13459bbcea827d",
+      "size": 422327264,
+      "lfs": {
+        "sha256": "1f9b659cf402a5e1d0168c9a46bc00f87d6c7193d969f7bd6764a5b124e84524",
+        "size": 422327264,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q2_K_S.gguf",
+      "blobId": "2edaa87eb777d5b6bfb27730c4c7bc2664a8d762",
+      "size": 414684128,
+      "lfs": {
+        "sha256": "79ea3af24d74ab8ed096cc60a9468bbcd849de44ce4f38f18e552593bcdc27a7",
+        "size": 414684128,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q3_K_L.gguf",
+      "blobId": "c90761ed28084054bb064ee0d2edd85f00d9d493",
+      "size": 491322848,
+      "lfs": {
+        "sha256": "1809f6aa9d3e335ec2af48b90dee418e9c6648d8a0d9924debd47f3378dd3e01",
+        "size": 491322848,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q3_K_M.gguf",
+      "blobId": "1019fe4fd12abbd0413c672ad63a3d1bffd85a6a",
+      "size": 466222560,
+      "lfs": {
+        "sha256": "7c7e767555dba0fe3200c8c7976ee85f28693d8ba60d9ca6b0b6a71a358a7f21",
+        "size": 466222560,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q3_K_S.gguf",
+      "blobId": "49d0c74adedf6ef7172f9d5c508879b9b30fd453",
+      "size": 435363296,
+      "lfs": {
+        "sha256": "da1c64f9e4b6120dba17b1926ae287f3c844b0707db0bdc778971411e0d39f1f",
+        "size": 435363296,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q4_0.gguf",
+      "blobId": "f00fee001a2b908843f4adad3dbe5b6383f824cd",
+      "size": 501452416,
+      "lfs": {
+        "sha256": "24214103ea2121598204f6718c91a65605d9e3f1265e72d138b905172e5ac0d8",
+        "size": 501452416,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q4_1.gguf",
+      "blobId": "c632648b0867fe042c4ccfdde3b547de6e053cf5",
+      "size": 532553344,
+      "lfs": {
+        "sha256": "bdbaf628ce54aab2d9f5692f25d8c0525c26c5fb6b5769068d9f4bf7824cb2df",
+        "size": 532553344,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q4_K_M.gguf",
+      "blobId": "68de3c09c4081c42d0227116e3cd169dbca2dec5",
+      "size": 529297376,
+      "lfs": {
+        "sha256": "c792366fcfa36b00bd1a1bfd8b18fb33c637bb5d0fa66fd694a0873c247dc560",
+        "size": 529297376,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q4_K_S.gguf",
+      "blobId": "af054189cb449566f8ff7d2f4d23070c88a56276",
+      "size": 505253856,
+      "lfs": {
+        "sha256": "99e6b72571a032928f5bc78bbb7a40a464dc33490665ac6701881936a26c55d4",
+        "size": 505253856,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q5_0.gguf",
+      "blobId": "b5398ac18ec6b7dcecd905577efac341bd1c2323",
+      "size": 563654272,
+      "lfs": {
+        "sha256": "a7f360d5232066735f63f1c945ce5f0c6c7e572a35cb3b7ce74cd3c245bf9155",
+        "size": 563654272,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q5_1.gguf",
+      "blobId": "883099a837bab7119d1858f5d972db2200150832",
+      "size": 594755200,
+      "lfs": {
+        "sha256": "5578d3ffbefd55130d6a98e7f4f3ed43b772194e42f9f8e297f56193b4638810",
+        "size": 594755200,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q5_K_M.gguf",
+      "blobId": "69f6b9b313c7ee85f3ae8b0f4c6eeae47cd3b410",
+      "size": 577998816,
+      "lfs": {
+        "sha256": "f92158f329355d71c100b123d227ed2d871230674e11dd84ab92dfed247c4605",
+        "size": 577998816,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q5_K_S.gguf",
+      "blobId": "b0b505235801e1bfaa115822acdcc3905bca4aa0",
+      "size": 563654624,
+      "lfs": {
+        "sha256": "7677958400ac10b25b32fcfdb7429cfa2a93ec4bced5bddab400eeefcc5a99a7",
+        "size": 563654624,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q6_K.gguf",
+      "blobId": "f80e89cfd024ed7b164d523bb7ca87742e77a2d3",
+      "size": 629743744,
+      "lfs": {
+        "sha256": "197f1e3204da5e5f404c1a71acc2752af17b74407845bcbaa3aa2989d11d79df",
+        "size": 629743744,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "LightOnOCR-3-0.8B-Q8_0.gguf",
+      "blobId": "4a34bdceb98c4a7c2aedf1b91c27749a0abae90d",
+      "size": 811843200,
+      "lfs": {
+        "sha256": "dd8a1516ba832287228c4011374bb5c6bab190482302a85f596eadcd85ca7077",
+        "size": 811843200,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "eb0473741d5b1fe1b3d1a5f87081108446e74d70",
+      "size": 7299
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2026-10-12T12:02:06.000Z",
+  "usedStorage": 15105206432
+}

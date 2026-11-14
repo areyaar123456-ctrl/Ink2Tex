@@ -1,0 +1,1 @@
+Host handwritten evaluation was paused with SIGSTOP while the Android build was prioritized, then resumed at nice 15. Its wall-clock duration includes scheduling delays and suspension and is not a performance measurement. The actual generated output is retained for fidelity inspection.

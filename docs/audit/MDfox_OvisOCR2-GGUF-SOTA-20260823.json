@@ -1,0 +1,1920 @@
+{
+  "_id": "6a7d2b91036650ebe5d28982",
+  "id": "MDfox/OvisOCR2-GGUF-SOTA-20260823",
+  "private": false,
+  "pipeline_tag": "image-text-to-text",
+  "library_name": "llama.cpp",
+  "tags": [
+    "llama.cpp",
+    "gguf",
+    "multimodal",
+    "vision",
+    "ocr",
+    "document-parsing",
+    "omnidocbench",
+    "image-text-to-text",
+    "base_model:ATH-MaaS/OvisOCR2",
+    "base_model:quantized:ATH-MaaS/OvisOCR2",
+    "license:apache-2.0",
+    "endpoints_compatible",
+    "region:us",
+    "conversational"
+  ],
+  "downloads": 2885,
+  "likes": 1,
+  "modelId": "MDfox/OvisOCR2-GGUF-SOTA-20260823",
+  "author": "MDfox",
+  "sha": "dfe9304de35b13527bf899e2229699224861bb6d",
+  "lastModified": "2026-10-22T15:39:56.000Z",
+  "gated": false,
+  "disabled": false,
+  "widgetData": [
+    {
+      "text": "Hi, what can you help me with?"
+    },
+    {
+      "text": "What is 84 * 3 / 2?"
+    },
+    {
+      "text": "Tell me an interesting fact about the universe!"
+    },
+    {
+      "text": "Explain quantum computing in simple terms."
+    }
+  ],
+  "model-index": null,
+  "config": {},
+  "cardData": {
+    "license": "apache-2.0",
+    "library_name": "llama.cpp",
+    "pipeline_tag": "image-text-to-text",
+    "base_model": "ATH-MaaS/OvisOCR2",
+    "tags": [
+      "gguf",
+      "llama.cpp",
+      "multimodal",
+      "vision",
+      "ocr",
+      "document-parsing",
+      "omnidocbench"
+    ]
+  },
+  "gguf": {
+    "total": 752393024,
+    "architecture": "qwen35",
+    "context_length": 262144,
+    "chat_template": "{%- set image_count = namespace(value=0) %}\n{%- set video_count = namespace(value=0) %}\n{%- macro render_content(content, do_vision_count, is_system_content=false) %}\n    {%- if content is string %}\n        {{- content }}\n    {%- elif content is iterable and content is not mapping %}\n        {%- for item in content %}\n            {%- if 'image' in item or 'image_url' in item or item.type == 'image' %}\n                {%- if is_system_content %}\n                    {{- raise_exception('System message cannot contain images.') }}\n                {%- endif %}\n                {%- if do_vision_count %}\n                    {%- set image_count.value = image_count.value + 1 %}\n                {%- endif %}\n                {%- if add_vision_id %}\n                    {{- 'Picture ' ~ image_count.value ~ ': ' }}\n                {%- endif %}\n                {{- '<|vision_start|><|image_pad|><|vision_end|>' }}\n            {%- elif 'video' in item or item.type == 'video' %}\n                {%- if is_system_content %}\n                    {{- raise_exception('System message cannot contain videos.') }}\n                {%- endif %}\n                {%- if do_vision_count %}\n                    {%- set video_count.value = video_count.value + 1 %}\n                {%- endif %}\n                {%- if add_vision_id %}\n                    {{- 'Video ' ~ video_count.value ~ ': ' }}\n                {%- endif %}\n                {{- '<|vision_start|><|video_pad|><|vision_end|>' }}\n            {%- elif 'text' in item %}\n                {{- item.text }}\n            {%- else %}\n                {{- raise_exception('Unexpected item type in content.') }}\n            {%- endif %}\n        {%- endfor %}\n    {%- elif content is none or content is undefined %}\n        {{- '' }}\n    {%- else %}\n        {{- raise_exception('Unexpected content type.') }}\n    {%- endif %}\n{%- endmacro %}\n{%- if not messages %}\n    {{- raise_exception('No messages provided.') }}\n{%- endif %}\n{%- if tools and tools is iterable and tools is not mapping %}\n    {{- '<|im_start|>system\\n' }}\n    {{- \"# Tools\\n\\nYou have access to the following functions:\\n\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\" }}\n    {{- '\\n\\nIf you choose to call a function ONLY reply in the following format with NO suffix:\\n\\n<tool_call>\\n<function=example_function_name>\\n<parameter=example_parameter_1>\\nvalue_1\\n</parameter>\\n<parameter=example_parameter_2>\\nThis is the value for the second parameter\\nthat can span\\nmultiple lines\\n</parameter>\\n</function>\\n</tool_call>\\n\\n<IMPORTANT>\\nReminder:\\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\\n- Required parameters MUST be specified\\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\\n</IMPORTANT>' }}\n    {%- if messages[0].role == 'system' %}\n        {%- set content = render_content(messages[0].content, false, true)|trim %}\n        {%- if content %}\n            {{- '\\n\\n' + content }}\n        {%- endif %}\n    {%- endif %}\n    {{- '<|im_end|>\\n' }}\n{%- else %}\n    {%- if messages[0].role == 'system' %}\n        {%- set content = render_content(messages[0].content, false, true)|trim %}\n        {{- '<|im_start|>system\\n' + content + '<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}\n{%- for message in messages[::-1] %}\n    {%- set index = (messages|length - 1) - loop.index0 %}\n    {%- if ns.multi_step_tool and message.role == \"user\" %}\n        {%- set content = render_content(message.content, false)|trim %}\n        {%- if not(content.startswith('<tool_response>') and content.endswith('</tool_response>')) %}\n            {%- set ns.multi_step_tool = false %}\n            {%- set ns.last_query_index = index %}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if ns.multi_step_tool %}\n    {{- raise_exception('No user query found in messages.') }}\n{%- endif %}\n{%- for message in messages %}\n    {%- set content = render_content(message.content, true)|trim %}\n    {%- if message.role == \"system\" %}\n        {%- if not loop.first %}\n            {{- raise_exception('System message must be at the beginning.') }}\n        {%- endif %}\n    {%- elif message.role == \"user\" %}\n        {{- '<|im_start|>' + message.role + '\\n' + content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {%- set reasoning_content = '' %}\n        {%- if message.reasoning_content is string %}\n            {%- set reasoning_content = message.reasoning_content %}\n        {%- else %}\n            {%- if '</think>' in content %}\n                {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n                {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n            {%- endif %}\n        {%- endif %}\n        {%- set reasoning_content = reasoning_content|trim %}\n        {%- if loop.index0 > ns.last_query_index %}\n            {{- '<|im_start|>' + message.role + '\\n<think>\\n' + reasoning_content + '\\n</think>\\n\\n' + content }}\n        {%- else %}\n            {{- '<|im_start|>' + message.role + '\\n' + content }}\n        {%- endif %}\n        {%- if message.tool_calls and message.tool_calls is iterable and message.tool_calls is not mapping %}\n            {%- for tool_call in message.tool_calls %}\n                {%- if tool_call.function is defined %}\n                    {%- set tool_call = tool_call.function %}\n                {%- endif %}\n                {%- if loop.first %}\n                    {%- if content|trim %}\n                        {{- '\\n\\n<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                    {%- else %}\n                        {{- '<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                    {%- endif %}\n                {%- else %}\n                    {{- '\\n<tool_call>\\n<function=' + tool_call.name + '>\\n' }}\n                {%- endif %}\n                {%- if tool_call.arguments is defined %}\n                    {%- for args_name, args_value in tool_call.arguments|items %}\n                        {{- '<parameter=' + args_name + '>\\n' }}\n                        {%- set args_value = args_value | tojson | safe if args_value is mapping or (args_value is sequence and args_value is not string) else args_value | string %}\n                        {{- args_value }}\n                        {{- '\\n</parameter>\\n' }}\n                    {%- endfor %}\n                {%- endif %}\n                {{- '</function>\\n</tool_call>' }}\n            {%- endfor %}\n        {%- endif %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if loop.previtem and loop.previtem.role != \"tool\" %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- content }}\n        {{- '\\n</tool_response>' }}\n        {%- if not loop.last and loop.nextitem.role != \"tool\" %}\n            {{- '<|im_end|>\\n' }}\n        {%- elif loop.last %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- else %}\n        {{- raise_exception('Unexpected message role.') }}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is true %}\n        {{- '<think>\\n' }}\n    {%- else %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- endif %}\n{%- endif %}",
+    "eos_token": "<|im_end|>",
+    "totalFileSize": 1516744640
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "aa7250a3c596126d5c9a1827f5e458f9fec60eda",
+      "size": 6434
+    },
+    {
+      "rfilename": "CONVERSION_NOTES.md",
+      "blobId": "58ebbcd5b94cf86dc6eb4f43644d7b3c11a342f7",
+      "size": 4206
+    },
+    {
+      "rfilename": "LICENSE",
+      "blobId": "f938136e3adacfd92be087f6e113b5d6d97f678f",
+      "size": 11544
+    },
+    {
+      "rfilename": "OvisOCR2-BF16.gguf",
+      "blobId": "bccef4f30116cbd1eb77529e91dc0c38709a138d",
+      "size": 1516744640,
+      "lfs": {
+        "sha256": "a2387497831e0e9ad5487a9b15cb343dad9f47a823ffaf5dfcba728cf7f0cef8",
+        "size": 1516744640,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-IQ2_M-imatrix.gguf",
+      "blobId": "ab73ea78cfd7be1dbe4d3ec46588a65367df7489",
+      "size": 377934656,
+      "lfs": {
+        "sha256": "929f1f401c3935e0584e496c66cdb09c544c034a7d7c6ffcbc2126976cf0d254",
+        "size": 377934656,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-IQ2_S-imatrix.gguf",
+      "blobId": "35db98629acaa4836429e82d0347615f0f3196b5",
+      "size": 366758720,
+      "lfs": {
+        "sha256": "4722aa521495e364a6ea9550b94282ca60794b46a0c2eda56e765a0594a72228",
+        "size": 366758720,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-IQ2_XS-imatrix.gguf",
+      "blobId": "0d7e7d1defe44dd6d945c7cc4ff49787997ae5e1",
+      "size": 363871040,
+      "lfs": {
+        "sha256": "673e4f0b185718a29e86f37735a5b75f488bbfcb0ba11a9f7d20c2defb145db5",
+        "size": 363871040,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-IQ2_XXS-imatrix.gguf",
+      "blobId": "f8c9a95eb750d5d5b48e70ddd252c7b3649a44b7",
+      "size": 352301888,
+      "lfs": {
+        "sha256": "9d9f5d5de57516d80862a2462bf51cc90751e4227b286dc1711c955d58233008",
+        "size": 352301888,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-IQ3_M-imatrix.gguf",
+      "blobId": "f93ee764f41f074d90aca994a99125caf887e334",
+      "size": 453955392,
+      "lfs": {
+        "sha256": "72a65da07c197921e572de8d40247537e3dce7b5929c0b8954d91b2c605baa9a",
+        "size": 453955392,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-IQ3_S-imatrix.gguf",
+      "blobId": "f9518a8062273fe5644cc8749058106c4a1f15d6",
+      "size": 450821952,
+      "lfs": {
+        "sha256": "5e7f4cc36474bc2c6ee361376104595a69634d55f6a3c3b8c581ebbd687876fd",
+        "size": 450821952,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-IQ3_XS-imatrix.gguf",
+      "blobId": "cfb474ac1e06628b73d46b9118bda218d4a48d3a",
+      "size": 443301696,
+      "lfs": {
+        "sha256": "84f66f7160111d6e8bc4f01f0dc321fca8f5ab0dc4f926fb3f7fec5896207061",
+        "size": 443301696,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-IQ3_XXS-imatrix.gguf",
+      "blobId": "b1c11db14c68bf8cea61f167a14849b8b4296074",
+      "size": 398000960,
+      "lfs": {
+        "sha256": "ec9b1fddd13eef5882d89b45bb4eb3f443ecd39a5c0824ae70f12e1837624dc0",
+        "size": 398000960,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-OmniDocBench-BF16BF16Predictions-imatrix.gguf",
+      "blobId": "783957bcd4d47a13011cc710be2e8519b7f7d481",
+      "size": 1134784,
+      "lfs": {
+        "sha256": "8c3fcc1beefd3ad2ba59bc8e5fa8d09afb4ed586fa4944bf981bd82edba03eaa",
+        "size": 1134784,
+        "pointerSize": 132
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-Q2_K.gguf",
+      "blobId": "bed47b1b7448eaf75d28fcf428a74b3b4250937a",
+      "size": 422327232,
+      "lfs": {
+        "sha256": "aa789466a1c4d7abc0bead9b72800f92a79ab991bae28d86b4b7289fccd954e4",
+        "size": 422327232,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-Q3_K_M.gguf",
+      "blobId": "e9dce2a30033b0f2c47004cc0618e68eb1d350b2",
+      "size": 466222528,
+      "lfs": {
+        "sha256": "005b8f76f187eee2f6e9830a09fc5aea2bbee785a884a35930940462f3866363",
+        "size": 466222528,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-Q3_K_S.gguf",
+      "blobId": "07d258f444ba85a7fd30cf4f93c5674e23046fe5",
+      "size": 435363264,
+      "lfs": {
+        "sha256": "2fd92a4d7d285be81148ad27c1ac1856e4f1b74eeb4753491593643023547071",
+        "size": 435363264,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-Q4_K_M.gguf",
+      "blobId": "91e393b7d4aaae83fe303cc48e2feee5e8347c5d",
+      "size": 529297344,
+      "lfs": {
+        "sha256": "56c16409a13cdf19679b1956bcb726128114f6ede7b50e6b359f18246c2ab92d",
+        "size": 529297344,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-Q5_K_M.gguf",
+      "blobId": "f12ad97733944650740f14d705d46b137c93995e",
+      "size": 577998784,
+      "lfs": {
+        "sha256": "d3068270c3ccac6458dc24bcabec1d7839cae1815705b61ec88b09cd8bc14c6c",
+        "size": 577998784,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-Q6_K.gguf",
+      "blobId": "0ea99cf25d840c3846cc0e72aff772f1e1b820d1",
+      "size": 629744064,
+      "lfs": {
+        "sha256": "d04fef6d3eaf1cc2eeeffb9686f67c0b3f55986ada1c6634e2ba26820e4c6833",
+        "size": 629744064,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "OvisOCR2-Q8_0.gguf",
+      "blobId": "e9939a414c543633af23250297954f87a60b47f7",
+      "size": 811843520,
+      "lfs": {
+        "sha256": "866996df182dd2f67ee12dab301a795b20e6e5334a030bf11c736e7a110bfad0",
+        "size": 811843520,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "d52c4924444e6903b87a41ce7ab7f285a9d8dbf8",
+      "size": 8204
+    },
+    {
+      "rfilename": "README_zh.md",
+      "blobId": "3ac4d11490b45359cc59f8722d160d6eabf33a79",
+      "size": 7818
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/evaluation-timing.json",
+      "blobId": "c07c4f54b1a2f9d549f44f7a408c0cfe8491d454",
+      "size": 390
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "681cddf70659a78f17296efed84591ce5493c2fa",
+      "size": 17311
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "73a0cbb75ae11cef76a5c5c3e777c7a34019a693",
+      "size": 108394
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "45f390703b58e99b1be543480ccc4baac8e37b78",
+      "size": 1830666
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_metric_result.json",
+      "blobId": "c5312cde2fbc31d953585fc29f73c19f7fde5550",
+      "size": 18014
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "f320a1495aa29d9bbb78c61a04a545fe8af5fce4",
+      "size": 99659
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "e744334cf02b933bd9b796636858f6b7b8e12311",
+      "size": 1071424
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_run_summary.json",
+      "blobId": "71848a4c9f7da50ad0bbde773c33b57db0e9fc12",
+      "size": 10748
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "746d6afec5dd56f9c3ec98efb3675a9df963ec71",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "fc7b1fe21e4c8fd1f7ab5c98fcaf06976b386c7c",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "3a09ec89374d3486d01257b4087bce43e6c108ae",
+      "size": 29708
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "af5ec41e5b1fd7465eb2a8bbfec542914c709691",
+      "size": 77237
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_result.json",
+      "blobId": "7e5aaa6ae15bb88ebc5fc1d0c0770ec6ce63666f",
+      "size": 2917390
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "9d4f2be6dbd792c04aa3ec6832b3cd2eb0a1923a",
+      "size": 103081
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "b77bc42c91d314c24650da7c0cf110b8df765537",
+      "size": 29126995,
+      "lfs": {
+        "sha256": "e5a3e3ef4e8b88138a2e2f5ad9ba4ef396a345f3c855d18777d523f27b6be42c",
+        "size": 29126995,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-metrics.csv",
+      "blobId": "74411fc0e38116b84b66be3d3ee44adf5ba17612",
+      "size": 1439171
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-summary.json",
+      "blobId": "bef0384e62448018e8aac1918ff49aaef3f274f7",
+      "size": 2240
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/summary.json",
+      "blobId": "97448e98ae697cc41cb89105d7366f402748a7b7",
+      "size": 3141
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/experiment.json",
+      "blobId": "4d6a71cf826f9cfd693a65c4f6496139f199863c",
+      "size": 1341
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/recorded-inference-settings.json",
+      "blobId": "00d96a1583f170ca4320430862e16df68a7c7192",
+      "size": 1114
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/summary.csv",
+      "blobId": "834a493da1f2ef999d41ed1bd3727c0427b45858",
+      "size": 1255
+    },
+    {
+      "rfilename": "benchmark-results/real5-illumination-v050-iq3xxs-q8mm-20260929/summary.json",
+      "blobId": "7c56f722e7520d656f312553de0475df53b67dce",
+      "size": 3420
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/evaluation-timing.json",
+      "blobId": "48a836fd8c6c31273b7d83f16eb83eb3b49ff185",
+      "size": 391
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "3bd27a47b24e14c685deb897b5f23547ae905673",
+      "size": 17292
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "ba2551dc5394b3bf17a4517538b0a7834529eab6",
+      "size": 108423
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "640c17fff103753d6fdc9619e0f42fc4d9e0726e",
+      "size": 1831885
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_metric_result.json",
+      "blobId": "f576b062cffbb823727fafd8efb1993fc22fe389",
+      "size": 18008
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "c19b2a4a2079f5de94f0aeecb41a15d4faddfbd3",
+      "size": 99838
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "bb4287ff37cce61a5117e810891670410b6af5cf",
+      "size": 1070571
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_run_summary.json",
+      "blobId": "4b7fa71bc8feae59dfadc07a29eb284c5e75b92d",
+      "size": 10745
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "7294beb58d6b5417fca658cf77cbe136be073f8e",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "fc7b1fe21e4c8fd1f7ab5c98fcaf06976b386c7c",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "57c4677b0d1cbc127412c65eac3daa503a44cd56",
+      "size": 29622
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "174da895c94a07f41af8392444e4cdcc421c0457",
+      "size": 77242
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_result.json",
+      "blobId": "77932bb67cec49c8eb2e991a882fb474dc807c5a",
+      "size": 2929767
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "dea6c9dbaf0d3cc7032790200e38688d2951c26f",
+      "size": 102597
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "64494065463570bad48d433c8ef65128a659e9cc",
+      "size": 28863573,
+      "lfs": {
+        "sha256": "31b622e3d231bf30ad8ae7caa49c8f906310711105ca2517f8589cead34fb9a4",
+        "size": 28863573,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-metrics.csv",
+      "blobId": "3943a4a23eb84113eccd3fe7a00531dfdeff0318",
+      "size": 801686
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-summary.json",
+      "blobId": "849e02638066792d4f5293567ed76e08ecef3f45",
+      "size": 2242
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/summary.json",
+      "blobId": "c1be22662a040e2b1ff2151f6172c6da1936df0a",
+      "size": 2987
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/experiment.json",
+      "blobId": "48dc648ba2d2c2566d671996a97eccc3428f643a",
+      "size": 1268
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/recorded-inference-settings.json",
+      "blobId": "0b0bf4cbd5bb428ee93b162c96a4a0c493162349",
+      "size": 999
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/summary.csv",
+      "blobId": "e6bd88fad6e11e3a6cc2b2fbdb1301c548562948",
+      "size": 1252
+    },
+    {
+      "rfilename": "benchmark-results/real5-scanning-v050-iq3xxs-q8mm-20260929/summary.json",
+      "blobId": "e5e85bd6baafaa090cea1df27ebde62d98b2e831",
+      "size": 3277
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/evaluation-timing.json",
+      "blobId": "9e785b65398aea629fff71aa115c75075f3e04e7",
+      "size": 390
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "64765a12d0538c0880726c6abe6835eedf298b85",
+      "size": 17272
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "182e870e2e222fd096b1d18287cdf6dbbae17372",
+      "size": 108400
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "297118c15129ea66a1121589bb9c62d3ea6e668d",
+      "size": 1826990
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_metric_result.json",
+      "blobId": "1e1c28f18705e84947bbb475543744bddee85d7a",
+      "size": 17998
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "b424a3ae9b6581f9f2704186dffe6d8a43ae3595",
+      "size": 99845
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "84150ac97d34790a77d9dd11a64b82871fd9b109",
+      "size": 1051305
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_run_summary.json",
+      "blobId": "71a7ed13d81e13eb1fde30e87098a1dc674b2c1a",
+      "size": 10747
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "31fc7c943c5c09af82c0bf072e469cffebadfcb6",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "fc7b1fe21e4c8fd1f7ab5c98fcaf06976b386c7c",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "360b2abe68ad9f0f8f95f68587bfea17f2c6e604",
+      "size": 29663
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "8adede89d1a3511f35f152a86cafbd0012ffae2f",
+      "size": 76846
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_result.json",
+      "blobId": "d837a66a593c8d7ba23373230c263e5a0bcf6f16",
+      "size": 2896940
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "e105ed15c3ced786adade0ffd3f70e234aa50d98",
+      "size": 102500
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "feefe0de27311ed880442ca97a34f237b7e4bca5",
+      "size": 28103937,
+      "lfs": {
+        "sha256": "f3405bbc7e24ede92efc8c1a8227987944424bf3ec34a2c74a70374d3f289821",
+        "size": 28103937,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-metrics.csv",
+      "blobId": "c162c843f9dc0c408b369ac6650356459132b7e5",
+      "size": 1589699
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-summary.json",
+      "blobId": "42174d12678363f9fa612ff9cb3deaf1ebceec50",
+      "size": 2242
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/summary.json",
+      "blobId": "d1c59d625a640d4882dcaf99878b212f38495d49",
+      "size": 3007
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/experiment.json",
+      "blobId": "f2af14c8bcfe1618593bdc6dbc42f838fb4431b5",
+      "size": 1328
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/recorded-inference-settings.json",
+      "blobId": "0b0bf4cbd5bb428ee93b162c96a4a0c493162349",
+      "size": 999
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/summary.csv",
+      "blobId": "113df3166848ff13f31380ecfea4f8801f3d1155",
+      "size": 1257
+    },
+    {
+      "rfilename": "benchmark-results/real5-screen-photography-v050-iq3xxs-q8mm-20260929/summary.json",
+      "blobId": "5cdd2fb4847cd8478a8f70c959ce3f631c27bdcb",
+      "size": 3283
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/evaluation-timing.json",
+      "blobId": "be3ed512ab87950b4b5167ab948a777dce8b32a3",
+      "size": 390
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "7433ce3dafdcf66d27a192f33df056c838cd1f24",
+      "size": 17354
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "cbc78003c9545fba4b88767dfc719a4999b6bd34",
+      "size": 108421
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "031bfd6c8ccbd27ba0928ca396f59f02454ec243",
+      "size": 1818314
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_metric_result.json",
+      "blobId": "90ad0b00300f822d5793c6cafbb8b317f5324725",
+      "size": 18004
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "cc9a656afa227362b497b87ca90f13c33e499753",
+      "size": 100002
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "784dbceb02b418b85d28a0e406205d1a6f004c96",
+      "size": 1066356
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_run_summary.json",
+      "blobId": "a087248bbeb0a0e7d3415af9a7bafb5ab54de585",
+      "size": 10745
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "51d977ae85ed466fe7ed0f3e872674247e7f71af",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "fc7b1fe21e4c8fd1f7ab5c98fcaf06976b386c7c",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "ec689d1cc00a58d14dfa0d25625cc5d6cc9feed8",
+      "size": 29772
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "fa9fd6885b719e73cc657dfd20cc4f377f00bae7",
+      "size": 78524
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_result.json",
+      "blobId": "f70b37335a8ccd219764a97f0cc1b9b399464347",
+      "size": 2907993
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "907405481a374a4eff18acf30dcf8bc064e222ce",
+      "size": 103200
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "2d2717432ea54e6348f75d5d18fd9a4a78c69a0d",
+      "size": 28722507,
+      "lfs": {
+        "sha256": "910ce857d114fe77a7815ccad4a35350c4b4c73a4bd7a8aaada2842cf5a678d4",
+        "size": 28722507,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-metrics.csv",
+      "blobId": "8a16327def855cf8ebcc023902a437e658d3b72a",
+      "size": 1631797
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-summary.json",
+      "blobId": "5e516c1179e8a777270d5b60148d0cd4f928574b",
+      "size": 2248
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/summary.json",
+      "blobId": "02f08398e305982820696eb921f3bc76bdb65f5e",
+      "size": 3129
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/experiment.json",
+      "blobId": "f3ff577a7705670055ab59ae8fe7f34f6008789f",
+      "size": 1293
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/recorded-inference-settings.json",
+      "blobId": "00d96a1583f170ca4320430862e16df68a7c7192",
+      "size": 1114
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/summary.csv",
+      "blobId": "dcdc7e707521503a8af85a460cbede0a254ca877",
+      "size": 1259
+    },
+    {
+      "rfilename": "benchmark-results/real5-skew-v050-iq3xxs-q8mm-20260929/summary.json",
+      "blobId": "68dde70134f807dcd721034bc92b3794b412da43",
+      "size": 3426
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/evaluation-timing.json",
+      "blobId": "552d9e44cf0ba2941444fc866fde9856da112fd6",
+      "size": 389
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "35b9199576c767c1e8925a2b47100895b20acc2b",
+      "size": 17276
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "aec18a3fff5b4f79548d828c80ffc7832f2e31ad",
+      "size": 108458
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "81c8d84295806f784df7707469b88dc2d8f6c3c9",
+      "size": 1819563
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_metric_result.json",
+      "blobId": "b7299e354e5934d76035b8ba91d848552bed2201",
+      "size": 17993
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "748a9f2b217ca6857f9aabf8b5e1e5e4a563ead9",
+      "size": 99987
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "ec86eb961c6617545f8618c7639ca1b622ef2fb3",
+      "size": 1054881
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_run_summary.json",
+      "blobId": "45111d8f208efed257e6ca233147177a8bc8b001",
+      "size": 10747
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "8a136a078900c263355ddfb12ddac0c7af16e3ba",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "fc7b1fe21e4c8fd1f7ab5c98fcaf06976b386c7c",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "bf4e024a8fc95da4b0dc3dd0f5c20c0a667c5acf",
+      "size": 29748
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "2729897f01cea7e50d71092d6ac25ecaa8e16b86",
+      "size": 77938
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_result.json",
+      "blobId": "fccc552075de0da13ff7745f62c5eb049af6af90",
+      "size": 2931549
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "dd2568f4cdc35bb432a094b5aaa750de7ff9b48a",
+      "size": 102943
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "c6be02668085aa77d0ef353dda7c389ad9e3098b",
+      "size": 28135912,
+      "lfs": {
+        "sha256": "6f6ba02c6528998c1633f307ee23e08d4f7f2011224c951fdcd654d162dace07",
+        "size": 28135912,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-metrics.csv",
+      "blobId": "6e10b594d99ed39eb2ee535c576e5433fce551d8",
+      "size": 1879571
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-summary.json",
+      "blobId": "89b86290688bd71b490d4b57c7df2ebde91ac325",
+      "size": 2246
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/summary.json",
+      "blobId": "33f5199428e564a8f906365c6b4146c60370ac21",
+      "size": 2988
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/experiment.json",
+      "blobId": "649c9b2c4856d6bd14745563ddc2a3c75936448d",
+      "size": 1262
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/recorded-inference-settings.json",
+      "blobId": "0b0bf4cbd5bb428ee93b162c96a4a0c493162349",
+      "size": 999
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/summary.csv",
+      "blobId": "79fab2a68bc1bc823b0f07d74f57aa204c040bff",
+      "size": 1264
+    },
+    {
+      "rfilename": "benchmark-results/real5-warping-v050-iq3xxs-q8mm-20260929/summary.json",
+      "blobId": "8ae06fa77db6484960f1a44187539c894377fc2a",
+      "size": 3293
+    },
+    {
+      "rfilename": "benchmark-results/reproduction/archive_run.py",
+      "blobId": "79ebd5a55a295c1386b440ca0de2dd2ed6a382b0",
+      "size": 6432
+    },
+    {
+      "rfilename": "benchmark-results/reproduction/omnidocbench-dataset-manifest.json",
+      "blobId": "4b6398052d47d2c39e476d7355e15fb64217a00f",
+      "size": 317360
+    },
+    {
+      "rfilename": "benchmark-results/reproduction/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/reproduction/run_experiment.py",
+      "blobId": "9c57454cea09b23dc99499208ed6df375fe60eaa",
+      "size": 7748
+    },
+    {
+      "rfilename": "benchmark-results/reproduction/run_omnidocbench_llama.py",
+      "blobId": "d9b8c6eb9dcccf6270fe40de5b2bd615f0798a9c",
+      "size": 31389
+    },
+    {
+      "rfilename": "benchmark-results/reproduction/summarize_results.py",
+      "blobId": "41dbb60e18f45bf6803add68b39965ea1288bd89",
+      "size": 12751
+    },
+    {
+      "rfilename": "benchmark-results/reproduction/workspace.py",
+      "blobId": "b7a8551b1abb43f3457b290de2ea5e18104bf10b",
+      "size": 6599
+    },
+    {
+      "rfilename": "benchmark-results/summary.csv",
+      "blobId": "141f9b6d143ad69305c153335053ffc536f6b8fb",
+      "size": 6444
+    },
+    {
+      "rfilename": "benchmark-results/summary.json",
+      "blobId": "08eea157edd95b0bcdb713f4d94ff83fffd1b655",
+      "size": 43617
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/evaluation-timing.json",
+      "blobId": "d9fd3d94314c3d511035ed7623014e5f7d8b99dd",
+      "size": 368
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "d59103b6cb8c690ae513a9d59119bab880d42f80",
+      "size": 25358
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "f0e4663b14c0c5764181b3e7c7870ff690f281a4",
+      "size": 172881
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "2e0187596fa98f0674494719c0f6177f131698ec",
+      "size": 3659666
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_metric_result.json",
+      "blobId": "65750ab37e295278725af33f2a79072cd5c475a3",
+      "size": 15771
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "4d6059dbca23f0867bf3219a907f20294eb69475",
+      "size": 117462
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "ee3fbfeba85a02321f706b4ce8b996a47eb878f9",
+      "size": 1304954
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_run_summary.json",
+      "blobId": "ac0351fd301f4fafce3253079c18da495cc1efb9",
+      "size": 10749
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "b3300586b1141fd3f2d00e347bed16e74563d194",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "e436cdd0d46ef5ed8bbf40a1d7931966a9d1ed46",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "fefdd7e70ec367e3fb2fc5b8dc81ff06121c8bb6",
+      "size": 37261
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "3de693453613ffe1d5ec092ecb7611143a08d78b",
+      "size": 98182
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_table_result.json",
+      "blobId": "f1ca2b053bad13644c45422dfd95f4bb24bfc3b6",
+      "size": 4333374
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "29ffec94927ad735e606e0b3f1cecf826d6978db",
+      "size": 119434
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "06abb65b2b69096d1acd36ac2d1b09371fcef7dc",
+      "size": 30201462,
+      "lfs": {
+        "sha256": "0a7ae18a30ca69b83ec203d1fbc7736e167f40dd1da7a9e9011942c6356e4f3b",
+        "size": 30201462,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/inference/gpu-metrics.csv",
+      "blobId": "c70740824f446995ffb0b4d9a4009ba317fda9ab",
+      "size": 1218821
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/inference/gpu-summary.json",
+      "blobId": "e72d12cf26d2481b03b89d207198f99f54227eb6",
+      "size": 2238
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/OvisOCR2-BF16/inference/summary.json",
+      "blobId": "ca8411617bfe0b52a71b5823969e1b46d2b70100",
+      "size": 2930
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/experiment.json",
+      "blobId": "7856238e248730859c8dc178a18bcdd1f94479d3",
+      "size": 820
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/recorded-inference-settings.json",
+      "blobId": "e3045666f19d57578f2e1401f352011daf17d545",
+      "size": 998
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/summary.csv",
+      "blobId": "3cb2cda8e03e3b9829fdc78403b565b1f8939eb3",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-bf16bf16-par3-official-20260927/summary.json",
+      "blobId": "5c513cbe5382395f5e9aac407a2a877e6786a07a",
+      "size": 3271
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/evaluation-timing.json",
+      "blobId": "3542fbea1f06fd427588398927b968a954edc019",
+      "size": 388
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "5198ce6fcf38e380bc777cae125b589c0b2bd7ec",
+      "size": 25372
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "b72f1a5e4712432d4199ba28c98edaf78fd1fca0",
+      "size": 173258
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "d1fa4a79afd04699e3937bccda89fe3efb402f78",
+      "size": 3669264
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_metric_result.json",
+      "blobId": "c12b85c84aa821bdfbc18d7c5a5cd1f7021ad3d8",
+      "size": 15812
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "e04467ca7ec51e7098c5ad3bd442aff1c10f49a6",
+      "size": 118068
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "4a98d313c4e7f6a05a1ed19ec987b4c214b737c7",
+      "size": 1300264
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_run_summary.json",
+      "blobId": "4f6ab0d20b767f264b19821474b747e3635d0ccb",
+      "size": 10749
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "9ce95cc49262f1781511384cc18be9b6f51d9fe5",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "e436cdd0d46ef5ed8bbf40a1d7931966a9d1ed46",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "2fe87f225412e4e7d4635a41807163fa62cfa93c",
+      "size": 37438
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "eaf11832a74f5d7594f48d2dcfde99c8bc781a00",
+      "size": 99234
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_table_result.json",
+      "blobId": "fe3771eec7ed9c861df49387a6b0b52c20a1a08e",
+      "size": 4276638
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "a2d79c81e67e70b6168387c6919a7558e064a602",
+      "size": 120241
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "6a7900b27998aeae2c6f175fcb5d82712873a947",
+      "size": 29996194,
+      "lfs": {
+        "sha256": "914f9e3880f58799cbc457782b5e248d9f2b21231900f169630d25382932788e",
+        "size": 29996194,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/inference/gpu-metrics.csv",
+      "blobId": "33387f6ad4ec389c74f98d319b9cae1a46c35030",
+      "size": 1046154
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/inference/gpu-summary.json",
+      "blobId": "f2e1410587697721ed55e82bf128f8a8e9cafc28",
+      "size": 2240
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ2_M-imatrix/inference/summary.json",
+      "blobId": "3e18bb065afbeadfd63ff483fa5851b0a3206322",
+      "size": 2986
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/experiment.json",
+      "blobId": "867c39cda0bdb9ff485b862d80a81fe7290a92d9",
+      "size": 931
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/recorded-inference-settings.json",
+      "blobId": "e3045666f19d57578f2e1401f352011daf17d545",
+      "size": 998
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/summary.csv",
+      "blobId": "3bc9ebafc73ef8d1234c22ed3d9a733392691d0d",
+      "size": 1251
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq2m-imatrix-q8mm-par3-official-20260929/summary.json",
+      "blobId": "63514ae4af202696c27414521570e47848de6a45",
+      "size": 3276
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/evaluation-timing.json",
+      "blobId": "a4dacab6f79e35a352223d0cd6f3be3b568942e2",
+      "size": 392
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "1d58f0e8d3854106e3d64b49dc839282dd9eda2b",
+      "size": 25402
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "f3c2807fa3cd28a8138fd3d5cd009a747519707a",
+      "size": 172942
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "4755e0634d86f738120f2d502e1ceab36da9c55e",
+      "size": 3653212
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_metric_result.json",
+      "blobId": "550e0ed4d2aa79f99e8c1138f5728c7ad7e7d5e3",
+      "size": 15831
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "55366c146d06b19bf53539ebe03f403cbb62e43a",
+      "size": 117649
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "fd677e5c438346883bd84e51f402b175d230e0d0",
+      "size": 1300685
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_run_summary.json",
+      "blobId": "46ba82c71125ad82a6161ca5d4c0815234f3874e",
+      "size": 10741
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "9b9682775c219d14d9d5620123ab4d294905f840",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "e436cdd0d46ef5ed8bbf40a1d7931966a9d1ed46",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "80c966ebf44456df1e993bba34ffc6d32ee6b252",
+      "size": 37291
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "b776fac336633edbbd7ff9f708088f5a6d3edde8",
+      "size": 98420
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_table_result.json",
+      "blobId": "2d893bfcf92cf4e62f16278557f31de4c54e9e6c",
+      "size": 4298416
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "0eb0ac19336b501a5aca12eecfe2133b5142228d",
+      "size": 119743
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "d668ae0454302e46158719f8f5729588ef565183",
+      "size": 30098025,
+      "lfs": {
+        "sha256": "33e0a32c59bd80bc1d88a98ab23572de15cfb15dbb7bdab31afa955d34293f07",
+        "size": 30098025,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-metrics.csv",
+      "blobId": "d6e9bea4f223962d99cb8ce93ef82e6b4e12b0b5",
+      "size": 961507
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/gpu-summary.json",
+      "blobId": "932828f4893d80ad0145e48c1c7600e7c644c831",
+      "size": 2240
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/OvisOCR2-IQ3_XXS-imatrix/inference/summary.json",
+      "blobId": "93b86b7dbd618ea4bade82bd4b5fb3c47570e183",
+      "size": 2998
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/experiment.json",
+      "blobId": "75e92f8906e75d30354ef5fbb7ff8ac98154f67e",
+      "size": 939
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/recorded-inference-settings.json",
+      "blobId": "e3045666f19d57578f2e1401f352011daf17d545",
+      "size": 998
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/summary.csv",
+      "blobId": "69fa291a92e0d34900eb467dd76855e6ead5c452",
+      "size": 1252
+    },
+    {
+      "rfilename": "benchmark-results/v050-iq3xxs-imatrix-q8mm-par3-official-20260929/summary.json",
+      "blobId": "f58ffbd0c0531bcba709bb313b4cb9a537e9a96b",
+      "size": 3278
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/evaluation-timing.json",
+      "blobId": "e661f7830fc264c0a498401f9cb3ac0deba6ffbb",
+      "size": 369
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "687e87094237947323923884e182167e09c14ba9",
+      "size": 25430
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "9fd089a52a2e8e55a7f1ae91d676356b72192cf5",
+      "size": 173484
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "fee4e5681406253c30787c77ae50171ea3336999",
+      "size": 3534842
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_metric_result.json",
+      "blobId": "5239ec0e9cebb980b852e023a376d1d72f5efe83",
+      "size": 16537
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "abbef94003e069a4115f228a5ca53a7189489bbf",
+      "size": 118575
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "c9271eebbf5bd86981e77fef1b5868b07afe84fc",
+      "size": 1283640
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_run_summary.json",
+      "blobId": "d28c5ea2b09602535760518b1a65abf36036774b",
+      "size": 11449
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "ae68a913c7d3a5eb85a7341d0f8ec09ffc9ef2a0",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "ba129a919a82cc42afbce8e52538c5fa6ea6c41d",
+      "size": 1890
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "64d4100bad0d078d50f0b71a6ee2f5bc29d37c61",
+      "size": 37433
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "9f52ce4964e4baf1414691aa102624d104d9ed90",
+      "size": 98618
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_table_result.json",
+      "blobId": "637d8489569a63930688d39bf1e02a31fe59cf0e",
+      "size": 4133917
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "1dcfdf22906484f60dd9ede9c89f26b66403911a",
+      "size": 121587
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "a7241f4f4df7a39a46538634b4c460b5ba1f3bc8",
+      "size": 29410756,
+      "lfs": {
+        "sha256": "cb4243c55feaa6b2eb28e5946e3178b33ab166dcf752c7b7e2cde8838607e0b8",
+        "size": 29410756,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/inference/gpu-metrics.csv",
+      "blobId": "f289bc758b484537d5b6523a1eedb69f4d294de1",
+      "size": 2188667
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/inference/gpu-summary.json",
+      "blobId": "12a622db155b16b63c22520fc7d9d56c349cae3a",
+      "size": 2244
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/OvisOCR2-Q2_K/inference/summary.json",
+      "blobId": "7dd040494872f9e85228ca5862fd21e5dda1f4da",
+      "size": 2936
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/experiment.json",
+      "blobId": "47c4185fbf65e130ce96ba317e5e549b56a0b52e",
+      "size": 820
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/recorded-inference-settings.json",
+      "blobId": "e3045666f19d57578f2e1401f352011daf17d545",
+      "size": 998
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/summary.csv",
+      "blobId": "287522e821efa7ddbbcda477fd9b0111f344bf67",
+      "size": 1249
+    },
+    {
+      "rfilename": "benchmark-results/v050-q2k-q8mm-par3-official-20260928/summary.json",
+      "blobId": "e98038ff5cfe8bfe0217a1e919200e878a65e214",
+      "size": 3275
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/evaluation-timing.json",
+      "blobId": "3365c3202f1eaafe658cb381e097caf7430fad14",
+      "size": 372
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "c1c879ee7bbd61cf9a45aa93d22aef900564cb42",
+      "size": 25323
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "f2945a832f2d143bd5305d90311679bef4638de8",
+      "size": 172949
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "ad8211b52bdd73412675498b2f384eb0a5ed1b98",
+      "size": 3652349
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_metric_result.json",
+      "blobId": "9f33201aa40560deeea9ae8cf28e81ff70e0f5df",
+      "size": 15806
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "1c716cdd6bd6f308df50344aec514ce23ec63593",
+      "size": 117685
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "e54f9a9a6055d2938725a14255dfe03c731a8121",
+      "size": 1302982
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_run_summary.json",
+      "blobId": "f51745f34445ffa8c473957beb080bd139736a06",
+      "size": 10743
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "229c2ef09b05e7ee11c92e871bc1b71b89b76100",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "e436cdd0d46ef5ed8bbf40a1d7931966a9d1ed46",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "483d466dab6a9d9202d17d6a57202fccb6ccf983",
+      "size": 37308
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "cb7d030e8675c9f9c171c5bdf30b8e6b6693479b",
+      "size": 98605
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_table_result.json",
+      "blobId": "a072d00d96492045de2b8dd05d54b89cb5ce560f",
+      "size": 4309349
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "c66874dd334616e9567c8e4f995a9944eaf79257",
+      "size": 119549
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "e8430a33e3c4555b4d1e02e0fb192ca7c3bfde75",
+      "size": 30078093,
+      "lfs": {
+        "sha256": "0e893a782f9ce51dc8fab01f6f991f7e1289eae1565b9e67bd3b390246ec2fb5",
+        "size": 30078093,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/inference/gpu-metrics.csv",
+      "blobId": "f3f945b13541abb6959a72c45780f75243b7e518",
+      "size": 956281
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/inference/gpu-summary.json",
+      "blobId": "57d771453173cd2b70cbf0c88e3c195543d78858",
+      "size": 2242
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/OvisOCR2-Q3_K_S/inference/summary.json",
+      "blobId": "488f01769d0308071d91f5ea4a8e6d0da8a5bfa4",
+      "size": 2943
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/experiment.json",
+      "blobId": "0f033ad5550e78affea13b368e0c14fe5487b248",
+      "size": 826
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/recorded-inference-settings.json",
+      "blobId": "e3045666f19d57578f2e1401f352011daf17d545",
+      "size": 998
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/summary.csv",
+      "blobId": "eff59d9ddaee0155870d0493be138e770a4b1377",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-q3ks-q8mm-par3-official-20260928/summary.json",
+      "blobId": "441bb74270f5ddc0746956489d08041f798a3ae3",
+      "size": 3270
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/evaluation-timing.json",
+      "blobId": "5e2ba31f93accc787b19865195c837e62657784f",
+      "size": 373
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "5054fb6ea0e63aa3bd3947402610f52eee38a82f",
+      "size": 25351
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "459ec3d95ede81c2b317d374516d2a7dde7c068d",
+      "size": 172906
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "42d8626457b02eb5fcf0b0b807d02590f12ada5a",
+      "size": 3655236
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_metric_result.json",
+      "blobId": "ac94fc833003ee93333a231b8b3b7515e6f2b1c3",
+      "size": 15787
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "7f2ee5f602f9dd4960077eef8ec8ecdb1e680bbb",
+      "size": 117547
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "4c03962cbbcbcaa7fa6e5e66100a096998549b37",
+      "size": 1305401
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_run_summary.json",
+      "blobId": "50a740719b6354efac8c37dfe0cfb48439574117",
+      "size": 10748
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "928586b8192ef98037757bb04ea957369fff5f1d",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "e436cdd0d46ef5ed8bbf40a1d7931966a9d1ed46",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "36cec5d7afc936132615d686d6a8f99d67e14ae5",
+      "size": 37298
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "21d678ee497bb8a1d5cca4f07a91bd57f429c290",
+      "size": 98357
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_table_result.json",
+      "blobId": "fd8a55c84a9c9c07e52ac68ce4c8434309277769",
+      "size": 4321181
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "74c130d05141b58b478a721ddb913eec6a866731",
+      "size": 119495
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "b2e9f6e4ea4667b85249c47ef9f81e52b62f841e",
+      "size": 30203265,
+      "lfs": {
+        "sha256": "89002055b89384be9ff36ac19b4991f33504d20f6b9aeb847f4b645e64b5ca40",
+        "size": 30203265,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/inference/gpu-metrics.csv",
+      "blobId": "849502f425096c838ce420b0543ea385eab4902a",
+      "size": 860155
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/inference/gpu-summary.json",
+      "blobId": "15ade7c7108183fcfcd2e224c4363d6c25cea2f9",
+      "size": 2236
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/OvisOCR2-Q4_K_M/inference/summary.json",
+      "blobId": "4b7827b372c3e8080003ec4e239a44d58401bb7d",
+      "size": 2939
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/experiment.json",
+      "blobId": "bc7b7cc75945ecdd05c2f049d98a7b6284f8ac91",
+      "size": 826
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/recorded-inference-settings.json",
+      "blobId": "e3045666f19d57578f2e1401f352011daf17d545",
+      "size": 998
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/summary.csv",
+      "blobId": "57ada52d90a3f18d770a97fb2e76c62792e4c0e7",
+      "size": 1242
+    },
+    {
+      "rfilename": "benchmark-results/v050-q4km-q8mm-par3-official-20260928/summary.json",
+      "blobId": "c198f4b5bed68d0b0e1f35c9aafb7ac0a39204b4",
+      "size": 3269
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/evaluation-timing.json",
+      "blobId": "70f83dfcb9ce60b7f7084b2058ce93af93197104",
+      "size": 370
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "54ed2f2de212b5b497bf58e002867f38b8ee5a33",
+      "size": 25381
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "07e7a4861a1fb477d6ca83a93541c52fe9310c35",
+      "size": 172892
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "2f0a4abc7c517f7f777be0d4e040f574222890f2",
+      "size": 3659836
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_metric_result.json",
+      "blobId": "25d234750c4d6c3bbba6e1d7c0f2077078a705de",
+      "size": 15764
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "153ed35a7635713446cc549bce4b889b1e90d93e",
+      "size": 117463
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "138c175f23b837458f90ae826fa927359dd03c71",
+      "size": 1304858
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_run_summary.json",
+      "blobId": "5ba9375f4c40c58538d984e888843452191ebef8",
+      "size": 10748
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "a9c2796f0f568715dc145890c8012ea3d1bf6496",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "e436cdd0d46ef5ed8bbf40a1d7931966a9d1ed46",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "5195188d5d3c97fa4b1e633d439a5118741c3125",
+      "size": 37267
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "ec77fe2e8fe85fe35b437e391300c45f4ac6d385",
+      "size": 98146
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_table_result.json",
+      "blobId": "6c0ffc1858e68e193e6cf506f37488ea5e3e2e75",
+      "size": 4333032
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "3b528e5be419a1bb60a8049014dbb0dd1d24f4ac",
+      "size": 119419
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "47ff6f86a1d80ac3a33d9e397c62c3f889b541c5",
+      "size": 30194373,
+      "lfs": {
+        "sha256": "ff5c2c4699bf39dc04570d5789ac3cb56e98786241b0faab40f87feca53b1129",
+        "size": 30194373,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/inference/gpu-metrics.csv",
+      "blobId": "eca848b43162de5cb26635ac638d14755c3b33d6",
+      "size": 890950
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/inference/gpu-summary.json",
+      "blobId": "a97687c245b855354e643fe78857f94f02c5101d",
+      "size": 2240
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/OvisOCR2-Q6_K/inference/summary.json",
+      "blobId": "0f893f2ba5f22a4b91ddaee47e48efccc3e22d65",
+      "size": 2932
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/experiment.json",
+      "blobId": "f7b667b75e66cded08b210a9972a4d7def273aa4",
+      "size": 820
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/recorded-inference-settings.json",
+      "blobId": "e3045666f19d57578f2e1401f352011daf17d545",
+      "size": 998
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/summary.csv",
+      "blobId": "1d40ad0cebc124ff5cba0a98b7080365e74cc1c0",
+      "size": 1244
+    },
+    {
+      "rfilename": "benchmark-results/v050-q6k-q8mm-par3-official-20260928/summary.json",
+      "blobId": "7b0c7e3e5a35194cc21ae7b64c1c250946605753",
+      "size": 3270
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/evaluation-timing.json",
+      "blobId": "c1aaa24a152f3f3c3f31a8b97616b7dc0aee51bb",
+      "size": 370
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_display_formula_per_page_edit.json",
+      "blobId": "d6c7d5b3260686ad172e9166eae4a7c68e8144ae",
+      "size": 25364
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_display_formula_per_sample_CDM.json",
+      "blobId": "5cf8fd604293c5d25a8edfbf5af36e54290bfdf5",
+      "size": 172907
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_display_formula_result.json",
+      "blobId": "b63fede1c51b6838a15177b077ef3e781e3bce71",
+      "size": 3659798
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_metric_result.json",
+      "blobId": "2352ac1e9f46946e0bb509d1bcc9aebc40929b0f",
+      "size": 15854
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_reading_order_per_page_edit.json",
+      "blobId": "3be2ea53919a0889c5de47767c80b8f5a8427037",
+      "size": 117481
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_reading_order_result.json",
+      "blobId": "3528a8f6736e2759fe02dc3ade43ae00d86ce47a",
+      "size": 1304605
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_run_summary.json",
+      "blobId": "d87af7eaa922935f065e1c3d5ad552362465dbcd",
+      "size": 10845
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_runtime_environment.json",
+      "blobId": "f401dd25b28d89bb480af379031ade05eb33f2d9",
+      "size": 6929
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_stage_execution.json",
+      "blobId": "3c822e07eb81b2a359697ef2634572372405960d",
+      "size": 1332
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_table_per_page_edit.json",
+      "blobId": "6294d46a9ae35a4e6f4b284cd2e1513ae5ee72a2",
+      "size": 37237
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_table_per_table_TEDS.json",
+      "blobId": "ac35aeedda12b821e57c8fe827eb8b87f4e3677e",
+      "size": 98156
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_table_result.json",
+      "blobId": "ef54765b034f9500097cff00065591f5e2bb9ee4",
+      "size": 4325941
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_text_block_per_page_edit.json",
+      "blobId": "a6542e07bce5f3cfc0e1f416a11ee7ec0e7b08f3",
+      "size": 119534
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/eval/predictions_quick_match_text_block_result.json",
+      "blobId": "c6a0c7443616d96ba1c8de80d8ba46004a8ad98a",
+      "size": 30193752,
+      "lfs": {
+        "sha256": "7440a0456d97dfc2f4138bfb98f04a030e09ce59565fc9bdac8ef7d7b76e2ac0",
+        "size": 30193752,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/inference/gpu-metrics.csv",
+      "blobId": "de2118b898aa730c32633c3db27dc0a673994088",
+      "size": 977031
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/inference/gpu-summary.json",
+      "blobId": "9b941a506edb7c2d738d5bf3653d462073c3f229",
+      "size": 2240
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/OvisOCR2-Q8_0/inference/summary.json",
+      "blobId": "a172574a45a336c1a9eb8326d2db4207fdaf2671",
+      "size": 2924
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/experiment.json",
+      "blobId": "412e3c37f3c077e0e3487e82562ddd7e9c13a2d1",
+      "size": 812
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/omnidocbench-eval.yaml",
+      "blobId": "5d8135b8c1956a45862711ef289ba1b271ce0764",
+      "size": 628
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/recorded-inference-settings.json",
+      "blobId": "e3045666f19d57578f2e1401f352011daf17d545",
+      "size": 998
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/summary.csv",
+      "blobId": "b3871cdb1200c3f94d318588df4fc66a4e9546b5",
+      "size": 1243
+    },
+    {
+      "rfilename": "benchmark-results/v050-q8q8-par3-official-20260928/summary.json",
+      "blobId": "1dd3244d5efef81c5b85ce17878da5a7e5c72fc9",
+      "size": 3270
+    },
+    {
+      "rfilename": "calibration/README.md",
+      "blobId": "375a5c93e5448731442362f1ed31f86deeb1bd54",
+      "size": 532
+    },
+    {
+      "rfilename": "calibration/v050-bf16bf16-omnidocbench-corpus.json",
+      "blobId": "b70c866aeeb502e57d87b85773434513f8c24306",
+      "size": 484163
+    },
+    {
+      "rfilename": "calibration/v050-iq-models.json",
+      "blobId": "40d4a565e4c9274a356c2c7bc92a4f33552f248c",
+      "size": 11238
+    },
+    {
+      "rfilename": "checksums.sha256",
+      "blobId": "fb55a1fbda31e74882106b4fbfb4e389f2d6f6d0",
+      "size": 1751
+    },
+    {
+      "rfilename": "mmproj-OvisOCR2-BF16.gguf",
+      "blobId": "5830eb793ac17c88e7ea0ad72f4c83c6628690b7",
+      "size": 207346336,
+      "lfs": {
+        "sha256": "842015fc8bb09d8b953a04b1ba329510e7259081422a9dab50f41ce4fac430a1",
+        "size": 207346336,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "mmproj-OvisOCR2-Q8_0.gguf",
+      "blobId": "f3074dfd1b27703ca4b73690debbf25545a0159a",
+      "size": 115923616,
+      "lfs": {
+        "sha256": "af67e31a365f791b416878ea77cbb321c0af6d5c97da0eac4a14ac2dca0701f6",
+        "size": 115923616,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "prompt.txt",
+      "blobId": "3c408e7048b78f77cbae1e9dfbbd93cb3b9cf9cb",
+      "size": 513
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2026-08-13T02:27:29.000Z",
+  "usedStorage": 23520283105
+}

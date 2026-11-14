@@ -1,0 +1,22 @@
+# Delivery status and remaining work
+
+This is an engineering build, not a certified production release. Consult `TESTING.md` for executed checks.
+
+| Milestone | Implemented | Remaining / limits |
+|---|---|---|
+| 1 — capture and editing | Compose tablet workspace, current-session consent, projection FGS, draggable bubble and scrollable control panel, edge snapping, retained position and opacity, screenshot, frozen rectangle/freeform crop with corner resizing and pinch zoom/pan, SAF image/PDF import, Room history, editable source. | Actual Nebo overlay operation, stylus feel and Android 16 lifecycle behavior require a device. SVG is explicitly rejected, not executed. |
+| 2 — model manager | Two OvisOCR2 variants, exact artifact registry, sizes/licenses, private downloads, byte progress, pause/cancel/resume, storage reserve, SHA-256, validation inference, readiness fingerprint, selection and deletion. | No remote catalogue updates. Additional families stay unavailable. Inference validation is a runtime smoke test, not handwriting acceptance. |
+| 3 — local OCR | Packaged ARM64 C++/JNI llama.cpp + mtmd, correct Ovis whole-document prompt, vision encoder, tokenizer, greedy generation, one-model memory ownership, cancellation and diagnostics; no mock engine. | Target-device accuracy, sustained thermal behavior and peak RAM are not measured. Native vision encoding can take time to return after cancellation. |
+| 4 — multiple backends | Model routing, auto-select among ready installations, optional fallback API, rerun and independent comparison results. | Only the Ovis/Qwen3.5 family is integrated. Additional families need complete processors and validation, not weight-only downloads. |
+| 5 — advanced scans | Multi-snip region queue with reorder/remove; individual saved regions and combined document; manual guided scrolling with image sequencing; exact substantial overlap removal by explicit action; bounded large-image tiling; multipage PDF import; source comparison; Markdown/TeX/share/Android print-to-PDF. | Pixel alignment is a standalone helper, not an active stitching pipeline. General multi-column layout across tiles is not solved. Tiled and scrolling boundaries need review. No automatic third-party scrolling. PDF pages are rasterized at a bounded preview resolution. Batch Markdown/TeX ZIP export is available from History. Batch PDF layout is not implemented. |
+| 6 — testing | Automated logic, integrity, storage and cropping tests; host-native smoke and handwriting runs; Android build/static checks. | No connected Android target. No emulator/device QA, Android inference benchmarks, leak or thermal profiles, Nebo acceptance suite or airplane-mode device test. |
+
+## Product behavior
+
+- Start Conversion Mode, approve the Android dialogs, return to Nebo, open the bubble, and snip. With a validated model installed, a normal screenshot/snip starts conversion automatically. Without one, the editor remains usable and the app directs the user to the model store when Convert is tapped.
+- The pause control discards incoming frames while projection authorization stays visibly active; only Stop ends capture authorization. Its toast makes this distinction explicit.
+- Scrolling Proof Scan captures one frozen section at a time. Add a region or the whole image, return to notes, scroll manually, and repeat. Finish guided capture before converting the full sequence. Original images remain independently reviewable.
+- Model comparison creates another saved document rather than overwriting the first. Compare saved results side by side. Multi-snip individual regions remain available in history for separate conversion.
+- OCR has no calibrated symbol-level confidence. All results are marked for review. The app never treats mathematical validity or rendered syntax as recognition confidence.
+- Export `.md` is the exact editor source. `.tex` wraps it in a basic AMS-capable document and escapes prose. Complex Markdown tables/lists are not a full Pandoc conversion. KaTeX and its fonts/scripts are bundled; WebView blocks network resources, file/content access and external navigation, and escapes OCR-supplied HTML.
+- Downloads require internet. Once a model is installed and validated, inference and previews use only local files. There is no cloud inference option or telemetry endpoint.

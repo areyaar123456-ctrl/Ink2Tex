@@ -1,0 +1,1 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"><shortcut android:shortcutId="scan" android:enabled="true" android:icon="@drawable/ic_ink" android:shortcutShortLabel="@string/start_scan"><intent android:action="dev.ink2tex.START" android:targetPackage="dev.ink2tex" android:targetClass="dev.ink2tex.MainActivity"/></shortcut></shortcuts>

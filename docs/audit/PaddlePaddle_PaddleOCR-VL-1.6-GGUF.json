@@ -1,0 +1,82 @@
+{
+  "_id": "6a195d720404d39c57476655",
+  "id": "PaddlePaddle/PaddleOCR-VL-1.6-GGUF",
+  "private": false,
+  "tags": [
+    "gguf",
+    "arxiv:2606.03264",
+    "license:apache-2.0",
+    "endpoints_compatible",
+    "region:us",
+    "conversational"
+  ],
+  "downloads": 111146,
+  "likes": 83,
+  "modelId": "PaddlePaddle/PaddleOCR-VL-1.6-GGUF",
+  "author": "PaddlePaddle",
+  "sha": "511b09642bb324401f15f97cc23bc67e8f0a291d",
+  "lastModified": "2026-06-10T03:49:06.000Z",
+  "gated": false,
+  "disabled": false,
+  "model-index": null,
+  "config": {
+    "chat_template_jinja": "{%- if not add_generation_prompt is defined -%}\n    {%- set add_generation_prompt = true -%}\n{%- endif -%}\n{%- if not cls_token is defined -%}\n    {%- set cls_token = \"<|begin_of_sentence|>\" -%}\n{%- endif -%}\n{%- if not eos_token is defined -%}\n    {%- set eos_token = \"</s>\" -%}\n{%- endif -%}\n{{- cls_token -}}\n{%- for message in messages -%}\n    {%- if message[\"role\"] == \"user\" -%}\n        {{- \"User: \" -}}\n      {%- if message[\"content\"] is string -%}\n        {{- message[\"content\"] }}\n      {%- else -%}\n        {%- for content in message[\"content\"] -%}\n            {%- if content[\"type\"] == \"image\" -%}\n                {{ \"<|IMAGE_START|><|IMAGE_PLACEHOLDER|><|IMAGE_END|>\" }}\n            {%- endif -%}\n        {%- endfor -%}\n        {%- for content in message[\"content\"] -%}\n            {%- if content[\"type\"] == \"text\" -%}\n                {{ content[\"text\"] }}\n            {%- endif -%}\n        {%- endfor -%}\n      {%- endif -%}\n        {{ \"\\n\" -}}\n    {%- elif message[\"role\"] == \"assistant\" -%}\n        {{- \"Assistant:\\n\" -}}\n      {%- if message[\"content\"] is string -%}\n        {{- message[\"content\"] }}\n      {%- else -%}\n        {%- for content in message[\"content\"] -%}\n            {%- if content[\"type\"] == \"text\" -%}\n                {{ content[\"text\"] }}\n            {%- endif -%}\n        {%- endfor -%}\n      {%- endif -%}\n        {{ eos_token -}}\n    {%- elif message[\"role\"] == \"system\" -%}\n      {%- if message[\"content\"] is string -%}\n        {{- message[\"content\"] }}\n      {%- else -%}\n        {%- for content in message[\"content\"] -%}\n            {%- if content[\"type\"] == \"text\" -%}\n                {{ content[\"text\"] + \"\\n\" }}\n            {%- endif -%}\n        {%- endfor -%}\n      {%- endif -%}\n    {%- endif -%}\n{%- endfor -%}\n{%- if add_generation_prompt -%}\n    {{- \"Assistant:\\n\" -}}\n{%- endif -%}\n"
+  },
+  "cardData": {
+    "license": "apache-2.0"
+  },
+  "gguf": {
+    "total": 466654208,
+    "architecture": "paddleocr",
+    "context_length": 131072,
+    "chat_template": "{%- if not add_generation_prompt is defined -%}\n    {%- set add_generation_prompt = true -%}\n{%- endif -%}\n{%- if not cls_token is defined -%}\n    {%- set cls_token = \"<|begin_of_sentence|>\" -%}\n{%- endif -%}\n{%- if not eos_token is defined -%}\n    {%- set eos_token = \"</s>\" -%}\n{%- endif -%}\n{{- cls_token -}}\n{%- for message in messages -%}\n    {%- if message[\"role\"] == \"user\" -%}\n        {{- \"User: \" -}}\n      {%- if message[\"content\"] is string -%}\n        {{- message[\"content\"] }}\n      {%- else -%}\n        {%- for content in message[\"content\"] -%}\n            {%- if content[\"type\"] == \"image\" -%}\n                {{ \"<|IMAGE_START|><|IMAGE_PLACEHOLDER|><|IMAGE_END|>\" }}\n            {%- endif -%}\n        {%- endfor -%}\n        {%- for content in message[\"content\"] -%}\n            {%- if content[\"type\"] == \"text\" -%}\n                {{ content[\"text\"] }}\n            {%- endif -%}\n        {%- endfor -%}\n      {%- endif -%}\n        {{ \"\\n\" -}}\n    {%- elif message[\"role\"] == \"assistant\" -%}\n        {{- \"Assistant:\\n\" -}}\n      {%- if message[\"content\"] is string -%}\n        {{- message[\"content\"] }}\n      {%- else -%}\n        {%- for content in message[\"content\"] -%}\n            {%- if content[\"type\"] == \"text\" -%}\n                {{ content[\"text\"] }}\n            {%- endif -%}\n        {%- endfor -%}\n      {%- endif -%}\n        {{ eos_token -}}\n    {%- elif message[\"role\"] == \"system\" -%}\n      {%- if message[\"content\"] is string -%}\n        {{- message[\"content\"] }}\n      {%- else -%}\n        {%- for content in message[\"content\"] -%}\n            {%- if content[\"type\"] == \"text\" -%}\n                {{ content[\"text\"] + \"\\n\" }}\n            {%- endif -%}\n        {%- endfor -%}\n      {%- endif -%}\n    {%- endif -%}\n{%- endfor -%}\n{%- if add_generation_prompt -%}\n    {{- \"Assistant:\\n\" -}}\n{%- endif -%}\n",
+    "bos_token": "<s>",
+    "eos_token": "</s>",
+    "totalFileSize": 935769056
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "f15b49c2e62c6e52121f7b498c0b245512d97955",
+      "size": 1562
+    },
+    {
+      "rfilename": "PaddleOCR-VL-1.6-GGUF-mmproj.gguf",
+      "blobId": "2f6bcc2bb80689a24e6cd2fe14a8fd5caef82e5f",
+      "size": 881770560,
+      "lfs": {
+        "sha256": "204d757d7610d9b3faab10d506d69e5b244e32bf765e2bab2d0167e65e0a058a",
+        "size": 881770560,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "PaddleOCR-VL-1.6-GGUF.gguf",
+      "blobId": "b579702ecb96128b44c87d34a1d0399a2c0ad713",
+      "size": 935769056,
+      "lfs": {
+        "sha256": "f3ae46ec885050acf4b3d31944431e1fd90d50664fb09126af4a3c050ba14ee8",
+        "size": 935769056,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "cc04233e55388315f706b87f4614b2299f689b3d",
+      "size": 14958
+    },
+    {
+      "rfilename": "chat_template.jinja",
+      "blobId": "2755cf9e4ff507cd56889585720934092b058513",
+      "size": 1831
+    }
+  ],
+  "spaces": [
+    "ndtruong/cuddly-giggle-demo-ocr",
+    "pranaysuyash/shopstack",
+    "farwew/PaddleOCR_VL_1.6",
+    "kayraharika/paddleocr-vl-1.6-gguf-test"
+  ],
+  "createdAt": "2026-05-29T09:33:38.000Z",
+  "usedStorage": 4570847808
+}

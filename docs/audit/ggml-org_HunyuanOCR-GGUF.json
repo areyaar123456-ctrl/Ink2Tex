@@ -1,0 +1,92 @@
+{
+  "_id": "69d2dc406e4fc0581f523381",
+  "id": "ggml-org/HunyuanOCR-GGUF",
+  "private": false,
+  "tags": [
+    "gguf",
+    "base_model:tencent/HunyuanOCR",
+    "base_model:quantized:tencent/HunyuanOCR",
+    "endpoints_compatible",
+    "region:us",
+    "conversational"
+  ],
+  "downloads": 10436,
+  "likes": 15,
+  "modelId": "ggml-org/HunyuanOCR-GGUF",
+  "author": "ggml-org",
+  "sha": "8e070c9ad79e4ca97a9b4daa2f1ce17e8759afb1",
+  "lastModified": "2026-05-21T22:23:33.000Z",
+  "gated": false,
+  "disabled": false,
+  "model-index": null,
+  "config": {},
+  "cardData": {
+    "base_model": [
+      "tencent/HunyuanOCR"
+    ]
+  },
+  "gguf": {
+    "total": 539010048,
+    "architecture": "hunyuan_vl",
+    "context_length": 32768,
+    "chat_template": "{% if messages[0]['role'] == 'system' %}{% set loop_messages = messages[1:] %}{% if messages[0]['content'] is string %}{% set system_message = messages[0]['content'] %}{% else %}{% set system_message = messages[0]['content']['text'] %}{% endif %}<\uff5chy_begin\u2581of\u2581sentence\uff5c>{{ system_message }}<\uff5chy_place\u2581holder\u2581no\u25813\uff5c>{% else %}{% set loop_messages = messages %}<\uff5chy_begin\u2581of\u2581sentence\uff5c>{% endif %}{% for message in loop_messages %}{% if message['role'] == 'user' %}{% if message['content'] is string %}{{ message['content'] }}{% else %}{% for content in message['content'] %}{% if content['type'] == 'image' or 'image' in content or 'image_url' in content %}<\uff5chy_place\u2581holder\u2581no\u2581100\uff5c><\uff5chy_place\u2581holder\u2581no\u2581102\uff5c><\uff5chy_place\u2581holder\u2581no\u2581101\uff5c>{% elif 'text' in content %}{{ content['text'] }}{% endif %}{% endfor %}{% endif %}<\uff5chy_User\uff5c>{% elif message['role'] == 'assistant' %}{{ message['content'] }}<\uff5chy_Assistant\uff5c>{% endif %}{% endfor %}",
+    "bos_token": "<\uff5chy_begin\u2581of\u2581sentence\uff5c>",
+    "eos_token": "<\uff5chy_place\u2581holder\u2581no\u25812\uff5c>",
+    "totalFileSize": 1083218528
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "9e604462a43123b36862ffad858b499333bd0669",
+      "size": 1882
+    },
+    {
+      "rfilename": "HunyuanOCR-Q8_0.gguf",
+      "blobId": "d327a22d2315980df8f3ae0ce4b55a9a10974dfd",
+      "size": 577949408,
+      "lfs": {
+        "sha256": "cdafc794cafeae377868d7a40a70e282a737e39abe77c0d8b73614447b364a21",
+        "size": 577949408,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "HunyuanOCR-bf16.gguf",
+      "blobId": "b2ab1e94fd3176ad7abd675d64207f70c3488c6b",
+      "size": 1083218528,
+      "lfs": {
+        "sha256": "a160215620dbd0ab43ec6faa28259654fd24c929953aa97c765176f7c0363217",
+        "size": 1083218528,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "fd7f1591ba72e4914c78183b1e3bd5edb4abe558",
+      "size": 252
+    },
+    {
+      "rfilename": "mmproj-HunyuanOCR-Q8_0.gguf",
+      "blobId": "e3f0b2c06e7b235dca16d96ae64f81d8f0b69d5e",
+      "size": 732938240,
+      "lfs": {
+        "sha256": "b77913164ff73d4c0dc4d994e236ed72bacbbe5c5db1ec9b2828627b46c32804",
+        "size": 732938240,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "mmproj-HunyuanOCR-bf16.gguf",
+      "blobId": "afa7b66186b566a5e552b2f487cf04c5554dd1d9",
+      "size": 997235840,
+      "lfs": {
+        "sha256": "46401739a91d0778d86369bb952db685b215512d61a941c3b859f337f6014fcd",
+        "size": 997235840,
+        "pointerSize": 134
+      }
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2026-04-05T22:03:44.000Z",
+  "usedStorage": 6782683776
+}

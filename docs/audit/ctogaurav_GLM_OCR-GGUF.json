@@ -1,0 +1,140 @@
+{
+  "_id": "6a70f22214ae62f20e8baa27",
+  "id": "ctogaurav/GLM_OCR-GGUF",
+  "private": false,
+  "tags": [
+    "gguf",
+    "llama.cpp",
+    "ocr",
+    "latex",
+    "lm-studio",
+    "ollama",
+    "base_model:zai-org/GLM-OCR",
+    "base_model:quantized:zai-org/GLM-OCR",
+    "license:mit",
+    "endpoints_compatible",
+    "region:us",
+    "conversational"
+  ],
+  "downloads": 299,
+  "likes": 1,
+  "modelId": "ctogaurav/GLM_OCR-GGUF",
+  "author": "ctogaurav",
+  "sha": "e275b4aacd9aa2a1e7531d4259eb7aaa958b2cc7",
+  "lastModified": "2026-09-15T19:50:26.000Z",
+  "gated": false,
+  "disabled": false,
+  "model-index": null,
+  "config": {},
+  "cardData": {
+    "license": "mit",
+    "base_model": "zai-org/GLM-OCR",
+    "tags": [
+      "gguf",
+      "llama.cpp",
+      "ocr",
+      "latex",
+      "lm-studio",
+      "ollama"
+    ]
+  },
+  "gguf": {
+    "total": 673285632,
+    "architecture": "glm4",
+    "context_length": 131072,
+    "chat_template": "[gMASK]<sop>\n{%- if tools -%}\n<|system|>\n# Tools\n\nYou may call one or more functions to assist with the user query.\n\nYou are provided with function signatures within <tools></tools> XML tags:\n<tools>\n{% for tool in tools %}\n{{ tool | tojson(ensure_ascii=False) }}\n{% endfor %}\n</tools>\n\nFor each function call, output the function name and arguments within the following XML format:\n<tool_call>{function-name}\n<arg_key>{arg-key-1}</arg_key>\n<arg_value>{arg-value-1}</arg_value>\n<arg_key>{arg-key-2}</arg_key>\n<arg_value>{arg-value-2}</arg_value>\n...\n</tool_call>{%- endif -%}\n{%- macro visible_text(content) -%}\n    {%- if content is string -%}\n        {{- content }}\n    {%- elif content is iterable and content is not mapping -%}\n        {%- for item in content -%}\n            {%- if item is mapping and item.type == 'text' -%}\n                {{- item.text }}\n            {%- elif item is mapping and (item.type == 'image' or 'image' in item) -%}\n                <|begin_of_image|><|image|><|end_of_image|>\n            {%- elif item is mapping and (item.type == 'video' or 'video' in item) -%}\n                <|begin_of_video|><|video|><|end_of_video|>\n            {%- elif item is string -%}\n                {{- item }}\n            {%- endif -%}\n        {%- endfor -%}\n    {%- else -%}\n        {{- content }}\n    {%- endif -%}\n{%- endmacro -%}\n{%- set ns = namespace(last_user_index=-1) %}\n{%- for m in messages %}\n    {%- if m.role == 'user' %}\n        {% set ns.last_user_index = loop.index0 -%}\n    {%- endif %}\n{%- endfor %}\n{% for m in messages %}\n{%- if m.role == 'user' -%}<|user|>\n{% if m.content is string %}\n{{ m.content }}\n{%- else %}\n{%- for item in m.content %}\n{% if item.type == 'video' or 'video' in item %}\n<|begin_of_video|><|video|><|end_of_video|>{% elif item.type == 'image' or 'image' in item %}\n<|begin_of_image|><|image|><|end_of_image|>{% elif item.type == 'text' %}\n{{ item.text }}\n{%- endif %}\n{%- endfor %}\n{%- endif %}\n{{- '/nothink' if (enable_thinking is defined and not enable_thinking and not visible_text(m.content).endswith(\"/nothink\")) else '' -}}\n{%- elif m.role == 'assistant' -%}\n<|assistant|>\n{%- set reasoning_content = '' %}\n{%- set content = visible_text(m.content) %}\n{%- if m.reasoning_content is string %}\n    {%- set reasoning_content = m.reasoning_content %}\n{%- else %}\n    {%- if '</think>' in content %}\n        {%- set reasoning_content = content.split('</think>')[0].rstrip('\\n').split('<think>')[-1].lstrip('\\n') %}\n        {%- set content = content.split('</think>')[-1].lstrip('\\n') %}\n    {%- endif %}\n{%- endif %}\n{%- if loop.index0 > ns.last_user_index and reasoning_content -%}\n{{ '\\n<think>' + reasoning_content.strip() +  '</think>'}}\n{%- else -%}\n{{ '\\n<think></think>' }}\n{%- endif -%}\n{%- if content.strip() -%}\n{{ '\\n' + content.strip() }}\n{%- endif -%}\n{% if m.tool_calls %}\n{% for tc in m.tool_calls %}\n{%- if tc.function %}\n    {%- set tc = tc.function %}\n{%- endif %}\n{{ '\\n<tool_call>' + tc.name }}\n{% set _args = tc.arguments %}\n{% for k, v in _args.items() %}\n<arg_key>{{ k }}</arg_key>\n<arg_value>{{ v | tojson(ensure_ascii=False) if v is not string else v }}</arg_value>\n{% endfor %}\n</tool_call>{% endfor %}\n{% endif %}\n{%- elif m.role == 'tool' -%}\n{%- if m.content is string -%}\n{%- if loop.first or (messages[loop.index0 - 1].role != \"tool\") %}\n    {{- '<|observation|>' }}\n{%- endif %}\n{{- '\\n<tool_response>\\n' }}\n{{- m.content }}\n{{- '\\n</tool_response>' }}\n{% elif m.content is iterable and m.content is not mapping %}\n{%- if loop.first or (messages[loop.index0 - 1].role != \"tool\") %}\n{{- '<|observation|>' }}\n{%- endif %}\n{{- '\\n<tool_response>\\n' }}\n{%- for tr in m.content -%}\n  {%- if tr is mapping and tr.type is defined -%}\n    {%- set t = tr.type | lower -%}\n    {%- if t == 'text' and tr.text is defined -%}\n{{ tr.text }}\n    {%- elif t in ['image', 'image_url'] -%}\n<|begin_of_image|><|image|><|end_of_image|>\n    {%- elif t in ['video', 'video_url'] -%}\n<|begin_of_video|><|video|><|end_of_video|>\n    {%- else -%}\n{{ tr | tojson(ensure_ascii=False) }}\n    {%- endif -%}\n  {%- else -%}\n{{ tr.output if tr.output is defined else tr }}\n  {%- endif -%}\n{%- endfor -%}\n{{- '\\n</tool_response>' }}\n{%- else -%}\n<|observation|>{% for tr in m.content %}\n\n<tool_response>\n{{ tr.output if tr.output is defined else tr }}\n</tool_response>{% endfor -%}\n{% endif -%}\n{%- elif m.role == 'system' -%}\n<|system|>\n{{ visible_text(m.content) }}\n{%- endif -%}\n{%- endfor -%}\n{%- if add_generation_prompt -%}\n<|assistant|>\n{{'<think></think>\\n' if (enable_thinking is defined and not enable_thinking) else ''}}\n{%- endif -%}\n",
+    "bos_token": "<|endoftext|>",
+    "eos_token": "<|endoftext|>",
+    "totalFileSize": 718935744
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "c26136dac3b1520918e3cbe7930ed8ddd0aaf3e8",
+      "size": 1924
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "316abff465f1a976aa3744a6a54f8954e479d964",
+      "size": 4278
+    },
+    {
+      "rfilename": "v3.1/GLM-OCR-v3.1-Q8_0.gguf",
+      "blobId": "5efdaa4a554bb5fe7dcc7bf9fc71aae9fdf5a22e",
+      "size": 718935744,
+      "lfs": {
+        "sha256": "ac23f1adc0ccb6fd7391a07ae8595f89c1f34739f1e38f89eff18059276e187b",
+        "size": 718935744,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "v3.1/Modelfile",
+      "blobId": "3b52c4a06d9915f51c0ff09f1763a228662c829e",
+      "size": 1041
+    },
+    {
+      "rfilename": "v3.1/mmproj-GLM-OCR-v3.1-Q8_0.gguf",
+      "blobId": "a0cb9f8d0f1e9e050bbc3509e6d0f0f184b28fc7",
+      "size": 484403488,
+      "lfs": {
+        "sha256": "d5dbb655ff2c354ae0cf8f88442647c9d856f5dec0143c9ef0482067efeae89e",
+        "size": 484403488,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "v4.1/GLM-OCR-v4.1-Q8_0.gguf",
+      "blobId": "a1ea1b6629b996accaa63bedad1ae144dd083117",
+      "size": 718935744,
+      "lfs": {
+        "sha256": "47131502e96fd0a0ffa21ea3e675e08bd27f62e62ff10a421585b62af764b994",
+        "size": 718935744,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "v4.1/Modelfile",
+      "blobId": "927a21570f4344dcd04150b4133f90a7fa800f44",
+      "size": 968
+    },
+    {
+      "rfilename": "v4.1/mmproj-GLM-OCR-v4.1-Q8_0.gguf",
+      "blobId": "760314be446a17c0cbce183a2ea984f3665e3493",
+      "size": 484403488,
+      "lfs": {
+        "sha256": "4a7f52fa4513caacddd06f30bc43041244de2ff0b5af0a79a8232bf9dd4cff8a",
+        "size": 484403488,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "v5.0/GLM-OCR-v5.0-Q8_0.gguf",
+      "blobId": "307f1fd773af74915fbcd3a9f3b0fe2c6d5fc9a0",
+      "size": 718935744,
+      "lfs": {
+        "sha256": "53b2447c0e70d85fbedc9b6d873ac33936ba925471050d81287c698b502c7e09",
+        "size": 718935744,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "v5.0/Modelfile",
+      "blobId": "656f6710f96d4fabfb6c7d1af06f3f20d5d9c3e2",
+      "size": 817
+    },
+    {
+      "rfilename": "v5.0/mmproj-GLM-OCR-v5.0-Q8_0.gguf",
+      "blobId": "39adda2fcef0c40e194f3bbd7e7771d0c1763595",
+      "size": 484403488,
+      "lfs": {
+        "sha256": "07029c19680621bc95493f343f0d137608fb4bb269ce2ebc06058fb48b2b0f41",
+        "size": 484403488,
+        "pointerSize": 134
+      }
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2026-08-03T19:55:14.000Z",
+  "usedStorage": 3610017696
+}

@@ -1,0 +1,203 @@
+{
+  "_id": "6a70be4938006dae17cccc56",
+  "id": "ctogaurav/GLM_OCR",
+  "private": false,
+  "pipeline_tag": "image-to-text",
+  "library_name": "peft",
+  "tags": [
+    "peft",
+    "safetensors",
+    "ocr",
+    "latex",
+    "mathematics",
+    "lora",
+    "handwritten-math",
+    "image-to-text",
+    "en",
+    "base_model:zai-org/GLM-OCR",
+    "base_model:adapter:zai-org/GLM-OCR",
+    "license:mit",
+    "region:us"
+  ],
+  "downloads": 0,
+  "likes": 3,
+  "modelId": "ctogaurav/GLM_OCR",
+  "author": "ctogaurav",
+  "sha": "18620480157bbe05ee8853cdf714535d4c549466",
+  "lastModified": "2026-09-15T20:26:24.000Z",
+  "gated": false,
+  "disabled": false,
+  "model-index": null,
+  "config": {},
+  "cardData": {
+    "license": "mit",
+    "base_model": "zai-org/GLM-OCR",
+    "language": [
+      "en"
+    ],
+    "pipeline_tag": "image-to-text",
+    "tags": [
+      "ocr",
+      "latex",
+      "mathematics",
+      "lora",
+      "peft",
+      "handwritten-math"
+    ]
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "a6344aac8c09253b3b630fb776ae94478aa0275b",
+      "size": 1519
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "aed69381ec14dde49da09fd691c63c89dc71531e",
+      "size": 10642
+    },
+    {
+      "rfilename": "v3.1/README.md",
+      "blobId": "4853c6a9ab265e76ca1b37ee7afba63a3a979c95",
+      "size": 5184
+    },
+    {
+      "rfilename": "v3.1/adapter_config.json",
+      "blobId": "cb902cbf7b0924830f3ab11cc70091b24c8bee12",
+      "size": 1091
+    },
+    {
+      "rfilename": "v3.1/adapter_model.safetensors",
+      "blobId": "dc51e117f77a8c017eb76722dbbde0b2d8874203",
+      "size": 87338352,
+      "lfs": {
+        "sha256": "9b82aa5eff848356e19348a55c2796f7a10b835c23e168ae816c85acd9622b2e",
+        "size": 87338352,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "v3.1/chat_template.jinja",
+      "blobId": "4305cdefcaa20ddc4b666232187f4cac8e02ae99",
+      "size": 4746
+    },
+    {
+      "rfilename": "v3.1/processor_config.json",
+      "blobId": "4fc8ac78392f21fb06741279969df02d713190ff",
+      "size": 1397
+    },
+    {
+      "rfilename": "v3.1/tokenizer.json",
+      "blobId": "9f4a549a14a96217569648aa7627c6674ad94fe9",
+      "size": 6838609
+    },
+    {
+      "rfilename": "v3.1/tokenizer_config.json",
+      "blobId": "9875ec8cfb70d544641bc8788917043611950e4c",
+      "size": 1146
+    },
+    {
+      "rfilename": "v3.1/training_args.bin",
+      "blobId": "29bab370f3ef8efeec23938a7e2eba5301ccfad2",
+      "size": 5265,
+      "lfs": {
+        "sha256": "a1d3aee2f5a5b803bc86348de37a6e074c0a516a886167d7af7d07a1ba0ae41c",
+        "size": 5265,
+        "pointerSize": 129
+      }
+    },
+    {
+      "rfilename": "v4.1/README.md",
+      "blobId": "4853c6a9ab265e76ca1b37ee7afba63a3a979c95",
+      "size": 5184
+    },
+    {
+      "rfilename": "v4.1/adapter_config.json",
+      "blobId": "e8e7cbefa1c2b5d1545ca35de65b529f27f0777b",
+      "size": 1091
+    },
+    {
+      "rfilename": "v4.1/adapter_model.safetensors",
+      "blobId": "a5d0605e47e992e159339f1068e110896a99c988",
+      "size": 87338352,
+      "lfs": {
+        "sha256": "9260e1b57e1f4dc2bb38d257a7303c8be246e431b3e67aeffd882a013a4958de",
+        "size": 87338352,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "v4.1/chat_template.jinja",
+      "blobId": "4305cdefcaa20ddc4b666232187f4cac8e02ae99",
+      "size": 4746
+    },
+    {
+      "rfilename": "v4.1/processor_config.json",
+      "blobId": "4fc8ac78392f21fb06741279969df02d713190ff",
+      "size": 1397
+    },
+    {
+      "rfilename": "v4.1/tokenizer.json",
+      "blobId": "9f4a549a14a96217569648aa7627c6674ad94fe9",
+      "size": 6838609
+    },
+    {
+      "rfilename": "v4.1/tokenizer_config.json",
+      "blobId": "9875ec8cfb70d544641bc8788917043611950e4c",
+      "size": 1146
+    },
+    {
+      "rfilename": "v4.1/training_args.bin",
+      "blobId": "0501176353228ef4be97ac6de93d835c312ba1e3",
+      "size": 5201,
+      "lfs": {
+        "sha256": "04693592a5e8cb965c7e6d0d4d3897f00723d0df29015f87668cfa2063f3a133",
+        "size": 5201,
+        "pointerSize": 129
+      }
+    },
+    {
+      "rfilename": "v5.0/README.md",
+      "blobId": "9833b8ac568a30830caa5753ad61259411f4620c",
+      "size": 5540
+    },
+    {
+      "rfilename": "v5.0/adapter_config.json",
+      "blobId": "7c86eefbb136443a70648968880c616ee86c5baa",
+      "size": 1171
+    },
+    {
+      "rfilename": "v5.0/adapter_model.safetensors",
+      "blobId": "746653480d31d8a6345ce14b0e701469f258fe05",
+      "size": 106900984,
+      "lfs": {
+        "sha256": "b90034c8b5e90538543e2e29bef4f990d9ff304fb66c56d62557a4ef37482fe5",
+        "size": 106900984,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "v5.0/chat_template.jinja",
+      "blobId": "8f3b7224cc22edcb813a59ca438efc92f15749a9",
+      "size": 4606
+    },
+    {
+      "rfilename": "v5.0/processor_config.json",
+      "blobId": "69972973ed9f8231fa8646a6803696ec79db84d4",
+      "size": 1334
+    },
+    {
+      "rfilename": "v5.0/tokenizer.json",
+      "blobId": "9f4a549a14a96217569648aa7627c6674ad94fe9",
+      "size": 6838609
+    },
+    {
+      "rfilename": "v5.0/tokenizer_config.json",
+      "blobId": "cc7e312444d60eeb546e381affe0ec349838afec",
+      "size": 1127
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2026-08-03T16:14:01.000Z",
+  "usedStorage": 281588154
+}

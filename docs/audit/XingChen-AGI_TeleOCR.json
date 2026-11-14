@@ -1,0 +1,253 @@
+{
+  "_id": "6a7eb26759e318fd0d87e117",
+  "id": "XingChen-AGI/TeleOCR",
+  "private": false,
+  "pipeline_tag": "image-text-to-text",
+  "library_name": "transformers",
+  "tags": [
+    "transformers",
+    "safetensors",
+    "qwen2_5_vl",
+    "image-text-to-text",
+    "ocr",
+    "document-parsing",
+    "multimodal",
+    "conversational",
+    "custom_code",
+    "zh",
+    "en",
+    "arxiv:2608.12898",
+    "license:apache-2.0",
+    "eval-results",
+    "text-generation-inference",
+    "endpoints_compatible",
+    "region:us"
+  ],
+  "downloads": 19292,
+  "likes": 1319,
+  "modelId": "XingChen-AGI/TeleOCR",
+  "author": "XingChen-AGI",
+  "sha": "a32e21d4f766317a6f42f341be57d374362bf843",
+  "lastModified": "2026-11-05T08:15:01.000Z",
+  "gated": false,
+  "disabled": false,
+  "model-index": null,
+  "config": {
+    "architectures": [
+      "Qwen2_5_VLForConditionalGeneration"
+    ],
+    "auto_map": {
+      "AutoModel": "modeling_naviocr.Qwen2_5_VLForConditionalGeneration",
+      "AutoModelForCausalLM": "modeling_naviocr.Qwen2_5_VLForConditionalGeneration",
+      "AutoModelForImageTextToText": "modeling_naviocr.Qwen2_5_VLForConditionalGeneration",
+      "AutoModelForVision2Seq": "modeling_naviocr.Qwen2_5_VLForConditionalGeneration"
+    },
+    "model_type": "qwen2_5_vl",
+    "tokenizer_config": {
+      "bos_token": null,
+      "eos_token": "<|im_end|>",
+      "unk_token": null,
+      "pad_token": "<|endoftext|>"
+    },
+    "chat_template_jinja": "{% set image_count = namespace(value=0) %}{% set video_count = namespace(value=0) %}{% for message in messages %}{% if loop.first and message['role'] != 'system' %}<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n{% endif %}<|im_start|>{{ message['role'] }}\n{% if message['content'] is string %}{{ message['content'] }}<|im_end|>\n{% else %}{% for content in message['content'] %}{% if content['type'] == 'image' or 'image' in content or 'image_url' in content %}{% set image_count.value = image_count.value + 1 %}{% if add_vision_id %}Picture {{ image_count.value }}: {% endif %}<|vision_start|><|image_pad|><|vision_end|>{% elif content['type'] == 'video' or 'video' in content %}{% set video_count.value = video_count.value + 1 %}{% if add_vision_id %}Video {{ video_count.value }}: {% endif %}<|vision_start|><|video_pad|><|vision_end|>{% elif 'text' in content %}{{ content['text'] }}{% endif %}{% endfor %}<|im_end|>\n{% endif %}{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}"
+  },
+  "cardData": {
+    "license": "apache-2.0",
+    "tags": [
+      "ocr",
+      "document-parsing",
+      "multimodal"
+    ],
+    "library_name": "transformers",
+    "pipeline_tag": "image-text-to-text",
+    "language": [
+      "zh",
+      "en"
+    ]
+  },
+  "transformersInfo": {
+    "auto_model": "AutoModelForMultimodalLM",
+    "pipeline_tag": "image-text-to-text",
+    "processor": "AutoProcessor"
+  },
+  "siblings": [
+    {
+      "rfilename": ".eval_results/parsebench.yaml",
+      "blobId": "0e41602b940204bf0017577bc85a48c6a2684278",
+      "size": 1546
+    },
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "70238925b3e1a6671cec38ffe0009a6bfea15850",
+      "size": 1845
+    },
+    {
+      "rfilename": "LICENSE",
+      "blobId": "f6d5c6bc54fbf5f19a1a79f628336876944380c6",
+      "size": 11444
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "dd7abf43a0b3ceb6105554d471555a5d9e815c5a",
+      "size": 16801
+    },
+    {
+      "rfilename": "added_tokens.json",
+      "blobId": "482ced4679301bf287ebb310bdd1790eb4514232",
+      "size": 605
+    },
+    {
+      "rfilename": "assets/code.png",
+      "blobId": "2d0be897de72ec12c3c36dfd25b43d9fc3a3e114",
+      "size": 195315,
+      "lfs": {
+        "sha256": "741314175f5bbf26dbaa7e4f35a4294d4f81525aa8d4a1c361a1ee3ff95de956",
+        "size": 195315,
+        "pointerSize": 131
+      }
+    },
+    {
+      "rfilename": "assets/formula.png",
+      "blobId": "0e5ce1b72a55b124099b6c7f78923c068176ae39",
+      "size": 30609
+    },
+    {
+      "rfilename": "assets/icon.png",
+      "blobId": "dda11176e5c0b75925a3f9ab5dc311e6898d5244",
+      "size": 589853,
+      "lfs": {
+        "sha256": "0aaf2740dfb42e01e4f6b8d3889714979113d7e4314e4db7ebb5be4c3c9bcf29",
+        "size": 589853,
+        "pointerSize": 131
+      }
+    },
+    {
+      "rfilename": "assets/layout.jpg",
+      "blobId": "984065cb46d6a74c6f005cfda552eeab5bb91080",
+      "size": 749370,
+      "lfs": {
+        "sha256": "2ae27f3a9284810bf7ce479ac8921359ccf00b7ebee1017b5e8da3e28ebe4af4",
+        "size": 749370,
+        "pointerSize": 131
+      }
+    },
+    {
+      "rfilename": "assets/layout_distorted.jpg",
+      "blobId": "044c296d99c57d597bfc18153835ce05bca54c3c",
+      "size": 612968,
+      "lfs": {
+        "sha256": "86000b5847dca0464838c9672650b7688fa942d92c241b2ec778ca613cd25dcd",
+        "size": 612968,
+        "pointerSize": 131
+      }
+    },
+    {
+      "rfilename": "assets/scientific_figure.png",
+      "blobId": "57c185b1521afc4d0b762b2bdaa4b4ce51350634",
+      "size": 51439
+    },
+    {
+      "rfilename": "assets/score.png",
+      "blobId": "37ee1b0793eeb4c81f11df3d9a1259c74bf9d67e",
+      "size": 349101,
+      "lfs": {
+        "sha256": "b51176d58fe15b8aae04d092640ec675e41b992c51de0082fca164aecdb0792c",
+        "size": 349101,
+        "pointerSize": 131
+      }
+    },
+    {
+      "rfilename": "assets/table.png",
+      "blobId": "87a481db0d2abb10d7d421068b7eaa2a9060844d",
+      "size": 35870
+    },
+    {
+      "rfilename": "assets/text.png",
+      "blobId": "234d68944ab100f2275bae36ebbac180f1d89c24",
+      "size": 61959
+    },
+    {
+      "rfilename": "chat_template.jinja",
+      "blobId": "6c226632394ae7474b0d4b13e15793eac2e21ee9",
+      "size": 1017
+    },
+    {
+      "rfilename": "config.json",
+      "blobId": "eed8528369335315ec11d8c9d18595397a1f92fd",
+      "size": 3516
+    },
+    {
+      "rfilename": "generation_config.json",
+      "blobId": "5fdb82f3b3f12d83074ce7b45e330d8ee4efb7d7",
+      "size": 244
+    },
+    {
+      "rfilename": "merges.txt",
+      "blobId": "31349551d90c7606f325fe0f11bbb8bd5fa0d7c7",
+      "size": 1671853
+    },
+    {
+      "rfilename": "model.safetensors",
+      "blobId": "467ce1cb98fd254ca0138ec1c9cfe1847bb0be47",
+      "size": 2830223488,
+      "lfs": {
+        "sha256": "9817b18041bd96403f75e38a33b28ed0cd5fb2641f67eead673afabd3c408109",
+        "size": 2830223488,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "modeling_naviocr.py",
+      "blobId": "56310b0f61d8cde62c782e8848efd2efb3731562",
+      "size": 84057
+    },
+    {
+      "rfilename": "preprocessor_config.json",
+      "blobId": "7f3b746825e5eef53ed8ed57a91df9e86ee62c0a",
+      "size": 350
+    },
+    {
+      "rfilename": "special_tokens_map.json",
+      "blobId": "ac23c0aaa2434523c494330aeb79c58395378103",
+      "size": 613
+    },
+    {
+      "rfilename": "tokenizer.json",
+      "blobId": "51ebb3ba93988c73bbd83a3c163a14343fbc5b06",
+      "size": 11421896,
+      "lfs": {
+        "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+        "size": 11421896,
+        "pointerSize": 133
+      }
+    },
+    {
+      "rfilename": "tokenizer_config.json",
+      "blobId": "40c4c3bf9593c5ca542bfff57a1b95f37f570e25",
+      "size": 4730
+    },
+    {
+      "rfilename": "video_preprocessor_config.json",
+      "blobId": "61f537edd12465081e18147f52e1018b4b252dc7",
+      "size": 913
+    },
+    {
+      "rfilename": "vocab.json",
+      "blobId": "4783fe10ac3adce15ac8f358ef5462739852c569",
+      "size": 2776833
+    }
+  ],
+  "spaces": [
+    "StarDoc-AI/navidc-ocr-demo",
+    "hugging-apps/teleocr-document-parsing",
+    "Noorzzz/ocr_reader"
+  ],
+  "createdAt": "2026-08-14T06:15:03.000Z",
+  "safetensors": {
+    "parameters": {
+      "BF16": 1415072768
+    },
+    "total": 1415072768
+  },
+  "usedStorage": 2844141991
+}
