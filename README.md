@@ -67,7 +67,7 @@ This creates `../Ink2TeX-deliverables/Ink2TeX-All-Files.zip` containing the full
 
 Target repository: [areyaar123456-ctrl/Ink2Tex](https://github.com/areyaar123456-ctrl/Ink2Tex).
 
-**Publication status:** the upload attempted on 2026-11-14 was blocked by GitHub HTTP 403. The project commit and APKs are prepared locally. The links below become available after a successful push; see [publishing status](docs/GITHUB_PUBLICATION.md).
+**Publication status:** the project and APKs are published on `main`. [Download the entire repository as a ZIP](https://github.com/areyaar123456-ctrl/Ink2Tex/archive/refs/heads/main.zip), or use the individual APK links below. See [publishing notes](docs/GITHUB_PUBLICATION.md).
 
 - [Download the committed ARM64 debug APK](https://github.com/areyaar123456-ctrl/Ink2Tex/raw/refs/heads/main/downloads/Ink2TeX-debug-arm64.apk).
 - [Download the compiled device-test APK](https://github.com/areyaar123456-ctrl/Ink2Tex/raw/refs/heads/main/downloads/Ink2TeX-device-tests.apk).
