@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "cpu-projector.h"
 #include "llama.h"
 #include "mtmd.h"
 #include "mtmd-helper.h"
@@ -9,6 +10,8 @@
 #include <algorithm>
 namespace ink {
 std::atomic<bool> cancelled{false};
+std::atomic<int> phase{0};
+std::atomic<int> generated{0};
 static std::mutex mutex;
 static llama_model * model = nullptr;
 static llama_context * context = nullptr;
@@ -21,12 +24,16 @@ static void release() {
 }
 static bool abort_fn(void *) { return cancelled.load(); }
 static bool progress(float, void *) { return !cancelled.load(); }
-void unload() { std::lock_guard<std::mutex> guard(mutex); release(); }
-void load(const std::string & path, const std::string & projector, int threads) {
+void unload() { std::lock_guard<std::mutex> guard(mutex); phase=6; release(); phase=0; }
+void load(const std::string & path, const std::string & projector, int threads, const std::string & backend_directory) {
  std::lock_guard<std::mutex> guard(mutex);
  release();
  static std::once_flag once;
- std::call_once(once, []{ llama_backend_init(); });
+ std::call_once(once, [&]{
+  if(!backend_directory.empty()) ggml_backend_load_all_from_path(backend_directory.c_str());
+  llama_backend_init();
+ });
+ phase=1; generated=0;
  auto mp = llama_model_default_params();
  mp.n_gpu_layers = 0; mp.progress_callback = progress;
  model = llama_model_load_from_file(path.c_str(), mp);
@@ -38,11 +45,17 @@ void load(const std::string & path, const std::string & projector, int threads) 
   cp.abort_callback = abort_fn;
   context = llama_init_from_model(model, cp);
   if (!context) throw std::runtime_error("Unable to allocate inference context.");
+  std::string vision_path=projector;
+#ifdef __ANDROID__
+  phase=7;
+  vision_path=cpu_projector(projector,cancelled);
+#endif
+  phase=2;
   auto vp = mtmd_context_params_default();
   vp.use_gpu = false; vp.n_threads = threads; vp.warmup = false;
   vp.image_min_tokens = 196; vp.image_max_tokens = 1600;
   vp.progress_callback = progress;
-  vision = mtmd_init_from_file(projector.c_str(), model, vp);
+  vision = mtmd_init_from_file(vision_path.c_str(), model, vp);
   if (!vision || !mtmd_support_vision(vision)) throw std::runtime_error("Vision projector is incompatible with this runtime.");
  } catch (...) { release(); throw; }
 }
@@ -50,6 +63,7 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
  std::lock_guard<std::mutex> guard(mutex);
  if (!model || !context || !vision) throw std::runtime_error("No model loaded.");
  if (width < 1 || height < 1 || (int64_t)width*height > 4000000) throw std::runtime_error("Image exceeds the safe pixel budget.");
+ phase=3; generated=0;
  llama_memory_clear(llama_get_memory(context), true);
  // The packaged integration is Qwen3.5 OCR only. Explicit non-thinking template
  // matches the upstream OvisOCR2 and LightOnOCR-3 processor templates.
@@ -64,10 +78,12 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
  const auto tokens = mtmd_helper_get_n_tokens(chunks.get());
  if (tokens + max_tokens >= llama_n_ctx(context)) throw std::runtime_error("Page exceeds context budget. Select a smaller region.");
  if (cancelled) throw std::runtime_error("Conversion cancelled.");
+ phase=4;
  llama_pos past = 0;
  if (mtmd_helper_eval_chunks(vision,context,chunks.get(),0,0,512,true,&past)) throw std::runtime_error(cancelled ? "Conversion cancelled." : "Image evaluation failed.");
  std::unique_ptr<llama_sampler, decltype(&llama_sampler_free)> sampler(llama_sampler_init_greedy(),llama_sampler_free);
  const llama_vocab * vocab = llama_model_get_vocab(model);
+ phase=5;
  Result result{"",0,false};
  auto batch = llama_batch_init(1,0,1);
  // M-RoPE token positions have four coordinates, all equal for generated text.
@@ -81,7 +97,7 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
    int n = llama_token_to_piece(vocab,token,piece.data(),piece.size(),0,false);
    if (n < 0) { piece.resize(-n); n = llama_token_to_piece(vocab,token,piece.data(),piece.size(),0,false); }
    if (n > 0) result.text.append(piece.data(),n);
-   result.tokens++;
+   result.tokens++; generated=result.tokens;
    if (past+1 >= (int)llama_n_ctx(context)) { result.truncated = true; break; }
    batch.n_tokens = 1; batch.token[0] = token; batch.n_seq_id[0] = 1; batch.seq_id[0][0] = 0; batch.logits[0] = true;
    int coords = mtmd_decode_use_mrope(vision) ? 4 : 1;

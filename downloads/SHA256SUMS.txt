@@ -1,2 +1,2 @@
-685fcf9da9920c2b2a42e8fad089f56d73d4296033b2715f6c7a6445e28643be  Ink2TeX-debug-arm64.apk
-552a358312b1260b744c250f8a4c176d97e6a667ba81fc5fad49af143d45d2de  Ink2TeX-device-tests.apk
+ab82eefee9d37f6cc5e30168b0f51e316ba1aacef9b12238b4cdce2e48ad3338  downloads/Ink2TeX-debug-arm64.apk
+b8462e9ec5af9aa707db3952af6586766be6625981492586a796d48e4255188c  downloads/Ink2TeX-device-tests.apk

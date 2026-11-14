@@ -180,10 +180,11 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
     Text(model.description,fontSize=13.sp,lineHeight=20.sp)
     Text(if(model.compatible) "Download ${bytes(model.size)} · installed ${bytes(model.size)}\n${model.quantization} · RAM measured on device: not yet" else "Download / installed size: not offered · RAM: unmeasured",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
     Text(if(installed)"Ready · validated on this device" else model.compatibility,color=if(model.compatible)Teal else Gold,fontSize=12.sp,fontWeight=FontWeight.SemiBold)
+    if(model.compatible)Text("CPU vision cache: up to ${bytes(model.components.last().size*2+4096)} extra, prepared locally",fontSize=12.sp)
     if(model.compatible)Text(model.reason,fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
     if(running) {
      val total=work!!.progress.getLong("total",model.size);val count=work.progress.getLong("bytes",0)
-     if(total>0 && count>0)LinearProgressIndicator(progress={ (count.toFloat()/total).coerceIn(0f,1f) },modifier=Modifier.fillMaxWidth()) else LinearProgressIndicator(Modifier.fillMaxWidth())
+     if(total>0 && count>0 && work.progress.getString("stage")?.startsWith("Downloading")==true)LinearProgressIndicator(progress={ (count.toFloat()/total).coerceIn(0f,1f) },modifier=Modifier.fillMaxWidth()) else LinearProgressIndicator(Modifier.fillMaxWidth())
      Text(work.progress.getString("stage") ?: "Queued for download",fontSize=12.sp)
      if(count>0)Text("${bytes(count)} / ${bytes(total)}",fontSize=12.sp)
     }
@@ -231,7 +232,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
  LaunchedEffect(Unit) { while(true) { memory=ActivityManager.MemoryInfo().also { context.getSystemService(ActivityManager::class.java).getMemoryInfo(it) };javaMemory=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();nativeMemory=Debug.getNativeHeapAllocatedSize();delay(2000) } }
  LazyColumn(verticalArrangement=Arrangement.spacedBy(14.dp)) {
   item { PageTitle("Diagnostics","Measured values from this running process") }
-  val entries=listOf("Device" to "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}","Android / ABI" to "${android.os.Build.VERSION.RELEASE} / ${android.os.Build.SUPPORTED_ABIS.joinToString()}","Engine" to diagnostic.stage,"Loaded model" to (diagnostic.loadedModel ?: "None"),"Available RAM" to bytes(memory.availMem),"Java heap allocated" to bytes(javaMemory),"Native heap allocated" to bytes(nativeMemory),"Free app storage" to bytes(context.filesDir.usableSpace),"Model initialization" to (diagnostic.initializationMs?.let { "$it ms" } ?: "Not measured"),"Last inference" to (diagnostic.inferenceMs?.let { "$it ms" } ?: "Not measured"),"Last output tokens" to (diagnostic.outputTokens?.toString() ?: "Not measured"),"Queued / running conversions" to queue.count { !it.state.isFinished }.toString(),"Last engine error" to (diagnostic.lastError ?: "None"))
+  val entries=listOf("Device" to "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}","Android / ABI" to "${android.os.Build.VERSION.RELEASE} / ${android.os.Build.SUPPORTED_ABIS.joinToString()}","Engine" to diagnostic.stage,"Loaded model" to (diagnostic.loadedModel ?: "None"),"CPU backend capabilities" to (diagnostic.backendInfo ?: "Not loaded"),"Available RAM" to bytes(memory.availMem),"Java heap allocated" to bytes(javaMemory),"Native heap allocated" to bytes(nativeMemory),"Free app storage" to bytes(context.filesDir.usableSpace),"Model initialization" to (diagnostic.initializationMs?.let { "$it ms" } ?: "Not measured"),"Last inference" to (diagnostic.inferenceMs?.let { "$it ms" } ?: "Not measured"),"Last output tokens" to (diagnostic.outputTokens?.toString() ?: "Not measured"),"Queued / running conversions" to queue.count { !it.state.isFinished }.toString(),"Last engine error" to (diagnostic.lastError ?: "None"))
   items(entries) { (key,value) -> Surface(shape=RoundedCornerShape(12.dp)) { Row(Modifier.fillMaxWidth().padding(16.dp)) { Text(key,Modifier.weight(1f),fontSize=13.sp);Text(value,Modifier.weight(1f),fontSize=13.sp,fontWeight=FontWeight.Medium) } } }
   item { Hint("Heap allocation is not total process RSS or peak model memory. Benchmark timings include real local execution. The bundled printed smoke page tests the runtime, not handwritten-math accuracy.") }
  }
@@ -328,7 +329,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
    if(work!=null)OutlinedButton(onClick={WorkManager.getInstance(context).cancelWorkById(work.id)}){Text("Cancel")}
   }
   Row(verticalAlignment=Alignment.CenterVertically) { Checkbox(allowFallback,{allowFallback=it});Text("Try another ready model if inference fails",fontSize=11.sp) }
-  if(work!=null) { LinearProgressIndicator(Modifier.fillMaxWidth());Text(work.progress.getString("stage") ?: "Queued · waiting for local engine",fontSize=12.sp) }
+  if(work!=null) { LinearProgressIndicator(Modifier.fillMaxWidth());Text(work.progress.getString("stage") ?: if(work.state==WorkInfo.State.RUNNING) "Starting conversion worker" else "Waiting for Android to start conversion",fontSize=12.sp) }
   doc.error?.let { Text(it,fontSize=12.sp,color=MaterialTheme.colorScheme.error) }
   if(doc.warnings.isNotBlank())Text(doc.warnings,fontSize=11.sp,lineHeight=16.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,maxLines=3,overflow=TextOverflow.Ellipsis)
   if(doc.title.contains("Scrolling") || context.getSharedPreferences("guided-proof",0).getString("target",null)==doc.id) {

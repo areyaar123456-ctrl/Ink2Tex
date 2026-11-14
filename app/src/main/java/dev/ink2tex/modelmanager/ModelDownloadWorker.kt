@@ -30,6 +30,7 @@ class ModelDownloadWorker(context: Context, params: WorkerParameters): Coroutine
    require(directory.usableSpace > remaining + 256L*1024*1024) { "Insufficient storage. Free space and tap Resume." }
    for (component in model.components) {
     ensureActive()
+    setProgress(workDataOf("stage" to "Checking ${component.name}"))
     val target = File(directory,component.name)
     if (target.length()==component.size && ModelStore.sha256(target)==component.sha256) continue
     target.delete()
@@ -38,11 +39,17 @@ class ModelDownloadWorker(context: Context, params: WorkerParameters): Coroutine
    setProgress(workDataOf("stage" to "Validating local image inference", "bytes" to model.size, "total" to model.size))
    val bitmap = applicationContext.assets.open("validation.png").use { BitmapFactory.decodeStream(it) } ?: error("Missing validation image")
    app.engine.session.lock()
+   val heartbeat=launch {
+    while(isActive) {
+     setProgress(workDataOf("stage" to ("Validation · "+app.engine.diagnostics.value.stage),"bytes" to model.size,"total" to model.size))
+     delay(1000)
+    }
+   }
    try {
     app.engine.loadModel(model.id, allowUnvalidated = true)
     val output = app.engine.recognize(bitmap, RecognitionOptions(maxTokens=384))
     require(output.markdown.lowercase().replace(" ","").contains("ink2tex") && !output.truncated) { "Validation transcription did not match the bundled smoke image. Model remains unavailable." }
-   } finally { bitmap.recycle(); try { withContext(NonCancellable) { app.engine.unloadModel() } } finally { app.engine.session.unlock() } }
+   } finally { bitmap.recycle(); try { withContext(NonCancellable) { heartbeat.cancelAndJoin();app.engine.unloadModel() } } finally { app.engine.session.unlock() } }
    val temporary = File(directory,"ready.tmp")
    temporary.writeText(JSONObject().put("validatedAt",System.currentTimeMillis()).put("runtime","32bdc3a89e6528d3e419024c833c5dabf32c7541").put("fingerprint",model.components.joinToString(":") { it.sha256 }).toString())
    check(temporary.renameTo(marker)) { "Unable to commit installation" }
@@ -75,6 +82,7 @@ class ModelDownloadWorker(context: Context, params: WorkerParameters): Coroutine
   connection.connectTimeout=30000;connection.readTimeout=30000
   if(offset>0) { connection.setRequestProperty("Range","bytes=$offset-"); if(etagFile.exists()) connection.setRequestProperty("If-Range",etagFile.readText()) }
   try {
+   setProgress(workDataOf("stage" to "Connecting to model download host"))
    val response=connection.responseCode
    require(response==200 || response==206) { "Download returned HTTP $response" }
    if(response==206) require(connection.getHeaderField("Content-Range")?.startsWith("bytes $offset-")==true) { "Invalid resume response" }

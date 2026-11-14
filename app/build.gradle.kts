@@ -13,8 +13,8 @@ android {
   applicationId = "dev.ink2tex"
   minSdk = 31
   targetSdk = 36
-  versionCode = 1
-  versionName = "0.1.0"
+  versionCode = 2
+  versionName = "0.1.1"
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   ndk { abiFilters += "arm64-v8a" }
   externalNativeBuild { cmake { cppFlags += listOf("-std=c++17", "-O2"); arguments += "-DANDROID_STL=c++_shared" } }
@@ -23,7 +23,7 @@ android {
  externalNativeBuild { cmake { path = file("src/main/cpp/CMakeLists.txt"); version = "3.22.1" } }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  kotlinOptions { jvmTarget = "17" }
- packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+ packaging { jniLibs.useLegacyPackaging = true; resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
  testOptions { unitTests.isIncludeAndroidResources = true }
 }
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }

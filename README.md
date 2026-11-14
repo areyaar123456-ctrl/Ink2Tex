@@ -1,6 +1,10 @@
 # Ink2TeX
 
-A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.0; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.1; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+
+## 0.1.1 runtime repair
+
+Install the new APK over 0.1.0; the signing certificate is unchanged. Keep app data to retain downloaded models and notes. Force-stop the old process before updating if a conversion is stuck. The first model load prepares an app-private float32 vision cache from the existing BF16 projector (about twice the projector download size in extra storage); it does not redownload weights. CPU backends now select supported ARM features at runtime and enable the optimized matrix multiplication path. Native startup failures resolve as errors, queued cancellation no longer cancels another engine owner, and progress reports actual native stages, elapsed time and generated token counts. See [change details](CHANGELOG.md). Target-tablet speed and stability still require verification.
 
 ## Open and build
 

@@ -1,5 +1,19 @@
-$ /workspace/toolchains/android-sdk/build-tools/36.0.0/apksigner verify --verbose /workspace/Ink2TeX/app/build/outputs/apk/debug/app-debug.apk
-exit=0
+Packaged native libraries: 15
+lib/arm64-v8a/libandroidx.graphics.path.so : 16 KB aligned; libm.so, libdl.so, libc.so
+lib/arm64-v8a/libc++_shared.so : 16 KB aligned; libc.so, libm.so, libdl.so
+lib/arm64-v8a/libdatastore_shared_counter.so : 16 KB aligned; libm.so, libdl.so, libc.so
+lib/arm64-v8a/libggml-base.so : 16 KB aligned; libm.so, libdl.so, libc++_shared.so, libc.so
+lib/arm64-v8a/libggml-cpu-android_armv8.0_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libggml-cpu-android_armv8.2_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libggml-cpu-android_armv8.2_2.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libggml-cpu-android_armv8.6_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libggml-cpu-android_armv9.0_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libggml-cpu-android_armv9.2_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libggml-cpu-android_armv9.2_2.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libggml.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libllama.so : 16 KB aligned; libggml.so, libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libmtmd.so : 16 KB aligned; libllama.so, libggml.so, libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libink2tex.so : 16 KB aligned; libmtmd.so, libandroid.so, liblog.so, libllama.so, libggml.so, libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
 Verifies
 Verified using v1 scheme (JAR signing): false
 Verified using v2 scheme (APK Signature Scheme v2): true
@@ -8,148 +22,17 @@ Verified using v3.1 scheme (APK Signature Scheme v3.1): false
 Verified using v4 scheme (APK Signature Scheme v4): false
 Verified for SourceStamp: false
 Number of signers: 1
+Signer #1 certificate DN: C=US, O=Android, CN=Android Debug
+Signer #1 certificate SHA-256 digest: e3bec6040902b1f57f1f07824184ce9772e27fa74f26bc6f67f687d448abc078
+Signer #1 certificate SHA-1 digest: 25b7c404a573b22a708e65135990e3b45523c109
+Signer #1 certificate MD5 digest: 146fb17ec9cf091ff24058ced30483ec
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 2048
+Signer #1 public key SHA-256 digest: ffa8fb9391ba64c94efc0768a7fa80043c9799b92283fd3427ad9a2c5a1b20bd
+Signer #1 public key SHA-1 digest: fccba090341dfa693a9c63e60529f7f7d469a516
+Signer #1 public key MD5 digest: 6889eaf6924d6934f9f0f1755169d13e
 
-
-$ /workspace/toolchains/android-sdk/build-tools/36.0.0/zipalign -c -P 16 4 /workspace/Ink2TeX/app/build/outputs/apk/debug/app-debug.apk
-exit=0
-
-
-$ /workspace/toolchains/android-sdk/build-tools/36.0.0/aapt dump badging /workspace/Ink2TeX/app/build/outputs/apk/debug/app-debug.apk
-exit=0
-package: name='dev.ink2tex' versionCode='1' versionName='0.1.0' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
-sdkVersion:'31'
-targetSdkVersion:'36'
-uses-permission: name='android.permission.INTERNET'
-uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
-uses-permission: name='android.permission.SYSTEM_ALERT_WINDOW'
-uses-permission: name='android.permission.FOREGROUND_SERVICE'
-uses-permission: name='android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION'
-uses-permission: name='android.permission.FOREGROUND_SERVICE_DATA_SYNC'
-uses-permission: name='android.permission.FOREGROUND_SERVICE_SPECIAL_USE'
-uses-permission: name='android.permission.POST_NOTIFICATIONS'
-uses-permission: name='android.permission.WAKE_LOCK'
-uses-permission: name='android.permission.RECEIVE_BOOT_COMPLETED'
-uses-permission: name='dev.ink2tex.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
-application-label:'Ink2TeX'
-application-label-af:'Ink2TeX'
-application-label-am:'Ink2TeX'
-application-label-ar:'Ink2TeX'
-application-label-as:'Ink2TeX'
-application-label-az:'Ink2TeX'
-application-label-be:'Ink2TeX'
-application-label-bg:'Ink2TeX'
-application-label-bn:'Ink2TeX'
-application-label-bs:'Ink2TeX'
-application-label-ca:'Ink2TeX'
-application-label-cs:'Ink2TeX'
-application-label-da:'Ink2TeX'
-application-label-de:'Ink2TeX'
-application-label-el:'Ink2TeX'
-application-label-en-AU:'Ink2TeX'
-application-label-en-CA:'Ink2TeX'
-application-label-en-GB:'Ink2TeX'
-application-label-en-IN:'Ink2TeX'
-application-label-en-XC:'Ink2TeX'
-application-label-es:'Ink2TeX'
-application-label-es-US:'Ink2TeX'
-application-label-et:'Ink2TeX'
-application-label-eu:'Ink2TeX'
-application-label-fa:'Ink2TeX'
-application-label-fi:'Ink2TeX'
-application-label-fr:'Ink2TeX'
-application-label-fr-CA:'Ink2TeX'
-application-label-gl:'Ink2TeX'
-application-label-gu:'Ink2TeX'
-application-label-hi:'Ink2TeX'
-application-label-hr:'Ink2TeX'
-application-label-hu:'Ink2TeX'
-application-label-hy:'Ink2TeX'
-application-label-in:'Ink2TeX'
-application-label-is:'Ink2TeX'
-application-label-it:'Ink2TeX'
-application-label-iw:'Ink2TeX'
-application-label-ja:'Ink2TeX'
-application-label-ka:'Ink2TeX'
-application-label-kk:'Ink2TeX'
-application-label-km:'Ink2TeX'
-application-label-kn:'Ink2TeX'
-application-label-ko:'Ink2TeX'
-application-label-ky:'Ink2TeX'
-application-label-lo:'Ink2TeX'
-application-label-lt:'Ink2TeX'
-application-label-lv:'Ink2TeX'
-application-label-mk:'Ink2TeX'
-application-label-ml:'Ink2TeX'
-application-label-mn:'Ink2TeX'
-application-label-mr:'Ink2TeX'
-application-label-ms:'Ink2TeX'
-application-label-my:'Ink2TeX'
-application-label-nb:'Ink2TeX'
-application-label-ne:'Ink2TeX'
-application-label-nl:'Ink2TeX'
-application-label-or:'Ink2TeX'
-application-label-pa:'Ink2TeX'
-application-label-pl:'Ink2TeX'
-application-label-pt:'Ink2TeX'
-application-label-pt-BR:'Ink2TeX'
-application-label-pt-PT:'Ink2TeX'
-application-label-ro:'Ink2TeX'
-application-label-ru:'Ink2TeX'
-application-label-si:'Ink2TeX'
-application-label-sk:'Ink2TeX'
-application-label-sl:'Ink2TeX'
-application-label-sq:'Ink2TeX'
-application-label-sr:'Ink2TeX'
-application-label-sr-Latn:'Ink2TeX'
-application-label-sv:'Ink2TeX'
-application-label-sw:'Ink2TeX'
-application-label-ta:'Ink2TeX'
-application-label-te:'Ink2TeX'
-application-label-th:'Ink2TeX'
-application-label-tl:'Ink2TeX'
-application-label-tr:'Ink2TeX'
-application-label-uk:'Ink2TeX'
-application-label-ur:'Ink2TeX'
-application-label-uz:'Ink2TeX'
-application-label-vi:'Ink2TeX'
-application-label-zh-CN:'Ink2TeX'
-application-label-zh-HK:'Ink2TeX'
-application-label-zh-TW:'Ink2TeX'
-application-label-zu:'Ink2TeX'
-application-icon-160:'res/drawable/ic_ink.xml'
-application-icon-240:'res/drawable/ic_ink.xml'
-application-icon-320:'res/drawable/ic_ink.xml'
-application: label='Ink2TeX' icon='res/drawable/ic_ink.xml'
-application-debuggable
-launchable-activity: name='dev.ink2tex.MainActivity'  label='' icon=''
-feature-group: label=''
-  uses-feature: name='android.hardware.faketouch'
-  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
-main
-other-activities
-other-receivers
-other-services
-supports-screens: 'small' 'normal' 'large' 'xlarge'
-supports-any-density: 'true'
-locales: '--_--' 'af' 'am' 'ar' 'as' 'az' 'be' 'bg' 'bn' 'bs' 'ca' 'cs' 'da' 'de' 'el' 'en-AU' 'en-CA' 'en-GB' 'en-IN' 'en-XC' 'es' 'es-US' 'et' 'eu' 'fa' 'fi' 'fr' 'fr-CA' 'gl' 'gu' 'hi' 'hr' 'hu' 'hy' 'in' 'is' 'it' 'iw' 'ja' 'ka' 'kk' 'km' 'kn' 'ko' 'ky' 'lo' 'lt' 'lv' 'mk' 'ml' 'mn' 'mr' 'ms' 'my' 'nb' 'ne' 'nl' 'or' 'pa' 'pl' 'pt' 'pt-BR' 'pt-PT' 'ro' 'ru' 'si' 'sk' 'sl' 'sq' 'sr' 'sr-Latn' 'sv' 'sw' 'ta' 'te' 'th' 'tl' 'tr' 'uk' 'ur' 'uz' 'vi' 'zh-CN' 'zh-HK' 'zh-TW' 'zu'
-densities: '160' '240' '320'
-native-code: 'arm64-v8a'
-
-
-lib/arm64-v8a/libink2tex.so
-  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x222abc 0x222abc R   0x4000
-  LOAD           0x222ac0 0x0000000000226ac0 0x0000000000226ac0 0x456a70 0x456a70 R E 0x4000
-  LOAD           0x679530 0x0000000000681530 0x0000000000681530 0x01d208 0x01dad0 RW  0x4000
-  LOAD           0x696738 0x00000000006a2738 0x00000000006a2738 0x001340 0x088458 RW  0x4000
-00000000002272a8 T Java_dev_ink2tex_ocr_NativeBridge_cancel
-0000000000226b20 T Java_dev_ink2tex_ocr_NativeBridge_load
-00000000002272c0 T Java_dev_ink2tex_ocr_NativeBridge_prepare
-0000000000226db4 T Java_dev_ink2tex_ocr_NativeBridge_recognize
-00000000002272bc T Java_dev_ink2tex_ocr_NativeBridge_unload
-lib/arm64-v8a/libc++_shared.so
-  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0988a0 0x0988a0 R   0x4000
-  LOAD           0x0988a0 0x000000000009c8a0 0x000000000009c8a0 0x08eff8 0x08eff8 R E 0x4000
-  LOAD           0x127898 0x000000000012f898 0x000000000012f898 0x009b98 0x00a768 RW  0x4000
-  LOAD           0x131430 0x000000000013d430 0x000000000013d430 0x000238 0x007d20 RW  0x4000
-APK bytes=46899428
-APK SHA256=685fcf9da9920c2b2a42e8fad089f56d73d4296033b2715f6c7a6445e28643be
+zipalign: passed
+package: name='dev.ink2tex' versionCode='2' versionName='0.1.1' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+(0x010104ea)=(type 0x12)0xffffffff
+Lint: 0 errors, 39 warnings

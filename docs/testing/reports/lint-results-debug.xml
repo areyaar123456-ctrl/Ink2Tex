@@ -321,7 +321,7 @@
         errorLine2="  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="279"
+            line="280"
             column="3"/>
     </issue>
 
@@ -429,12 +429,12 @@
         priority="3"
         summary="Using getUsableSpace()"
         explanation="When you need to allocate disk space for large files, consider using the new `allocateBytes(FileDescriptor, long)` API, which will automatically clear cached files belonging to other apps (as needed) to meet your request.&#xA;&#xA;When deciding if the device has enough disk space to hold your new data, call `getAllocatableBytes(UUID)` instead of using `getUsableSpace()`, since the former will consider any cached data that the system is willing to clear on your behalf.&#xA;&#xA;Note that these methods require API level 26. If your app is running on older devices, you will probably need to use both APIs, conditionally switching on `Build.VERSION.SDK_INT`. Lint only looks in the same compilation unit to see if you are already using both APIs, so if it warns even though you are already using the new API, consider moving the calls to the same file or suppressing the warning."
-        errorLine1="  val entries=listOf(&quot;Device&quot; to &quot;${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}&quot;,&quot;Android / ABI&quot; to &quot;${android.os.Build.VERSION.RELEASE} / ${android.os.Build.SUPPORTED_ABIS.joinToString()}&quot;,&quot;Engine&quot; to diagnostic.stage,&quot;Loaded model&quot; to (diagnostic.loadedModel ?: &quot;None&quot;),&quot;Available RAM&quot; to bytes(memory.availMem),&quot;Java heap allocated&quot; to bytes(javaMemory),&quot;Native heap allocated&quot; to bytes(nativeMemory),&quot;Free app storage&quot; to bytes(context.filesDir.usableSpace),&quot;Model initialization&quot; to (diagnostic.initializationMs?.let { &quot;$it ms&quot; } ?: &quot;Not measured&quot;),&quot;Last inference&quot; to (diagnostic.inferenceMs?.let { &quot;$it ms&quot; } ?: &quot;Not measured&quot;),&quot;Last output tokens&quot; to (diagnostic.outputTokens?.toString() ?: &quot;Not measured&quot;),&quot;Queued / running conversions&quot; to queue.count { !it.state.isFinished }.toString(),&quot;Last engine error&quot; to (diagnostic.lastError ?: &quot;None&quot;))"
-        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ~~~~~~~~~~~">
+        errorLine1="  val entries=listOf(&quot;Device&quot; to &quot;${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}&quot;,&quot;Android / ABI&quot; to &quot;${android.os.Build.VERSION.RELEASE} / ${android.os.Build.SUPPORTED_ABIS.joinToString()}&quot;,&quot;Engine&quot; to diagnostic.stage,&quot;Loaded model&quot; to (diagnostic.loadedModel ?: &quot;None&quot;),&quot;CPU backend capabilities&quot; to (diagnostic.backendInfo ?: &quot;Not loaded&quot;),&quot;Available RAM&quot; to bytes(memory.availMem),&quot;Java heap allocated&quot; to bytes(javaMemory),&quot;Native heap allocated&quot; to bytes(nativeMemory),&quot;Free app storage&quot; to bytes(context.filesDir.usableSpace),&quot;Model initialization&quot; to (diagnostic.initializationMs?.let { &quot;$it ms&quot; } ?: &quot;Not measured&quot;),&quot;Last inference&quot; to (diagnostic.inferenceMs?.let { &quot;$it ms&quot; } ?: &quot;Not measured&quot;),&quot;Last output tokens&quot; to (diagnostic.outputTokens?.toString() ?: &quot;Not measured&quot;),&quot;Queued / running conversions&quot; to queue.count { !it.state.isFinished }.toString(),&quot;Last engine error&quot; to (diagnostic.lastError ?: &quot;None&quot;))"
+        errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="234"
-            column="463"/>
+            line="235"
+            column="534"/>
     </issue>
 
     <issue
@@ -529,7 +529,7 @@
         errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="202"
+            line="203"
             column="74"/>
     </issue>
 

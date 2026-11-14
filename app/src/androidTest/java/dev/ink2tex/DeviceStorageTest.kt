@@ -10,6 +10,13 @@ import org.junit.runner.RunWith
 /** Runs on an actual Android target; does not assert permissions the user has not granted. */
 @RunWith(AndroidJUnit4::class)
 class DeviceStorageTest {
+ @Test fun cpuBackendModulesArePackagedForRuntimeSelection() {
+  val context=InstrumentationRegistry.getInstrumentation().targetContext
+  val directory=java.io.File(context.applicationInfo.nativeLibraryDir)
+  for(name in listOf("libggml-cpu-android_armv8.0_1.so","libggml-cpu-android_armv8.2_2.so","libggml-cpu-android_armv8.6_1.so")) {
+   assertTrue("Missing packaged CPU backend: $name",java.io.File(directory,name).isFile)
+  }
+ }
  @Test fun largeImageRegionDecoderPreservesOriginalPixels() {
   val context=InstrumentationRegistry.getInstrumentation().targetContext
   val original=android.graphics.Bitmap.createBitmap(2500,2000,android.graphics.Bitmap.Config.ARGB_8888)
