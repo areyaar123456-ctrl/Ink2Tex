@@ -13,8 +13,8 @@ android {
   applicationId = "dev.ink2tex"
   minSdk = 31
   targetSdk = 36
-  versionCode = 2
-  versionName = "0.1.1"
+  versionCode = 3
+  versionName = "0.1.2"
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   ndk { abiFilters += "arm64-v8a" }
   externalNativeBuild { cmake { cppFlags += listOf("-std=c++17", "-O2"); arguments += "-DANDROID_STL=c++_shared" } }

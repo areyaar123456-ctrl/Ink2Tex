@@ -1,19 +1,22 @@
+JVM / Robolectric: {'tests': 33, 'failures': 0, 'errors': 0, 'skipped': 0}
+Lint: 0 errors, 39 warnings
 Packaged native libraries: 15
-lib/arm64-v8a/libandroidx.graphics.path.so : 16 KB aligned; libm.so, libdl.so, libc.so
-lib/arm64-v8a/libc++_shared.so : 16 KB aligned; libc.so, libm.so, libdl.so
-lib/arm64-v8a/libdatastore_shared_counter.so : 16 KB aligned; libm.so, libdl.so, libc.so
-lib/arm64-v8a/libggml-base.so : 16 KB aligned; libm.so, libdl.so, libc++_shared.so, libc.so
-lib/arm64-v8a/libggml-cpu-android_armv8.0_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libggml-cpu-android_armv8.2_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libggml-cpu-android_armv8.2_2.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libggml-cpu-android_armv8.6_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libggml-cpu-android_armv9.0_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libggml-cpu-android_armv9.2_1.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libggml-cpu-android_armv9.2_2.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libggml.so : 16 KB aligned; libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libllama.so : 16 KB aligned; libggml.so, libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libmtmd.so : 16 KB aligned; libllama.so, libggml.so, libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
-lib/arm64-v8a/libink2tex.so : 16 KB aligned; libmtmd.so, libandroid.so, liblog.so, libllama.so, libggml.so, libggml-base.so, libm.so, libc++_shared.so, libdl.so, libc.so
+lib/arm64-v8a/libandroidx.graphics.path.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libc++_shared.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libdatastore_shared_counter.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml-base.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml-cpu-android_armv8.0_1.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml-cpu-android_armv8.2_1.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml-cpu-android_armv8.2_2.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml-cpu-android_armv8.6_1.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml-cpu-android_armv9.0_1.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml-cpu-android_armv9.2_1.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml-cpu-android_armv9.2_2.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libggml.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libllama.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libmtmd.so : 16 KB LOAD alignment passed
+lib/arm64-v8a/libink2tex.so : 16 KB LOAD alignment passed
+JNI exports load, status, timings, recognize verified
 Verifies
 Verified using v1 scheme (JAR signing): false
 Verified using v2 scheme (APK Signature Scheme v2): true
@@ -32,7 +35,25 @@ Signer #1 public key SHA-256 digest: ffa8fb9391ba64c94efc0768a7fa80043c9799b9228
 Signer #1 public key SHA-1 digest: fccba090341dfa693a9c63e60529f7f7d469a516
 Signer #1 public key MD5 digest: 6889eaf6924d6934f9f0f1755169d13e
 
-zipalign: passed
-package: name='dev.ink2tex' versionCode='2' versionName='0.1.1' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
-(0x010104ea)=(type 0x12)0xffffffff
-Lint: 0 errors, 39 warnings
+app/build/outputs/apk/debug/app-debug.apk: zipalign passed
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): true
+Verified using v3 scheme (APK Signature Scheme v3): false
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: C=US, O=Android, CN=Android Debug
+Signer #1 certificate SHA-256 digest: e3bec6040902b1f57f1f07824184ce9772e27fa74f26bc6f67f687d448abc078
+Signer #1 certificate SHA-1 digest: 25b7c404a573b22a708e65135990e3b45523c109
+Signer #1 certificate MD5 digest: 146fb17ec9cf091ff24058ced30483ec
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 2048
+Signer #1 public key SHA-256 digest: ffa8fb9391ba64c94efc0768a7fa80043c9799b92283fd3427ad9a2c5a1b20bd
+Signer #1 public key SHA-1 digest: fccba090341dfa693a9c63e60529f7f7d469a516
+Signer #1 public key MD5 digest: 6889eaf6924d6934f9f0f1755169d13e
+
+app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk: zipalign passed
+Signing certificate matches previous published APK
+package: name='dev.ink2tex' versionCode='3' versionName='0.1.2' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'

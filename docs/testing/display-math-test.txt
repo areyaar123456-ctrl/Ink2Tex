@@ -1,0 +1,1 @@
+PASS: bundled KaTeX uses above/below limits for display summation, side limits for inline summation, and left-aligned display styling. Host JavaScript check; Android WebView not executed.

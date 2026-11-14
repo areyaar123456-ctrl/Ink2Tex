@@ -1,5 +1,13 @@
 # Changes
 
+## 0.1.2 — equation layout and explicit speed option
+
+- Promote an inline-delimited formula occupying its own source line to display math, preserving the formula body exactly. Inline prose formulas, existing display math, fenced and indented code are retained. This applies to new OCR output and existing rendered previews. Operators now use display sizing and summation limits above/below, with equations aligned to the text margin. Existing saved source is not silently edited when opening a preview.
+- Add a persisted Faster scan option in Scanner settings and an editor chip. Full detail remains the default (196–1600 image tokens); Faster scan uses 64–256 image tokens. This reduces image work when the budget applies, but can lose small handwriting detail. It does not cap the generated transcription or change model weights. Validation always uses full detail. Runtime improvements on the tablet are unmeasured.
+- Expose native preprocessing, image/prompt evaluation and generation timings plus actual input-token count in Diagnostics. Timings use a monotonic clock. These are last-successful-inference values, not invented progress percentages or historical per-document profiles.
+
+The user reported a 0.1.1 transcription taking 10,667 ms for 33 output tokens. This is user-supplied evidence, not a controlled benchmark against 0.1.0 or 0.1.2. The displayed duration excludes model initialization. Reducing initialization alone would not remove that reported inference time.
+
 ## 0.1.1 — runtime and queue repair
 
 The user reported conversions stuck at “Reading handwriting”; diagnostics showed a previous 21-token inference took 531,515 ms. That is evidence of unacceptable latency, not evidence that the current process has crashed. The exact current stall cannot be diagnosed without target-device traces.

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import dev.ink2tex.modelmanager.ModelStore
 import dev.ink2tex.preprocessing.SolidBorderTrim
+import dev.ink2tex.format.MathLayout
 import java.io.File
 import java.util.concurrent.Executors
 import kotlin.coroutines.resume
@@ -22,6 +23,7 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
  private val state = MutableStateFlow(Diagnostics())
  override val diagnostics = state.asStateFlow()
  private var active: String? = null
+ private var activeBudget=1600
  private suspend fun <T> native(block: () -> T): T = suspendCancellableCoroutine { continuation ->
   continuation.invokeOnCancellation { NativeBridge.cancel() }
   executor.execute {
@@ -50,18 +52,19 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
   try { native(block) } finally { watcher.cancelAndJoin() }
  }
  override suspend fun loadModel(modelId: String) = loadModel(modelId,false)
- suspend fun loadModel(modelId: String, allowUnvalidated: Boolean): LoadResult {
+ suspend fun loadModel(modelId: String, allowUnvalidated: Boolean, imageTokenBudget:Int=1600): LoadResult {
+  require(imageTokenBudget==1600 || imageTokenBudget==256) { "Unsupported image budget" }
   val manifest=store.manifest(modelId)
   require(manifest.compatible && (allowUnvalidated || store.ready(modelId))) { "Download and validate a compatible model first." }
-  if(active==modelId) return LoadResult(modelId,state.value.initializationMs ?: 0)
+  if(active==modelId && activeBudget==imageTokenBudget) return LoadResult(modelId,state.value.initializationMs ?: 0)
   state.update { it.copy(stage="Loading ${manifest.name}") }
   val memory=ActivityManager.MemoryInfo().also { context.getSystemService(ActivityManager::class.java).getMemoryInfo(it) }
   require(!memory.lowMemory && memory.availMem>manifest.ramReserveBytes) { "Not enough free RAM. Close other large apps, then try again. The model reserves a conservative 3 GiB budget." }
   val start=System.nanoTime()
   active=null
-  monitored { NativeBridge.load(File(store.directory(modelId),manifest.components[0].name).absolutePath,File(store.directory(modelId),manifest.components[1].name).absolutePath,Runtime.getRuntime().availableProcessors().coerceIn(1,4),context.applicationInfo.nativeLibraryDir) }
+  monitored { NativeBridge.load(File(store.directory(modelId),manifest.components[0].name).absolutePath,File(store.directory(modelId),manifest.components[1].name).absolutePath,Runtime.getRuntime().availableProcessors().coerceIn(1,4),context.applicationInfo.nativeLibraryDir,imageTokenBudget) }
   val elapsed=(System.nanoTime()-start)/1_000_000
-  active=modelId; state.update { it.copy(loadedModel=modelId,initializationMs=elapsed,stage="Ready",lastError=null,backendInfo=NativeBridge.systemInfo()) }
+  active=modelId;activeBudget=imageTokenBudget; state.update { it.copy(loadedModel=modelId,initializationMs=elapsed,stage="Ready",lastError=null,backendInfo=NativeBridge.systemInfo(),imageTokenBudget=imageTokenBudget) }
   return LoadResult(modelId,elapsed)
  }
  override suspend fun recognize(image: Bitmap, options: RecognitionOptions): RecognitionResult {
@@ -81,10 +84,17 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
     }
     RgbImage(bytes,bounds.width,bounds.height)
    }
-   val raw=monitored { NativeBridge.recognize(rgb.bytes,rgb.width,rgb.height,store.manifest(id).prompt,options.maxTokens.coerceIn(32,4096)).decodeToString() }
+   val response=monitored {
+    val output=NativeBridge.recognize(rgb.bytes,rgb.width,rgb.height,store.manifest(id).prompt,options.maxTokens.coerceIn(32,4096)).decodeToString()
+    output to NativeBridge.timings()
+   }
+   val raw=response.first;val timing=response.second
    val pieces=raw.split('\n',limit=3);require(pieces.size==3) { "Invalid native response" }
-   val result=RecognitionResult(normalizeDelimiters(pieces[2]),(System.nanoTime()-start)/1_000_000,pieces[0].toInt(),pieces[1]=="1",listOf("Review against the original. The model supplies no calibrated handwriting confidence.") + if(pieces[1]=="1") listOf("Output reached the token limit. Rerun smaller regions; the transcription is incomplete.") else emptyList())
-   state.update { it.copy(inferenceMs=result.durationMs,outputTokens=result.tokens,stage="Ready",lastError=null) }
+   val warnings=mutableListOf("Review against the original. The model supplies no calibrated handwriting confidence.")
+   if(pieces[1]=="1")warnings+="Output reached the token limit. Rerun smaller regions; the transcription is incomplete."
+   if(activeBudget==256)warnings+="Faster scan uses less image detail. Check small symbols; rerun with Full detail if needed."
+   val result=RecognitionResult(MathLayout.displayStandalone(normalizeDelimiters(pieces[2])),(System.nanoTime()-start)/1_000_000,pieces[0].toInt(),pieces[1]=="1",warnings)
+   state.update { it.copy(inferenceMs=result.durationMs,outputTokens=result.tokens,stage="Ready",lastError=null,inputTokens=timing[0],preprocessingMs=timing[1],evaluationMs=timing[2],generationMs=timing[3]) }
    return result
   } catch(e: Exception) { state.update { it.copy(lastError=e.message,stage=if(e is CancellationException) "Cancelled" else "Failed") };throw e }
  }

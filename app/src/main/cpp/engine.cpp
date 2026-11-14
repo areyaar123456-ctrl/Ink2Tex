@@ -8,10 +8,14 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
+#include <chrono>
 namespace ink {
 std::atomic<bool> cancelled{false};
 std::atomic<int> phase{0};
 std::atomic<int> generated{0};
+std::atomic<int64_t> input_tokens{0}, preprocessing_ms{0}, evaluation_ms{0}, generation_ms{0};
+using Clock=std::chrono::steady_clock;
+static int64_t milliseconds(Clock::time_point start) { return std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now()-start).count(); }
 static std::mutex mutex;
 static llama_model * model = nullptr;
 static llama_context * context = nullptr;
@@ -25,7 +29,8 @@ static void release() {
 static bool abort_fn(void *) { return cancelled.load(); }
 static bool progress(float, void *) { return !cancelled.load(); }
 void unload() { std::lock_guard<std::mutex> guard(mutex); phase=6; release(); phase=0; }
-void load(const std::string & path, const std::string & projector, int threads, const std::string & backend_directory) {
+void load(const std::string & path, const std::string & projector, int threads, const std::string & backend_directory, int image_token_budget) {
+ if(image_token_budget!=256 && image_token_budget!=1600)throw std::runtime_error("Unsupported image token budget.");
  std::lock_guard<std::mutex> guard(mutex);
  release();
  static std::once_flag once;
@@ -53,7 +58,7 @@ void load(const std::string & path, const std::string & projector, int threads, 
   phase=2;
   auto vp = mtmd_context_params_default();
   vp.use_gpu = false; vp.n_threads = threads; vp.warmup = false;
-  vp.image_min_tokens = 196; vp.image_max_tokens = 1600;
+  vp.image_min_tokens = image_token_budget==256 ? 64 : 196; vp.image_max_tokens = image_token_budget;
   vp.progress_callback = progress;
   vision = mtmd_init_from_file(vision_path.c_str(), model, vp);
   if (!vision || !mtmd_support_vision(vision)) throw std::runtime_error("Vision projector is incompatible with this runtime.");
@@ -64,6 +69,8 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
  if (!model || !context || !vision) throw std::runtime_error("No model loaded.");
  if (width < 1 || height < 1 || (int64_t)width*height > 4000000) throw std::runtime_error("Image exceeds the safe pixel budget.");
  phase=3; generated=0;
+ input_tokens=0;preprocessing_ms=0;evaluation_ms=0;generation_ms=0;
+ const auto prep_start=Clock::now();
  llama_memory_clear(llama_get_memory(context), true);
  // The packaged integration is Qwen3.5 OCR only. Explicit non-thinking template
  // matches the upstream OvisOCR2 and LightOnOCR-3 processor templates.
@@ -74,16 +81,19 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
  const mtmd_bitmap * bitmaps[] = {bitmap.get()};
  mtmd_input_text text{formatted.data(), formatted.size(), true, true};
  if (mtmd_tokenize(vision,chunks.get(),&text,bitmaps,1)) throw std::runtime_error("Vision preprocessing failed.");
- const auto positions = mtmd_helper_get_n_pos(chunks.get());
  const auto tokens = mtmd_helper_get_n_tokens(chunks.get());
+ input_tokens=tokens;preprocessing_ms=milliseconds(prep_start);
  if (tokens + max_tokens >= llama_n_ctx(context)) throw std::runtime_error("Page exceeds context budget. Select a smaller region.");
  if (cancelled) throw std::runtime_error("Conversion cancelled.");
  phase=4;
+ const auto eval_start=Clock::now();
  llama_pos past = 0;
  if (mtmd_helper_eval_chunks(vision,context,chunks.get(),0,0,512,true,&past)) throw std::runtime_error(cancelled ? "Conversion cancelled." : "Image evaluation failed.");
+ evaluation_ms=milliseconds(eval_start);
  std::unique_ptr<llama_sampler, decltype(&llama_sampler_free)> sampler(llama_sampler_init_greedy(),llama_sampler_free);
  const llama_vocab * vocab = llama_model_get_vocab(model);
  phase=5;
+ const auto generate_start=Clock::now();
  Result result{"",0,false};
  auto batch = llama_batch_init(1,0,1);
  // M-RoPE token positions have four coordinates, all equal for generated text.
@@ -92,7 +102,7 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
   for (int i=0;i<max_tokens;i++) {
    if (cancelled) throw std::runtime_error("Conversion cancelled.");
    llama_token token = llama_sampler_sample(sampler.get(),context,-1);
-   if (llama_vocab_is_eog(vocab,token)) { llama_batch_free(batch); return result; }
+   if (llama_vocab_is_eog(vocab,token)) { generation_ms=milliseconds(generate_start);llama_batch_free(batch); return result; }
    std::vector<char> piece(256);
    int n = llama_token_to_piece(vocab,token,piece.data(),piece.size(),0,false);
    if (n < 0) { piece.resize(-n); n = llama_token_to_piece(vocab,token,piece.data(),piece.size(),0,false); }
@@ -107,6 +117,6 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
   }
   result.truncated = true;
  } catch (...) { llama_batch_free(batch); throw; }
- llama_batch_free(batch); return result;
+ generation_ms=milliseconds(generate_start);llama_batch_free(batch); return result;
 }
 }

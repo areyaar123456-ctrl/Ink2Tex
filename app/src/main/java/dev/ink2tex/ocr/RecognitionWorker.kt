@@ -16,7 +16,8 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
   val app=applicationContext as InkApplication
   val dao=app.repository.documents
   val doc=dao.get(inputData.getString("document") ?: "") ?: return Result.failure()
-  var modelId=inputData.getString("model") ?: app.repository.settings.flow.first().model
+  val settings=app.repository.settings.flow.first()
+  var modelId=inputData.getString("model") ?: settings.model
   if(modelId=="auto") modelId=app.models.available().firstOrNull()?.id ?: ""
   val candidateModels=if(inputData.getBoolean("fallback",false)) listOf(modelId)+app.models.available().map { it.id }.filter { it!=modelId } else listOf(modelId)
   try {
@@ -37,7 +38,7 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
      try {
       dao.put(doc.copy(status="Converting",modelId=candidate,error=null))
       setProgress(workDataOf("stage" to "Loading selected model"))
-      app.engine.loadModel(candidate)
+      app.engine.loadModel(candidate,false,if(settings.fastScan)256 else 1600)
       val pages=mutableListOf<String>();var elapsed=0L;var tokens=0;val warnings=mutableListOf<String>();var tileCount=0
       for(path in doc.source.split('\n').filter { it.isNotBlank() }) {
        ImagePipeline.forEachTile(File(path)) { bitmap,index,total ->

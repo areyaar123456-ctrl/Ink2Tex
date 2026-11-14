@@ -1,6 +1,12 @@
 # Ink2TeX
 
-A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.1; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.2; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+
+## 0.1.2 equation layout and scan speed
+
+Standalone equations now render as display mathematics with full-size operators and above/below summation limits; the expression itself is unchanged. Existing saved results receive this preview formatting, and new OCR output uses display delimiters for standalone math lines. Inline formulas embedded in prose remain inline.
+
+Tap the **Full detail** chip in the editor to select **Faster scan**, or use Scanner settings. Faster scan lowers the vision budget for clear, larger writing and may miss small symbols; rerun Full detail for dense proofs. Full detail remains the default. Diagnostics now separate image preparation, image/prompt evaluation and text generation and report actual input tokens. No particular new timing is claimed; the user reported 10,667 ms for 33 output tokens on 0.1.1, and this build has not been timed on the tablet.
 
 ## 0.1.1 runtime repair
 

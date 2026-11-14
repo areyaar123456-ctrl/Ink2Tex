@@ -1,11 +1,11 @@
 {
   "app": "Ink2TeX",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "date": "2026-11-14",
   "androidTarget": 36,
   "androidMinimum": 31,
   "abi": "arm64-v8a",
-  "unitAndRobolectricTests": 24,
+  "unitAndRobolectricTests": 33,
   "testFailures": 0,
   "testSkips": 0,
   "lintErrors": 0,
@@ -14,5 +14,6 @@
   "nativeOcr": "Real host smoke passed; handwritten sample generated output but failed strict fidelity acceptance.",
   "productionStatus": "Engineering build. Target-device verification and broader model integrations remain.",
   "nativeCacheFixture": "Passed: exact BF16 expansion, metadata and original preservation, reuse, cancellation cleanup and retry.",
-  "androidPerformance": "Not measured on target. User supplied 0.1.0 diagnostics show last completed inference 531515 ms / 21 tokens. New runtime unverified on device."
+  "androidPerformance": "User-supplied 0.1.1 screenshot: 10667 ms for 33 output tokens. New Faster scan timing unmeasured; no target device attached.",
+  "rendererCheck": "Bundled KaTeX host JavaScript: display summation above/below limits and inline side limits passed. Android WebView not executed."
 }

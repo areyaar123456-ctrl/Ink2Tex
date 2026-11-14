@@ -1,5 +1,6 @@
 package dev.ink2tex.export
 
+import dev.ink2tex.format.MathLayout
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -14,12 +15,12 @@ object DocumentExport {
  fun html(markdown:String,dark:Boolean=false):String {
   // Never interpolate untrusted OCR output into JavaScript. Raw HTML is escaped.
   val math=mutableListOf<String>()
-  val mathProtected=Regex("""(?s)\$\$.*?\$\$|(?<!\\)\$(?!\$).*?(?<!\\)\$""").replace(markdown) { match ->
+  val mathProtected=Regex("""(?s)\$\$.*?\$\$|(?<!\\)\$(?!\$).*?(?<!\\)\$""").replace(MathLayout.displayStandalone(markdown)) { match ->
    val token="INKMATHPLACEHOLDER${math.size}END";math+=match.value;token
   }
   var body=renderer.render(parser.parse(mathProtected))
   math.forEachIndexed { i,value -> body=body.replace("INKMATHPLACEHOLDER${i}END",value.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")) }
-  return """<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src https://appassets.androidplatform.net 'unsafe-inline'; font-src https://appassets.androidplatform.net; script-src https://appassets.androidplatform.net;"><link rel="stylesheet" href="https://appassets.androidplatform.net/assets/katex/katex.min.css"><style>body{background:${if(dark)"#18272d" else "#ffffff"};color:${if(dark)"#edf6f3" else "#203236"};font:18px/1.8 system-ui;padding:24px;overflow-wrap:anywhere}.katex-display{overflow:auto;padding:8px 0}pre{white-space:pre-wrap} @media print{body{background:white;color:black}}</style><script defer src="https://appassets.androidplatform.net/assets/katex/katex.min.js"></script><script defer src="https://appassets.androidplatform.net/assets/katex/contrib/auto-render.min.js"></script><script defer src="https://appassets.androidplatform.net/assets/render.js"></script></head><body>$body</body></html>"""
+  return """<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src https://appassets.androidplatform.net 'unsafe-inline'; font-src https://appassets.androidplatform.net; script-src https://appassets.androidplatform.net;"><link rel="stylesheet" href="https://appassets.androidplatform.net/assets/katex/katex.min.css"><style>body{background:${if(dark)"#18272d" else "#ffffff"};color:${if(dark)"#edf6f3" else "#203236"};font:18px/1.8 system-ui;padding:24px;overflow-wrap:anywhere}.katex-display{overflow:auto;padding:10px 0;text-align:left}.katex-display>.katex{text-align:left}.katex-display.fleqn>.katex{margin-left:0}pre{white-space:pre-wrap} @media print{body{background:white;color:black}}</style><script defer src="https://appassets.androidplatform.net/assets/katex/katex.min.js"></script><script defer src="https://appassets.androidplatform.net/assets/katex/contrib/auto-render.min.js"></script><script defer src="https://appassets.androidplatform.net/assets/render.js"></script></head><body>$body</body></html>"""
  }
  fun rawLatex(markdown:String):String = markdown.replace(Regex("(?m)^#{1,6} +"),"")
  fun tex(markdown:String):String = "\\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage{amsmath,amssymb}\n\\begin{document}\n"+escapeProse(rawLatex(markdown))+"\n\\end{document}\n"

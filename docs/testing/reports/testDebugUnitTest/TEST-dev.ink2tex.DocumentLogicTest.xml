@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.DocumentLogicTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-14T13:09:31.529Z" hostname="facf080c67d3" time="0.365">
+<testsuite name="dev.ink2tex.DocumentLogicTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-14T13:28:25.743Z" hostname="facf080c67d3" time="0.584">
   <properties/>
-  <testcase name="markdownDoesNotRewriteUnderscoresInsideMathematics" classname="dev.ink2tex.DocumentLogicTest" time="0.158"/>
-  <testcase name="smallScreenshotIsOneCoherentInput" classname="dev.ink2tex.DocumentLogicTest" time="0.01"/>
-  <testcase name="latexExportEscapesProseButKeepsMathSource" classname="dev.ink2tex.DocumentLogicTest" time="0.003"/>
-  <testcase name="normalizationOnlyChangesMathDelimiters" classname="dev.ink2tex.DocumentLogicTest" time="0.003"/>
-  <testcase name="tilesCoverLargeExportWithoutGapsAndRemainBounded" classname="dev.ink2tex.DocumentLogicTest" time="0.039"/>
-  <testcase name="ordinaryRepetitionIsPreservedByDefault" classname="dev.ink2tex.DocumentLogicTest" time="0.093"/>
-  <testcase name="changedSignsAtBoundaryAreNeverDeduplicated" classname="dev.ink2tex.DocumentLogicTest" time="0.002"/>
-  <testcase name="previewDoesNotExecuteModelHtmlOrRemoteLinks" classname="dev.ink2tex.DocumentLogicTest" time="0.048"/>
-  <testcase name="proofErrorsAreNotRewritten" classname="dev.ink2tex.DocumentLogicTest" time="0.002"/>
-  <testcase name="exactSubstantialBoundaryOnlyRemovedWhenRequested" classname="dev.ink2tex.DocumentLogicTest" time="0.001"/>
+  <testcase name="markdownDoesNotRewriteUnderscoresInsideMathematics" classname="dev.ink2tex.DocumentLogicTest" time="0.371"/>
+  <testcase name="smallScreenshotIsOneCoherentInput" classname="dev.ink2tex.DocumentLogicTest" time="0.004"/>
+  <testcase name="latexExportEscapesProseButKeepsMathSource" classname="dev.ink2tex.DocumentLogicTest" time="0.014"/>
+  <testcase name="normalizationOnlyChangesMathDelimiters" classname="dev.ink2tex.DocumentLogicTest" time="0.008"/>
+  <testcase name="tilesCoverLargeExportWithoutGapsAndRemainBounded" classname="dev.ink2tex.DocumentLogicTest" time="0.077"/>
+  <testcase name="ordinaryRepetitionIsPreservedByDefault" classname="dev.ink2tex.DocumentLogicTest" time="0.083"/>
+  <testcase name="changedSignsAtBoundaryAreNeverDeduplicated" classname="dev.ink2tex.DocumentLogicTest" time="0.001"/>
+  <testcase name="previewDoesNotExecuteModelHtmlOrRemoteLinks" classname="dev.ink2tex.DocumentLogicTest" time="0.012"/>
+  <testcase name="proofErrorsAreNotRewritten" classname="dev.ink2tex.DocumentLogicTest" time="0.001"/>
+  <testcase name="exactSubstantialBoundaryOnlyRemovedWhenRequested" classname="dev.ink2tex.DocumentLogicTest" time="0.0"/>
   <testcase name="rejectInvalidTileBudget" classname="dev.ink2tex.DocumentLogicTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

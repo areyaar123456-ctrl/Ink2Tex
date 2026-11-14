@@ -22,10 +22,14 @@ class LocalOcrDeviceTest {
   app.engine.session.withLock {
    try {
     app.engine.loadModel(model!!.id)
-    repeat(3) {
+    repeat(3) { index ->
+     app.engine.loadModel(model.id,false,if(index==1)256 else 1600)
      val result=app.engine.recognize(image)
      assertTrue(result.markdown.lowercase().contains("ink2tex"))
      assertTrue(result.tokens>0);assertTrue(result.durationMs>0);assertFalse(result.truncated)
+     val diagnostic=app.engine.diagnostics.value
+     assertTrue(diagnostic.inputTokens!!>0)
+     assertTrue(diagnostic.preprocessingMs!!>=0 && diagnostic.evaluationMs!!>=0 && diagnostic.generationMs!!>=0)
     }
    } finally { image.recycle();app.engine.unloadModel() }
   }
