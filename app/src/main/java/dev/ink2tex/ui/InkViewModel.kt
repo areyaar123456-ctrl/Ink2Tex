@@ -11,9 +11,13 @@ import dev.ink2tex.InkApplication
 import dev.ink2tex.crop.*
 import dev.ink2tex.ocr.RecognitionWorker
 import dev.ink2tex.ocr.HandwritingTrainingWorker
+import dev.ink2tex.ocr.TrainingPlan
+import dev.ink2tex.ocr.TrainingCheckpoints
+import kotlinx.coroutines.sync.withLock
 import dev.ink2tex.preprocessing.ImagePipeline
 import dev.ink2tex.storage.Document
 import dev.ink2tex.storage.TrainingLabel
+import dev.ink2tex.storage.TrainingRun
 import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.*
@@ -27,6 +31,8 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
  val settings=repository.settings.flow.stateIn(viewModelScope,SharingStarted.Eagerly,dev.ink2tex.storage.ScannerSettings())
  val handwriting=repository.handwriting.profile.stateIn(viewModelScope,SharingStarted.Eagerly,dev.ink2tex.storage.HandwritingProfile())
  val trainingLabels=repository.training.labels.stateIn(viewModelScope,SharingStarted.Eagerly,emptyList())
+ val trainingRuns=app.database.trainingHistory().observe()
+     .stateIn(viewModelScope,SharingStarted.Eagerly,emptyList())
  val trainingJobs=WorkManager.getInstance(app).getWorkInfosForUniqueWorkFlow(HandwritingTrainingWorker.NAME)
      .stateIn(viewModelScope,SharingStarted.Eagerly,emptyList())
  val navigation=MutableStateFlow(Navigation())
@@ -73,7 +79,7 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
   try {
    val doc=repository.documents.get(navigation.value.documentId ?: "") ?: error("Source image missing")
    val image=withContext(Dispatchers.IO) { CropView.crop(File(doc.source.lines().first()),selection) }
-   val cropped=repository.save(image,"Snipped note");image.recycle()
+   val cropped=repository.save(image,"Snipped note",doc.source.lineSequence().first());image.recycle()
    cropParts.value=cropParts.value+cropped
    if(finish) {
     val result=if(cropParts.value.size==1)cropped else combine(cropParts.value,"Multi-snip proof")
@@ -118,7 +124,23 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
    finished(false)
   }
  } }
- fun trainHandwriting(model:String) = HandwritingTrainingWorker.enqueue(app,model)
+ fun trainHandwriting(model:String, plan:TrainingPlan) = HandwritingTrainingWorker.enqueue(app,model,plan)
+ fun restoreHandwriting(model:String) { viewModelScope.launch {
+  try {
+   app.engine.session.withLock {
+    app.engine.unloadModel()
+    withContext(Dispatchers.IO) {
+     TrainingCheckpoints.restore(app.models.directory(model))
+     val now=System.currentTimeMillis()
+     app.database.trainingHistory().put(TrainingRun(UUID.randomUUID().toString(),model,now,now,
+      "restored","",0,0,"","[]","Previous handwriting checkpoint restored from this tablet."))
+    }
+    app.models.changed()
+   }
+   message.value="Previous handwriting checkpoint restored."
+  } catch(e:CancellationException) { throw e }
+  catch(e:Exception) { message.value=e.message ?: "Unable to restore weights." }
+ } }
  fun cancelTraining() { WorkManager.getInstance(app).cancelUniqueWork(HandwritingTrainingWorker.NAME) }
  fun teachHandwriting(documentId:String,text:String) { viewModelScope.launch {
   try {

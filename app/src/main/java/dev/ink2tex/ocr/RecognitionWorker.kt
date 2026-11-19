@@ -3,6 +3,8 @@ package dev.ink2tex.ocr
 import android.content.Context
 import android.content.pm.ServiceInfo
 import androidx.work.*
+import androidx.room.withTransaction
+import dev.ink2tex.storage.TrainingDraft
 import dev.ink2tex.InkApplication
 import dev.ink2tex.preprocessing.ImagePipeline
 import dev.ink2tex.preprocessing.PdfImport
@@ -53,7 +55,10 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
       app.engine.loadModel(candidate,false,if(settings.fastScan && !includesPdf)256 else 1600)
       val pages=mutableListOf<String>();var elapsed=0L;var tokens=0;val warnings=mutableListOf<String>();var tileCount=0
       val pdfWarnings=mutableListOf<String>()
+      val drafts=mutableListOf<TrainingDraft>()
       for((sourceIndex,path) in sources.withIndex()) {
+       val imageText=mutableListOf<String>()
+       var incomplete=false
        ImagePipeline.forEachTile(File(path)) { bitmap,index,total ->
         currentCoroutineContext().ensureActive()
         tileCount++
@@ -62,8 +67,11 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
         if(PdfImport.isSection(path) && (result.markdown.isBlank() || result.truncated)) {
          pdfWarnings+="Review section ${sourceIndex+1}. OCR returned ${if(result.truncated) "incomplete text" else "no text"}."
         }
+        imageText+=result.markdown
+        incomplete=incomplete || result.truncated || result.markdown.isBlank()
         pages+=result.markdown;elapsed+=result.durationMs;tokens+=result.tokens;warnings+=result.warnings
        }
+       drafts+=TrainingDraft(doc.id,path,ProofSequence.merge(imageText).text,incomplete)
       }
       require(pages.any { it.isNotBlank() }) { "The model returned no transcription. Check the selected image and try another model." }
       val merged=ProofSequence.merge(pages,inputData.getBoolean("deduplicate",false))
@@ -74,7 +82,11 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
        warnings.add(0,"Some PDF sections overlap. Compare those boundaries for repeated lines.")
       }
       warnings+=merged.warnings
-      dao.put(doc.copy(markdown=merged.text,modelId=candidate,status="Review",durationMs=elapsed,tokens=tokens,error=null,warnings=warnings.distinct().joinToString("\n")))
+      app.database.withTransaction {
+       dao.put(doc.copy(markdown=merged.text,modelId=candidate,status="Review",durationMs=elapsed,tokens=tokens,error=null,warnings=warnings.distinct().joinToString("\n")))
+       app.database.trainingHistory().removeDrafts(doc.id)
+       app.database.trainingHistory().putDrafts(drafts)
+      }
       app.engine.unloadModel()
       return@withLock Result.success()
      } catch(e: CancellationException) { throw e }

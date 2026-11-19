@@ -80,7 +80,7 @@ void HandwritingHead::fit(const std::atomic<bool> & cancelled) {
     }
     std::vector<std::pair<int32_t, int>> ranked(mistakes.begin(), mistakes.end());
     std::stable_sort(ranked.begin(), ranked.end(), [](auto a, auto b) { return a.second > b.second; });
-    for (size_t i = 0; i < std::min<size_t>(ranked.size(), MAX_ROWS); ++i) {
+    for (size_t i = 0; i < ranked.size() && rows.size() < MAX_ROWS; ++i) {
         rows.emplace(ranked[i].first, std::vector<float>(dimension, 0.f));
     }
 

@@ -545,7 +545,7 @@
         errorLine2="   ~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt"
-            line="63"
+            line="69"
             column="4"/>
     </issue>
 
@@ -561,7 +561,7 @@
         errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt"
-            line="69"
+            line="75"
             column="23"/>
     </issue>
 
@@ -627,6 +627,22 @@
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/PdfImport.kt"
             line="99"
             column="22"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `SharedPreferences.edit` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        check(storage.edit().putStringSet(&quot;reserved-images&quot;, pinned + plan.reserved).commit()) {"
+        errorLine2="              ~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/storage/TrainingLabels.kt"
+            line="86"
+            column="15"/>
     </issue>
 
     <issue

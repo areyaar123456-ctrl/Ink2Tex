@@ -22,6 +22,7 @@ data class Document(
 )
 @Dao interface DocumentDao {
  @Query("SELECT * FROM documents ORDER BY created DESC") fun observe(): Flow<List<Document>>
+ @Query("SELECT * FROM documents") suspend fun all(): List<Document>
  @Query("SELECT * FROM documents WHERE id = :id") suspend fun get(id: String): Document?
  @Insert(onConflict = OnConflictStrategy.REPLACE) suspend fun put(document: Document)
  @Query("UPDATE documents SET markdown=:text WHERE id=:id") suspend fun edit(id: String, text: String)
@@ -30,10 +31,14 @@ data class Document(
  @Query("UPDATE documents SET source='' WHERE id=:id") suspend fun clearSource(id: String)
  @Query("DELETE FROM documents WHERE id=:id") suspend fun delete(id: String)
 }
-@Database(entities = [Document::class, TrainingLabel::class], version = 2, exportSchema = true)
+@Database(
+ entities = [Document::class, TrainingLabel::class, TrainingRun::class, TrainingDraft::class, CropOrigin::class],
+ version = 3, exportSchema = true
+)
 abstract class InkDatabase : RoomDatabase() {
  abstract fun documents(): DocumentDao
  abstract fun trainingLabels(): TrainingLabelDao
+ abstract fun trainingHistory(): TrainingHistoryDao
  companion object {
   val ADD_TRAINING_LABELS = object : Migration(1, 2) {
    override fun migrate(db: SupportSQLiteDatabase) {
@@ -43,7 +48,19 @@ abstract class InkDatabase : RoomDatabase() {
         PRIMARY KEY(documentId, source))""")
    }
   }
+  val ADD_TRAINING_HISTORY = object : Migration(2, 3) {
+   override fun migrate(db: SupportSQLiteDatabase) {
+    db.execSQL("""CREATE TABLE IF NOT EXISTS training_runs (
+        id TEXT NOT NULL PRIMARY KEY, modelId TEXT NOT NULL, started INTEGER NOT NULL,
+        finished INTEGER, outcome TEXT NOT NULL, planKey TEXT NOT NULL, trainingCount INTEGER NOT NULL,
+        evaluationCount INTEGER NOT NULL, trainingKeys TEXT NOT NULL, scorecard TEXT NOT NULL, summary TEXT NOT NULL)""")
+    db.execSQL("""CREATE TABLE IF NOT EXISTS training_drafts (
+        documentId TEXT NOT NULL, source TEXT NOT NULL, text TEXT NOT NULL, incomplete INTEGER NOT NULL,
+        PRIMARY KEY(documentId, source))""")
+    db.execSQL("CREATE TABLE IF NOT EXISTS crop_origins (source TEXT NOT NULL PRIMARY KEY, parent TEXT NOT NULL)")
+   }
+  }
   fun create(context: Context) = Room.databaseBuilder(context, InkDatabase::class.java, "ink2tex.db")
-      .addMigrations(ADD_TRAINING_LABELS).build()
+      .addMigrations(ADD_TRAINING_LABELS, ADD_TRAINING_HISTORY).build()
  }
 }

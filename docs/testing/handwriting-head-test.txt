@@ -1,1 +1,1 @@
-PASS: supervised updates, checked control retention, persisted weights and shape validation
+PASS: supervised updates, checked control retention, persisted weights, warm-start training and shape validation

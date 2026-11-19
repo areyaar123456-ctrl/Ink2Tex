@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.ScanPreferenceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-19T14:21:12.385Z" hostname="4060979d6adb" time="0.066">
+<testsuite name="dev.ink2tex.ScanPreferenceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-19T15:08:23.182Z" hostname="4060979d6adb" time="0.373">
   <properties/>
-  <testcase name="scanPreferenceSurvivesSettingsRecreationAndCanRestoreFullDetail" classname="dev.ink2tex.ScanPreferenceTest" time="0.066"/>
+  <testcase name="scanPreferenceSurvivesSettingsRecreationAndCanRestoreFullDetail" classname="dev.ink2tex.ScanPreferenceTest" time="0.373"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

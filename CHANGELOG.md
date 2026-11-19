@@ -1,5 +1,12 @@
 # Changes
 
+## 0.1.6 — Guided, repeatable handwriting training
+
+- Check images directly in Training. New conversions retain a separate draft for each original. The screen explains how to unblock a batch and opens the next review.
+- Choose a separate evaluation set automatically and retain it across batches. Known crops, shared originals and exact copies are grouped to reduce leakage. Manual evaluation flags are still supported.
+- Prioritize new and revised labels with limited replay. Continue from saved output weights. A batch records the reviewed data revision, progress, outcome, and per-image text edits, math edits and scan latency.
+- Require improvement with no text or math regression on any evaluation image. Keep the previous checkpoint available for restore. Room upgrades preserve existing reviewed images and notes.
+
 ## 0.1.5 — On-device output weight training
 
 - Mark a scan correct or save corrected source for a particular image. Reviewed pairs stay private and can be exported explicitly.

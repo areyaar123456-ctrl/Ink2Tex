@@ -52,11 +52,39 @@ class WeightTrainingTest {
             previous.version = 1
         }
         val upgraded = Room.databaseBuilder(app, InkDatabase::class.java, name)
-            .addMigrations(InkDatabase.ADD_TRAINING_LABELS).build()
+            .addMigrations(InkDatabase.ADD_TRAINING_LABELS, InkDatabase.ADD_TRAINING_HISTORY).build()
         try {
             assertEquals("keep this source", upgraded.documents().get("kept")?.markdown)
             assertEquals("previous.png", upgraded.documents().get("kept")?.source)
             assertTrue(upgraded.trainingLabels().all().isEmpty())
+        } finally {
+            upgraded.close()
+            app.deleteDatabase(name)
+        }
+    }
+
+    @Test fun upgradingVersionTwoKeepsPreviouslyReviewedImages() = runBlocking {
+        val app = RuntimeEnvironment.getApplication() as InkApplication
+        val name = "review-migration-test.db"
+        val path = app.getDatabasePath(name)
+        path.parentFile?.mkdirs()
+        SQLiteDatabase.openOrCreateDatabase(path, null).use { previous ->
+            previous.execSQL("""CREATE TABLE IF NOT EXISTS documents (
+                id TEXT NOT NULL PRIMARY KEY, title TEXT NOT NULL, created INTEGER NOT NULL, source TEXT NOT NULL,
+                markdown TEXT NOT NULL, modelId TEXT NOT NULL, status TEXT NOT NULL,
+                error TEXT, durationMs INTEGER, tokens INTEGER, warnings TEXT NOT NULL)""")
+            previous.execSQL("""CREATE TABLE IF NOT EXISTS training_labels (
+                documentId TEXT NOT NULL, source TEXT NOT NULL, transcription TEXT NOT NULL,
+                review TEXT NOT NULL, evaluation INTEGER NOT NULL, updated INTEGER NOT NULL,
+                PRIMARY KEY(documentId, source))""")
+            previous.execSQL("INSERT INTO training_labels VALUES ('note','proof.png','checked math','corrected',0,5)")
+            previous.version = 2
+        }
+        val upgraded = Room.databaseBuilder(app, InkDatabase::class.java, name)
+            .addMigrations(InkDatabase.ADD_TRAINING_HISTORY).build()
+        try {
+            assertEquals("checked math", upgraded.trainingLabels().all().single().transcription)
+            assertTrue(upgraded.trainingHistory().runs().isEmpty())
         } finally {
             upgraded.close()
             app.deleteDatabase(name)

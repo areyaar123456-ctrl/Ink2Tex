@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.room.*
 import dev.ink2tex.modelmanager.ModelStore
+import dev.ink2tex.ocr.CheckedImage
+import dev.ink2tex.ocr.TrainingPlan
+import dev.ink2tex.ocr.TrainingPlanner
 import dev.ink2tex.preprocessing.ImagePipeline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
@@ -50,6 +53,41 @@ class TrainingLabels(
 ) {
     val labels = database.trainingLabels().observe()
 
+    private data class ImageVersion(val path: String, val bytes: Long, val modified: Long)
+    private val hashCache = object : LinkedHashMap<ImageVersion, String>(64, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<ImageVersion, String>?) = size > 512
+    }
+
+    suspend fun plan(modelId: String, verifyImages: Boolean = false): TrainingPlan = withContext(Dispatchers.IO) {
+        val (labels, docs, extras) = database.withTransaction {
+            Triple(database.trainingLabels().all(), database.documents().all(),
+                database.trainingHistory().origins() to database.trainingHistory().runs())
+        }
+        val sources = docs.associate { it.id to it.source.lines().toSet() }
+        val hashes = mutableMapOf<String, String>()
+        val checked = labels.mapNotNull { label ->
+            currentCoroutineContext().ensureActive()
+            if (sources[label.documentId]?.contains(label.source) != true || !File(label.source).isFile) null
+            else CheckedImage(label, hashes.getOrPut(label.source) {
+                val file = File(label.source)
+                val version = ImageVersion(file.path, file.length(), file.lastModified())
+                val cached = if (verifyImages) null else synchronized(hashCache) { hashCache[version] }
+                cached ?: ModelStore.sha256(file).also { hash -> synchronized(hashCache) { hashCache[version] = hash } }
+            })
+        }
+        val pins = context.getSharedPreferences("training-plan", Context.MODE_PRIVATE)
+            .getStringSet("reserved-images", emptySet()).orEmpty()
+        TrainingPlanner.create(checked, docs, extras.first, extras.second, modelId, pins)
+    }
+
+    suspend fun pinEvaluation(plan: TrainingPlan) = withContext(Dispatchers.IO) {
+        val storage = context.getSharedPreferences("training-plan", Context.MODE_PRIVATE)
+        val pinned = storage.getStringSet("reserved-images", emptySet()).orEmpty()
+        check(storage.edit().putStringSet("reserved-images", pinned + plan.reserved).commit()) {
+            "Unable to lock the evaluation set."
+        }
+    }
+
     suspend fun save(label: TrainingLabel) = withContext(Dispatchers.IO) {
         require(label.transcription.isNotBlank() && label.transcription.length <= 40_000) {
             "Enter the exact source for one image, up to 40,000 characters."
@@ -79,6 +117,7 @@ class TrainingLabels(
         require(labels.sumOf { it.transcription.length.toLong() } <= 4_000_000L) {
             "This batch contains too much source text. Export fewer labels at a time."
         }
+        val evaluationNotes = plan("").reservedNotes
         val totalBytes = labels.sumOf { checkedImage(it.source).length() }
         require(totalBytes <= 2_000_000_000L) { "This batch exceeds 2 GB. Remove some training labels before exporting." }
         val output = context.contentResolver.openOutputStream(uri, "wt")
@@ -106,7 +145,7 @@ class TrainingLabels(
                 }
                 jsonl.append(JSONObject().put("image", name).put("sha256", hash)
                     .put("group", label.documentId).put("text", label.transcription)
-                    .put("review", label.review).put("evaluation", label.evaluation)).append('\n')
+                    .put("review", label.review).put("evaluation", label.evaluation || label.documentId in evaluationNotes)).append('\n')
             }
             archive.putNextEntry(ZipEntry("labels.jsonl"))
             archive.write(jsonl.toString().encodeToByteArray())

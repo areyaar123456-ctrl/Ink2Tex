@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 40 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 41 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Nov 19 14:23:13 UTC 2026 by AGP (8.11.1)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Nov 19 15:09:59 UTC 2026 by AGP (8.11.1)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -193,7 +193,7 @@ document.getElementById(id).style.display = 'none';
       <a class="mdl-navigation__link" href="#SetJavaScriptEnabled"><i class="material-icons warning-icon">warning</i>Using <code>setJavaScriptEnabled</code> (1)</a>
       <a class="mdl-navigation__link" href="#DrawAllocation"><i class="material-icons warning-icon">warning</i>Memory allocations within drawing code (6)</a>
       <a class="mdl-navigation__link" href="#UsableSpace"><i class="material-icons warning-icon">warning</i>Using getUsableSpace() (3)</a>
-      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (10)</a>
+      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (11)</a>
       <a class="mdl-navigation__link" href="#RtlHardcoded"><i class="material-icons warning-icon">warning</i>Using left/right instead of start/end attributes (1)</a>
     </nav>
   </div>
@@ -239,7 +239,7 @@ document.getElementById(id).style.display = 'none';
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Productivity">Productivity</a>
 </td></tr>
 <tr>
-<td class="countColumn">10</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">11</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#UseKtx">UseKtx</a>: Use KTX extension function</td></tr>
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Internationalization:Bidirectional Text">Internationalization:Bidirectional Text</a>
 </td></tr>
@@ -559,8 +559,8 @@ Dismiss</button>            </div>
 <div class="issue">
 <div class="warningslist">
 <span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:19</span>: <span class="message">Missing x86_64 ABI support for ChromeOS</span><br /><pre class="errorlines">
-<span class="lineno"> 16 </span>  versionCode = 6
-<span class="lineno"> 17 </span>  versionName = "0.1.5"
+<span class="lineno"> 16 </span>  versionCode = 7
+<span class="lineno"> 17 </span>  versionName = "0.1.6"
 <span class="lineno"> 18 </span>  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 <span class="caretline"><span class="lineno"> 19 </span>  ndk { abiFilters += <span class="warning">"arm64-v8a"</span> }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 <span class="lineno"> 20 </span>  externalNativeBuild { cmake { cppFlags += listOf("-std=c++17", "-O2"); arguments += "-DANDROID_STL=c++_shared" } }
@@ -868,26 +868,26 @@ Dismiss</button>            </div>
 <span class="lineno"> 210 </span>  }
 </pre>
 
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:63</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno">  60 </span>    result=previous.copy(source=previous.source+<span class="string">"\n"</span>+document.source,status=<span class="string">"Captured"</span>,error=<span class="keyword">null</span>)
-<span class="lineno">  61 </span>    repository.documents.put(result)
-<span class="lineno">  62 </span>   }
-<span class="caretline"><span class="lineno">  63 </span>   <span class="warning">preferences.edit()</span>.putString(<span class="string">"target"</span>,result.id).apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  64 </span>   message.value=<span class="string">"Section added. Scroll Nebo manually, then tap Scrolling Proof Scan again. Finish when all sections are captured."</span>
-<span class="lineno">  65 </span>  }
-<span class="lineno">  66 </span>  go(<span class="string">"editor"</span>,result.id)
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:69</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  66 </span>    result=previous.copy(source=previous.source+<span class="string">"\n"</span>+document.source,status=<span class="string">"Captured"</span>,error=<span class="keyword">null</span>)
+<span class="lineno">  67 </span>    repository.documents.put(result)
+<span class="lineno">  68 </span>   }
+<span class="caretline"><span class="lineno">  69 </span>   <span class="warning">preferences.edit()</span>.putString(<span class="string">"target"</span>,result.id).apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  70 </span>   message.value=<span class="string">"Section added. Scroll Nebo manually, then tap Scrolling Proof Scan again. Finish when all sections are captured."</span>
+<span class="lineno">  71 </span>  }
+<span class="lineno">  72 </span>  go(<span class="string">"editor"</span>,result.id)
 </pre>
 
-<button class="mdl-button mdl-js-button mdl-button--primary" id="UseKtxDivLink" onclick="reveal('UseKtxDiv');" />+ 5 More Occurrences...</button>
+<button class="mdl-button mdl-js-button mdl-button--primary" id="UseKtxDivLink" onclick="reveal('UseKtxDiv');" />+ 6 More Occurrences...</button>
 <div id="UseKtxDiv" style="display: none">
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:69</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno">  66 </span>  go(<span class="string">"editor"</span>,result.id)
-<span class="lineno">  67 </span>  <span class="keyword">if</span>(!guided &amp;&amp; app.models.available().isNotEmpty())convert(result)
-<span class="lineno">  68 </span> }
-<span class="caretline"><span class="lineno">  69 </span> <span class="keyword">fun</span> finishScroll() { <span class="warning">app.getSharedPreferences(<span class="string">"guided-proof"</span>,<span class="number">0</span>).edit()</span>.remove(<span class="string">"target"</span>).apply();message.value=<span class="string">"Guided capture finished. Review the section order, then convert."</span> }</span>
-<span class="lineno">  70 </span> <span class="keyword">fun</span> useWholeCapture() { viewModelScope.launch { repository.documents.get(navigation.value.documentId ?: <span class="string">""</span>)?.let { finishCropDocument(it) } } }
-<span class="lineno">  71 </span>
-<span class="lineno">  72 </span> <span class="keyword">fun</span> addCrop(selection:CropSelection,finish:Boolean) { viewModelScope.launch {
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:75</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  72 </span>  go(<span class="string">"editor"</span>,result.id)
+<span class="lineno">  73 </span>  <span class="keyword">if</span>(!guided &amp;&amp; app.models.available().isNotEmpty())convert(result)
+<span class="lineno">  74 </span> }
+<span class="caretline"><span class="lineno">  75 </span> <span class="keyword">fun</span> finishScroll() { <span class="warning">app.getSharedPreferences(<span class="string">"guided-proof"</span>,<span class="number">0</span>).edit()</span>.remove(<span class="string">"target"</span>).apply();message.value=<span class="string">"Guided capture finished. Review the section order, then convert."</span> }</span>
+<span class="lineno">  76 </span> <span class="keyword">fun</span> useWholeCapture() { viewModelScope.launch { repository.documents.get(navigation.value.documentId ?: <span class="string">""</span>)?.let { finishCropDocument(it) } } }
+<span class="lineno">  77 </span>
+<span class="lineno">  78 </span> <span class="keyword">fun</span> addCrop(selection:CropSelection,finish:Boolean) { viewModelScope.launch {
 </pre>
 
 <span class="location"><a href="../../src/main/java/dev/ink2tex/MainActivity.kt">../../src/main/java/dev/ink2tex/MainActivity.kt</a>:62</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
@@ -928,6 +928,16 @@ Dismiss</button>            </div>
 <span class="lineno"> 100 </span>       <span class="keyword">try</span> {
 <span class="lineno"> 101 </span>           bitmap.eraseColor(Color.WHITE)
 <span class="lineno"> 102 </span>           <span class="keyword">val</span> transform = Matrix().apply {
+</pre>
+
+<span class="location"><a href="../../src/main/java/dev/ink2tex/storage/TrainingLabels.kt">../../src/main/java/dev/ink2tex/storage/TrainingLabels.kt</a>:86</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  83 </span>  suspend <span class="keyword">fun</span> pinEvaluation(plan: TrainingPlan) = withContext(Dispatchers.IO) {
+<span class="lineno">  84 </span>      <span class="keyword">val</span> storage = context.getSharedPreferences(<span class="string">"training-plan"</span>, Context.MODE_PRIVATE)
+<span class="lineno">  85 </span>      <span class="keyword">val</span> pinned = storage.getStringSet(<span class="string">"reserved-images"</span>, emptySet()).orEmpty()
+<span class="caretline"><span class="lineno">  86 </span>      check(<span class="warning">storage.edit()</span>.putStringSet(<span class="string">"reserved-images"</span>, pinned + plan.reserved).commit()) {&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  87 </span>          <span class="string">"Unable to lock the evaluation set."</span>
+<span class="lineno">  88 </span>      }
+<span class="lineno">  89 </span>  }
 </pre>
 
 </div>

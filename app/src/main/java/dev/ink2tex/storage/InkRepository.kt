@@ -16,11 +16,16 @@ class InkRepository(val context: Context, val database: InkDatabase) {
  val handwriting = HandwritingExamples(context)
  val images = File(context.filesDir, "images").apply { mkdirs() }
  val training = TrainingLabels(context, database, images)
- suspend fun save(bitmap: Bitmap, title: String = "Handwritten note"): Document = withContext(Dispatchers.IO) {
+ suspend fun save(bitmap: Bitmap, title: String = "Handwritten note", parentSource: String? = null): Document = withContext(Dispatchers.IO) {
   val id = UUID.randomUUID().toString()
   val file = File(images, "$id.png")
   file.outputStream().use { check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)) }
-  Document(id, title, source = file.absolutePath).also { documents.put(it) }
+  val document=Document(id,title,source=file.absolutePath)
+  database.withTransaction {
+   documents.put(document)
+   parentSource?.let { database.trainingHistory().putOrigin(CropOrigin(document.source,it)) }
+  }
+  document
  }
  suspend fun teachHandwriting(documentId: String, correctedText: String) = withContext(Dispatchers.IO) {
   val document = documents.get(documentId) ?: error("This note is no longer available.")
@@ -36,6 +41,7 @@ class InkRepository(val context: Context, val database: InkDatabase) {
   handwriting.remove(document.id)
   database.withTransaction {
    database.trainingLabels().removeDocument(document.id)
+   database.trainingHistory().removeDrafts(document.id)
    documents.clearSource(document.id)
   }
   val remaining=documents.sources().flatMap { it.lines() }.toSet()
@@ -47,6 +53,7 @@ class InkRepository(val context: Context, val database: InkDatabase) {
   handwriting.remove(document.id)
   database.withTransaction {
    database.trainingLabels().removeDocument(document.id)
+   database.trainingHistory().removeDrafts(document.id)
    documents.delete(document.id)
   }
   val remaining=documents.sources().flatMap { it.lines() }.toSet()

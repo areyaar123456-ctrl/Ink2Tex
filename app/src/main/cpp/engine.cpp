@@ -202,7 +202,7 @@ void load_head(const std::string & path) {
 
 void begin_training() {
  std::lock_guard<std::mutex> guard(mutex);
- candidate_head = new_head();
+ candidate_head = active_head ? std::make_unique<HandwritingHead>(*active_head) : new_head();
 }
 
 void train_sample(const unsigned char * rgb, int width, int height,

@@ -171,10 +171,10 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:207: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
      TextButton(onClick={context.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(model.licenseUrl)))}) { Text(model.license+" ↗") }
                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:63: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:69: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
    preferences.edit().putString("target",result.id).apply()
    ~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:69: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:75: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
  fun finishScroll() { app.getSharedPreferences("guided-proof",0).edit().remove("target").apply();message.value="Guided capture finished. Review the section order, then convert." }
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/MainActivity.kt:62: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
@@ -189,6 +189,9 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/PdfImport.kt:99: Warning: Use the KTX function createBitmap instead? [UseKtx]
         val bitmap = Bitmap.createBitmap(sections.width, rows.count(), Bitmap.Config.ARGB_8888)
                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/storage/TrainingLabels.kt:86: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+        check(storage.edit().putStringSet("reserved-images", pinned + plan.reserved).commit()) {
+              ~~~~~~~~~~~~~~
 
    Explanation for issues of type "UseKtx":
    The Android KTX libraries decorates the Android platform SDK as well as
@@ -269,4 +272,4 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    the left bitmask. Therefore, you can use gravity="start" rather than
    gravity="left|start".)
 
-0 errors, 40 warnings
+0 errors, 41 warnings

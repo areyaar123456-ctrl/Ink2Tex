@@ -12,7 +12,7 @@
 <div id="content">
 <h1>Class dev.ink2tex.StorageAndCropTest</h1>
 <div class="breadcrumbs">
-<a href="../index.html">all</a> &gt; 
+<a href="../index.html">all</a> &gt;
 <a href="../packages/dev.ink2tex.html">dev.ink2tex</a> &gt; StorageAndCropTest</div>
 <div id="summary">
 <table>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">8.194s</div>
+<div class="counter">23.081s</div>
 <p>duration</p>
 </div>
 </td>
@@ -79,37 +79,37 @@
 </thead>
 <tr>
 <td class="success">allDownloadableModelsIncludePinnedWeightsAndVisionChecksums</td>
-<td class="success">0.040s</td>
+<td class="success">0.403s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">cancellationStatusCannotOverwriteManualCorrections</td>
-<td class="success">0.338s</td>
+<td class="success">0.796s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">checksumDetectsCorruption</td>
-<td class="success">7.082s</td>
+<td class="success">19.507s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">deletingASectionDoesNotBreakACombinedProof</td>
-<td class="success">0.378s</td>
+<td class="success">0.811s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">filesWithoutValidationMarkerCannotBecomeReady</td>
-<td class="success">0.059s</td>
+<td class="success">0.647s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">freeformMaskKeepsInkInsideAndWhitesOutside</td>
-<td class="success">0.239s</td>
+<td class="success">0.510s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">rectangleCropUsesOriginalCoordinates</td>
-<td class="success">0.058s</td>
+<td class="success">0.407s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -145,14 +145,26 @@ java.lang.Throwable: Explicit termination method 'close' not called
 	at androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper$OpenHelper.innerGetDatabase(FrameworkSQLiteOpenHelper.android.kt:167)
 	at androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper$OpenHelper.getSupportDatabase(FrameworkSQLiteOpenHelper.android.kt:141)
 	at androidx.sqlite.db.framework.FrameworkSQLiteOpenHelper.getWritableDatabase(FrameworkSQLiteOpenHelper.android.kt:96)
-	at androidx.room.driver.SupportSQLiteDriver.open(SupportSQLiteDriver.android.kt:26)
-	at androidx.room.driver.SupportSQLiteConnectionPool.getSupportConnection(SupportSQLiteConnectionPool.android.kt:35)
-	at androidx.room.driver.SupportSQLiteConnectionPool.useConnection(SupportSQLiteConnectionPool.android.kt:42)
-	at androidx.room.RoomConnectionManager.useConnection(RoomConnectionManager.android.kt:126)
-	at androidx.room.RoomDatabase.useConnection$room_runtime_release(RoomDatabase.android.kt:593)
-	at androidx.room.util.DBUtil__DBUtil_androidKt$performSuspending$$inlined$compatCoroutineExecute$DBUtil__DBUtil_androidKt$1.invokeSuspend(DBUtil.android.kt:113)
+	at androidx.room.RoomDatabase.internalBeginTransaction(RoomDatabase.android.kt:673)
+	at androidx.room.RoomDatabase.beginTransaction(RoomDatabase.android.kt:665)
+	at androidx.room.RoomDatabaseKt__RoomDatabase_androidKt$withTransaction$2.invokeSuspend(RoomDatabase.android.kt:1999)
+	at androidx.room.RoomDatabaseKt__RoomDatabase_androidKt$withTransaction$2.invoke(RoomDatabase.android.kt)
+	at androidx.room.RoomDatabaseKt__RoomDatabase_androidKt$withTransaction$2.invoke(RoomDatabase.android.kt)
+	at androidx.room.RoomDatabaseKt__RoomDatabase_androidKt$withTransactionContext$transactionBlock$1.invokeSuspend(RoomDatabase.android.kt:2015)
+	at androidx.room.RoomDatabaseKt__RoomDatabase_androidKt$withTransactionContext$transactionBlock$1.invoke(RoomDatabase.android.kt)
+	at androidx.room.RoomDatabaseKt__RoomDatabase_androidKt$withTransactionContext$transactionBlock$1.invoke(RoomDatabase.android.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndspatched(Undispatched.kt:66)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:43)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.withContext(Builders.common.kt:165)
+	at kotlinx.coroutines.BuildersKt.withContext(Unknown Source)
+	at androidx.room.RoomDatabaseKt__RoomDatabase_androidKt$startTransactionCoroutine$2$1$1.invokeSuspend(RoomDatabase.android.kt:2048)
 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:100)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:94)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:70)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at androidx.room.RoomDatabaseKt__RoomDatabase_androidKt$startTransactionCoroutine$2$1.run(RoomDatabase.android.kt:2045)
 	at androidx.room.TransactionExecutor.execute$lambda$1$lambda$0(TransactionExecutor.android.kt:38)
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
@@ -168,8 +180,8 @@ java.lang.Throwable: Explicit termination method 'close' not called
 <label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
-</div>Generated by 
-<a href="https://www.gradle.org">Gradle 8.13</a> at Nov 19, 2026, 2:21:21 PM</p>
+</div>Generated by
+<a href="https://www.gradle.org">Gradle 8.13</a> at Nov 19, 2026, 3:08:50 PM</p>
 </div>
 </div>
 </body>

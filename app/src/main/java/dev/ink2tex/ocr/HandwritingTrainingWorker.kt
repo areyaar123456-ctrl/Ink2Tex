@@ -5,73 +5,115 @@ import android.content.pm.ServiceInfo
 import androidx.work.*
 import dev.ink2tex.InkApplication
 import dev.ink2tex.format.MathLayout
-import dev.ink2tex.modelmanager.ModelStore
 import dev.ink2tex.preprocessing.ImagePipeline
-import dev.ink2tex.storage.TrainingLabel
+import dev.ink2tex.storage.TrainingRun
 import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.withLock
+import org.json.JSONArray
+import org.json.JSONObject
 
 class HandwritingTrainingWorker(context: Context, parameters: WorkerParameters) :
     CoroutineWorker(context, parameters) {
     override suspend fun doWork(): Result {
         val app = applicationContext as InkApplication
         val model = inputData.getString("model") ?: return Result.failure()
+        val history = app.database.trainingHistory()
+        var record: TrainingRun? = null
         return try {
             setForeground(WorkNotifications.foreground(
                 applicationContext, id, 412, "Training handwriting weights",
                 if (android.os.Build.VERSION.SDK_INT >= 34) ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE else 0
             ))
             require(app.models.ready(model)) { "Install and select an OvisOCR2 model first." }
-            val labels = app.database.trainingLabels().all()
-            val (training, holdout) = withContext(Dispatchers.IO) { split(labels) }
-
-            setProgress(workDataOf("stage" to "Waiting for the OCR engine"))
-            app.engine.session.withLock {
+            val plan = app.repository.training.plan(model, verifyImages = true)
+            require(plan.problem == null) { plan.problem.orEmpty() }
+            inputData.getString("plan")?.let {
+                require(it == plan.key) { "The checked images changed. Open Training to review the new batch." }
+            }
+            app.repository.training.pinEvaluation(plan)
+            val started = System.currentTimeMillis()
+            val startedRecord = TrainingRun(id.toString(), model, started, null, "running", plan.key,
+                plan.fit.size, plan.evaluate.size, plan.fit.joinToString("\n") { it.historyKey }, "[]", "")
+            record = startedRecord
+            history.put(startedRecord)
+            val stepCount = plan.fit.size + 1 + plan.evaluate.size * 2
+            var completed = 0
+            suspend fun progress(stage: String) {
+                setProgress(workDataOf("stage" to stage, "completed" to completed, "total" to stepCount))
+            }
+            progress("Waiting for the OCR engine")
+            val trial = app.engine.session.withLock {
                 val directory = app.models.directory(model)
                 val staged = File(directory, "handwriting-${id}.part")
                 try {
-                    setProgress(workDataOf("stage" to "Loading model"))
+                    progress("Loading model")
                     app.engine.loadModel(model)
                     app.engine.beginTraining()
-                    training.forEachIndexed { index, sample ->
-                        setProgress(workDataOf("stage" to "Reading training image ${index + 1} of ${training.size}"))
-                        val image = withContext(Dispatchers.IO) { ImagePipeline.preview(File(sample.source), 1440) }
+                    plan.fit.forEachIndexed { index, sample ->
+                        progress("Reading training image ${index + 1} of ${plan.fit.size}")
+                        val image = withContext(Dispatchers.IO) { ImagePipeline.preview(File(sample.label.source), 1440) }
                         try {
-                            app.engine.trainSample(image, trainingSource(sample.transcription))
+                            app.engine.trainSample(image, trainingSource(sample.label.transcription))
+                        } catch (cancelled: CancellationException) {
+                            throw cancelled
+                        } catch (failure: Exception) {
+                            error("Training image ${index + 1}: ${failure.message ?: "Unable to read it"}")
                         } finally { image.recycle() }
+                        completed++
                     }
-                    setProgress(workDataOf("stage" to "Fitting output weights"))
+                    progress("Fitting output weights")
                     if (app.engine.fitTraining() == 0) {
-                        return@withLock Result.success(workDataOf("summary" to "The base model already predicted the training tokens. Kept the active weights."))
+                        return@withLock Trial("unchanged", "The model already predicted the training tokens. Kept the current weights.")
                     }
+                    completed++
 
                     val baselineErrors = mutableListOf<Int>()
                     val candidateErrors = mutableListOf<Int>()
-                    holdout.forEachIndexed { index, sample ->
-                        val image = withContext(Dispatchers.IO) { ImagePipeline.preview(File(sample.source), 1440) }
+                    val baselineMath = mutableListOf<Int>()
+                    val candidateMath = mutableListOf<Int>()
+                    val scorecard = JSONArray()
+                    plan.evaluate.forEachIndexed { index, sample ->
+                        val image = withContext(Dispatchers.IO) { ImagePipeline.preview(File(sample.label.source), 1440) }
                         try {
-                            val expected = trainingSource(sample.transcription)
-                            setProgress(workDataOf("stage" to "Checking active weights on image ${index + 1} of ${holdout.size}"))
-                            val baseline = app.engine.recognize(image, RecognitionOptions(maxTokens = 1024, weights = HandwritingWeights.ACTIVE))
-                            setProgress(workDataOf("stage" to "Checking new weights on image ${index + 1} of ${holdout.size}"))
-                            val proposed = app.engine.recognize(image, RecognitionOptions(maxTokens = 1024, weights = HandwritingWeights.CANDIDATE))
-                            baselineErrors += TrainingEvaluation.errors(expected, baseline.markdown)
-                            candidateErrors += if (proposed.truncated || proposed.markdown.isBlank()) {
-                                Int.MAX_VALUE / 8
-                            } else TrainingEvaluation.errors(expected, proposed.markdown)
+                            val expected = trainingSource(sample.label.transcription)
+                            val step = "image ${index + 1} of ${plan.evaluate.size}"
+                            progress("Checking current weights · $step")
+                            val baseline = app.engine.recognize(image,
+                                RecognitionOptions(maxTokens = 1024, weights = HandwritingWeights.ACTIVE))
+                            completed++
+                            progress("Checking new weights · $step")
+                            val proposed = app.engine.recognize(image,
+                                RecognitionOptions(maxTokens = 1024, weights = HandwritingWeights.CANDIDATE))
+                            completed++
+                            val before = TrainingEvaluation.errors(expected, baseline.markdown)
+                            val after = if (proposed.truncated || proposed.markdown.isBlank()) null
+                            else TrainingEvaluation.errors(expected, proposed.markdown)
+                            baselineErrors += before
+                            candidateErrors += after ?: Int.MAX_VALUE / 8
+                            val beforeMath = TrainingEvaluation.mathErrors(expected, baseline.markdown)
+                            val afterMath = after?.let { TrainingEvaluation.mathErrors(expected, proposed.markdown) }
+                            baselineMath += beforeMath
+                            candidateMath += afterMath ?: Int.MAX_VALUE / 8
+                            scorecard.put(JSONObject().put("beforeMath", beforeMath).put("afterMath", afterMath ?: JSONObject.NULL).put("before", before).put("after", after ?: JSONObject.NULL)
+                                .put("currentMs", baseline.durationMs).put("newMs", proposed.durationMs))
                         } finally { image.recycle() }
                     }
-                    val improved = TrainingEvaluation.accept(baselineErrors, candidateErrors)
-                    val summary = if (improved) {
+                    if (TrainingEvaluation.accept(baselineErrors, candidateErrors, baselineMath, candidateMath)) {
+                        progress("Saving the improved checkpoint")
                         app.engine.saveCandidate(staged)
                         currentCoroutineContext().ensureActive()
-                        check(staged.renameTo(File(directory, WEIGHTS))) { "Unable to install the trained weights." }
-                        "Saved new weights. Held-out character edits: ${baselineErrors.sum()} → ${candidateErrors.sum()} on ${holdout.size} image(s)."
+                        val accepted = Trial("promoted",
+                            "Saved new weights. Held-out text edits: ${baselineErrors.sum()} → ${candidateErrors.sum()}. Math edits: ${baselineMath.sum()} → ${candidateMath.sum()}.", scorecard)
+                        withContext(NonCancellable + Dispatchers.IO) {
+                            TrainingCheckpoints.promote(directory, staged)
+                            history.put(startedRecord.completed(accepted))
+                            record = null
+                        }
+                        accepted
                     } else {
-                        "Kept the active weights. The candidate did not improve the held-out images without a regression."
+                        Trial("kept", "Kept current weights. The candidate tied, worsened, or left an evaluation image incomplete.", scorecard)
                     }
-                    Result.success(workDataOf("summary" to summary))
                 } finally {
                     withContext(NonCancellable + Dispatchers.IO) {
                         staged.delete()
@@ -79,46 +121,42 @@ class HandwritingTrainingWorker(context: Context, parameters: WorkerParameters) 
                     }
                 }
             }
+            withContext(NonCancellable) {
+                record?.let { history.put(it.completed(trial)) }
+            }
+            Result.success(workDataOf("summary" to trial.summary))
         } catch (failure: CancellationException) {
+            withContext(NonCancellable) {
+                record?.let { history.put(it.copy(finished = System.currentTimeMillis(), outcome = "cancelled", summary = "Training cancelled.")) }
+            }
             throw failure
         } catch (failure: OutOfMemoryError) {
-            Result.failure(workDataOf("summary" to "Training ran out of memory. Close other large apps or use smaller snips."))
+            val message = "Training ran out of memory. Close other large apps or use smaller snips."
+            record?.let { history.put(it.copy(finished = System.currentTimeMillis(), outcome = "failed", summary = message)) }
+            Result.failure(workDataOf("summary" to message))
         } catch (failure: Exception) {
-            Result.failure(workDataOf("summary" to (failure.message ?: "Training failed.").take(2000)))
+            val message = (failure.message ?: "Training failed.").take(2000)
+            record?.let { history.put(it.copy(finished = System.currentTimeMillis(), outcome = "failed", summary = message)) }
+            Result.failure(workDataOf("summary" to message))
         }
     }
 
-    private suspend fun split(labels: List<TrainingLabel>): Pair<List<TrainingLabel>, List<TrainingLabel>> {
-        val heldOutDocuments = labels.filter { it.evaluation }.map { it.documentId }.toSet()
-        val holdout = labels.filter { it.evaluation }.take(3)
-        require(holdout.isNotEmpty()) { "Mark a separate image for evaluation before training." }
-        val evaluationHashes = labels.filter { it.evaluation }.map { ModelStore.sha256(File(it.source)) }.toSet()
-        val seen = evaluationHashes.toMutableSet()
-        val training = mutableListOf<TrainingLabel>()
-        for (label in labels) {
-            currentCoroutineContext().ensureActive()
-            if (label.documentId in heldOutDocuments) continue
-            if (!File(label.source).isFile || !seen.add(ModelStore.sha256(File(label.source)))) continue
-            training += label
-            if (training.size == 12) break
-        }
-        require(training.isNotEmpty()) { "Add a reviewed training image from a different note." }
-        require((training + holdout).all { it.transcription.encodeToByteArray().size <= 12_000 }) {
-            "Use shorter training snips. A batch accepts labels up to 12,000 UTF-8 bytes and 768 model tokens per training image."
-        }
-        return training to holdout
-    }
+    private fun TrainingRun.completed(trial: Trial) = copy(
+        finished = System.currentTimeMillis(), outcome = trial.outcome,
+        summary = trial.summary, scorecard = trial.scorecard.toString()
+    )
+
+    private data class Trial(val outcome: String, val summary: String, val scorecard: JSONArray = JSONArray())
 
     private fun trainingSource(text: String): String =
         MathLayout.displayStandalone(LocalOcrEngine.normalizeDelimiters(text)).trim()
 
     companion object {
         const val NAME = "handwriting-training"
-        const val WEIGHTS = "handwriting-head-v1.bin"
 
-        fun enqueue(context: Context, modelId: String) {
+        fun enqueue(context: Context, modelId: String, plan: TrainingPlan) {
             val request = OneTimeWorkRequestBuilder<HandwritingTrainingWorker>()
-                .setInputData(workDataOf("model" to modelId)).build()
+                .setInputData(workDataOf("model" to modelId, "plan" to plan.key)).build()
             WorkManager.getInstance(context).enqueueUniqueWork(NAME, ExistingWorkPolicy.KEEP, request)
         }
     }

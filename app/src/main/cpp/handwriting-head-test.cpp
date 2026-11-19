@@ -38,8 +38,14 @@ int main(int argc, char ** argv) {
         bool rejected = false;
         try { mismatch.load(argv[1]); } catch (const std::runtime_error &) { rejected = true; }
         check(rejected, "Incompatible head was accepted");
+        ink::HandwritingHead next = restored;
+        for (int i = 0; i < 8; ++i) next.add(b, base, 0);
+        next.fit(std::atomic<bool>(false));
+        float warm_start[] = {0.5f, 0.f, -1.f};
+        next.apply(unseen_a, warm_start);
+        check(warm_start[1] > warm_start[0], "Warm-start training discarded previous weights");
         std::filesystem::remove(argv[1]);
-        std::cout << "PASS: supervised updates, checked control retention, persisted weights and shape validation\n";
+        std::cout << "PASS: supervised updates, checked control retention, persisted weights, warm-start training and shape validation\n";
         return 0;
     } catch (const std::exception & failure) {
         std::cerr << failure.what() << '\n';

@@ -67,7 +67,7 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
   val start=System.nanoTime()
   active=null
   monitored { NativeBridge.load(File(store.directory(modelId),manifest.components[0].name).absolutePath,File(store.directory(modelId),manifest.components[1].name).absolutePath,Runtime.getRuntime().availableProcessors().coerceIn(1,4),context.applicationInfo.nativeLibraryDir,imageTokenBudget)
-   val checkpoint=File(store.directory(modelId),HandwritingTrainingWorker.WEIGHTS)
+   val checkpoint=File(store.directory(modelId),TrainingCheckpoints.ACTIVE)
    hasTrainedWeights=!allowUnvalidated && checkpoint.isFile
    checkpointError=null
    if(hasTrainedWeights) {
