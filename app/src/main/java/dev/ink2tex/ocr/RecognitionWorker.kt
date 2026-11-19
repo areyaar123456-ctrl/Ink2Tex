@@ -39,7 +39,12 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
     val examples=if(inputData.getBoolean("useExamples",true)) {
      app.repository.handwriting.profile.first().forScan(sources)
     } else emptyList()
-    val options=RecognitionOptions(examples=examples)
+    val options=RecognitionOptions(
+     examples=examples,
+     weights=if(settings.trainedWeights && inputData.getBoolean("trainedWeights", true)) {
+      HandwritingWeights.ACTIVE
+     } else HandwritingWeights.STOCK
+    )
     var failure: Exception?=null
     for(candidate in candidateModels) {
      try {
@@ -90,8 +95,8 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
   }
  }
  companion object {
-  fun enqueue(context: Context, documentId: String, model: String, deduplicate: Boolean=false, fallback: Boolean=false, useExamples: Boolean=true) {
-   val request=OneTimeWorkRequestBuilder<RecognitionWorker>().setInputData(workDataOf("document" to documentId,"model" to model,"deduplicate" to deduplicate,"fallback" to fallback,"useExamples" to useExamples)).addTag("ocr").addTag(documentId).build()
+  fun enqueue(context: Context, documentId: String, model: String, deduplicate: Boolean=false, fallback: Boolean=false, useExamples: Boolean=true, trainedWeights: Boolean=true) {
+   val request=OneTimeWorkRequestBuilder<RecognitionWorker>().setInputData(workDataOf("document" to documentId,"model" to model,"deduplicate" to deduplicate,"fallback" to fallback,"useExamples" to useExamples,"trainedWeights" to trainedWeights)).addTag("ocr").addTag(documentId).build()
    WorkManager.getInstance(context).enqueueUniqueWork("ocr-$documentId",ExistingWorkPolicy.KEEP,request)
   }
  }

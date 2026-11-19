@@ -19,6 +19,7 @@ class HandwritingExamplesTest {
  @Test fun keepsOnlyRecentCheckedExamplesAndSkipsTargetImage() = runBlocking {
   val app=RuntimeEnvironment.getApplication() as InkApplication
   val store=HandwritingExamples(app)
+  store.enable(true)
   val examples=(1..3).map { index ->
    HandwritingExample("example-$index",File.createTempFile("example-$index",".png",app.cacheDir).path,
     "Exact example $index: \$p \\nmid a\$")

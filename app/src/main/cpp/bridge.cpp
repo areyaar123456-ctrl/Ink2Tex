@@ -15,7 +15,7 @@ static std::vector<unsigned char> bytes(JNIEnv * env, jbyteArray array) {
 
 extern "C" JNIEXPORT jbyteArray JNICALL Java_dev_ink2tex_ocr_NativeBridge_recognize(
     JNIEnv * env, jobject, jbyteArray rgb, jint width, jint height, jstring prompt, jint max_tokens,
-    jobjectArray pixels, jintArray widths, jintArray heights, jobjectArray transcriptions) {
+    jobjectArray pixels, jintArray widths, jintArray heights, jobjectArray transcriptions, jint headMode) {
  auto * e = env;
  try {
   if (width < 1 || height < 1 || int64_t(width) * height > 4000000 ||
@@ -47,7 +47,7 @@ extern "C" JNIEXPORT jbyteArray JNICALL Java_dev_ink2tex_ocr_NativeBridge_recogn
    e->DeleteLocalRef(text);
   }
   auto target = bytes(e, rgb);
-  auto result = ink::recognize(target.data(), width, height, str(e, prompt), max_tokens, examples);
+  auto result = ink::recognize(target.data(), width, height, str(e, prompt), max_tokens, examples, headMode);
   std::string payload=std::to_string(result.tokens)+"\n"+(result.truncated ? "1\n":"0\n")+result.text;
   auto out=e->NewByteArray(payload.size());e->SetByteArrayRegion(out,0,payload.size(),(const jbyte*)payload.data());return out;
  } catch(const std::exception&x){fail(e,x);return nullptr;}
@@ -66,4 +66,31 @@ extern "C" JNIEXPORT jstring JNICALL Java_dev_ink2tex_ocr_NativeBridge_systemInf
 extern "C" JNIEXPORT jlongArray JNICALL Java_dev_ink2tex_ocr_NativeBridge_timings(JNIEnv*e,jobject) {
  jlong values[]={ink::input_tokens.load(),ink::preprocessing_ms.load(),ink::evaluation_ms.load(),ink::generation_ms.load()};
  auto out=e->NewLongArray(4);if(out)e->SetLongArrayRegion(out,0,4,values);return out;
+}
+
+
+extern "C" JNIEXPORT void JNICALL Java_dev_ink2tex_ocr_NativeBridge_loadHead(JNIEnv * e, jobject, jstring path) {
+ try { ink::load_head(str(e, path)); } catch (const std::exception & error) { fail(e, error); }
+}
+extern "C" JNIEXPORT void JNICALL Java_dev_ink2tex_ocr_NativeBridge_beginTraining(JNIEnv * e, jobject) {
+ try { ink::begin_training(); } catch (const std::exception & error) { fail(e, error); }
+}
+extern "C" JNIEXPORT void JNICALL Java_dev_ink2tex_ocr_NativeBridge_trainSample(
+    JNIEnv * e, jobject, jbyteArray rgb, jint width, jint height, jstring prompt, jbyteArray target) {
+ try {
+    if (width < 1 || height < 1 || int64_t(width) * height > 4000000 ||
+        int64_t(width) * height * 3 != e->GetArrayLength(rgb) ||
+        e->GetArrayLength(target) < 1 || e->GetArrayLength(target) > 12000) {
+        throw std::runtime_error("Invalid labeled image.");
+    }
+    auto pixels = bytes(e, rgb);
+    auto answer = bytes(e, target);
+    ink::train_sample(pixels.data(), width, height, str(e, prompt), std::string(answer.begin(), answer.end()));
+ } catch (const std::exception & error) { fail(e, error); }
+}
+extern "C" JNIEXPORT jint JNICALL Java_dev_ink2tex_ocr_NativeBridge_fitTraining(JNIEnv * e, jobject) {
+ try { return ink::fit_training(); } catch (const std::exception & error) { fail(e, error); return 0; }
+}
+extern "C" JNIEXPORT void JNICALL Java_dev_ink2tex_ocr_NativeBridge_saveCandidate(JNIEnv * e, jobject, jstring path) {
+ try { ink::save_candidate(str(e, path)); } catch (const std::exception & error) { fail(e, error); }
 }

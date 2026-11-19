@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "handwriting-head.h"
 #include "cpu-projector.h"
 #include "llama.h"
 #include "mtmd.h"
@@ -20,7 +21,20 @@ static std::mutex mutex;
 static llama_model * model = nullptr;
 static llama_context * context = nullptr;
 static mtmd_context * vision = nullptr;
+static std::unique_ptr<HandwritingHead> active_head;
+static std::unique_ptr<HandwritingHead> candidate_head;
+static std::unique_ptr<HandwritingHead> new_head() {
+ if (!model || !context || !vision) throw std::runtime_error("No model loaded.");
+ return std::make_unique<HandwritingHead>(llama_model_n_embd_out(model),
+                                           llama_vocab_n_tokens(llama_model_get_vocab(model)));
+}
+struct HeadActivations {
+ explicit HeadActivations(bool needed) { llama_set_embeddings_nextn(context, needed, true); }
+ ~HeadActivations() { llama_set_embeddings_nextn(context, false, true); }
+};
 static void release() {
+ active_head.reset();
+ candidate_head.reset();
  if (vision) mtmd_free(vision);
  if (context) llama_free(context);
  if (model) llama_model_free(model);
@@ -104,10 +118,9 @@ static int tokenize_with_examples(mtmd_input_chunks * chunks, const mtmd_bitmap 
  return mtmd_tokenize_from_parts(vision, chunks, inputs.data(), inputs.size(), true);
 }
 
-Result recognize(const unsigned char * rgb, int width, int height, const std::string & instruction, int max_tokens,
-                 const std::vector<Example> & examples) {
- std::lock_guard<std::mutex> guard(mutex);
- if (!model || !context || !vision) throw std::runtime_error("No model loaded.");
+static llama_pos evaluate_image(const unsigned char * rgb, int width, int height,
+                              const std::string & instruction, int max_tokens,
+                              const std::vector<Example> & examples) {
  if (width < 1 || height < 1 || (int64_t)width*height > 4000000) throw std::runtime_error("Image exceeds the safe pixel budget.");
  phase=3; generated=0;
  input_tokens=0;preprocessing_ms=0;evaluation_ms=0;generation_ms=0;
@@ -134,6 +147,17 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
  llama_pos past = 0;
  if (mtmd_helper_eval_chunks(vision,context,chunks.get(),0,0,512,true,&past)) throw std::runtime_error(cancelled ? "Conversion cancelled." : "Image evaluation failed.");
  evaluation_ms=milliseconds(eval_start);
+ return past;
+}
+
+Result recognize(const unsigned char * rgb, int width, int height, const std::string & instruction,
+                 int max_tokens, const std::vector<Example> & examples, int head_mode) {
+ std::lock_guard<std::mutex> guard(mutex);
+ if (!model || !context || !vision) throw std::runtime_error("No model loaded.");
+ const auto * head = head_mode == 2 ? candidate_head.get() : head_mode == 1 ? active_head.get() : nullptr;
+ const bool apply_head = head && !head->empty();
+ const HeadActivations activations(apply_head);
+ auto past = evaluate_image(rgb, width, height, instruction, max_tokens, examples);
  std::unique_ptr<llama_sampler, decltype(&llama_sampler_free)> sampler(llama_sampler_init_greedy(),llama_sampler_free);
  const llama_vocab * vocab = llama_model_get_vocab(model);
  phase=5;
@@ -145,6 +169,12 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
  try {
   for (int i=0;i<max_tokens;i++) {
    if (cancelled) throw std::runtime_error("Conversion cancelled.");
+   if (apply_head) {
+    const auto * hidden = llama_get_embeddings_nextn_ith(context, -1);
+    auto * logits = llama_get_logits_ith(context, -1);
+    if (!hidden || !logits) throw std::runtime_error("The model did not provide handwriting activations.");
+    head->apply(hidden, logits);
+   }
    llama_token token = llama_sampler_sample(sampler.get(),context,-1);
    if (llama_vocab_is_eog(vocab,token)) { generation_ms=milliseconds(generate_start);llama_batch_free(batch); return result; }
    std::vector<char> piece(256);
@@ -163,4 +193,80 @@ Result recognize(const unsigned char * rgb, int width, int height, const std::st
  } catch (...) { llama_batch_free(batch); throw; }
  generation_ms=milliseconds(generate_start);llama_batch_free(batch); return result;
 }
+void load_head(const std::string & path) {
+ std::lock_guard<std::mutex> guard(mutex);
+ auto head = new_head();
+ head->load(path);
+ active_head = std::move(head);
+}
+
+void begin_training() {
+ std::lock_guard<std::mutex> guard(mutex);
+ candidate_head = new_head();
+}
+
+void train_sample(const unsigned char * rgb, int width, int height,
+                  const std::string & prompt, const std::string & transcription) {
+ std::lock_guard<std::mutex> guard(mutex);
+ if (!candidate_head) throw std::runtime_error("Start a training batch first.");
+ const auto * vocab = llama_model_get_vocab(model);
+ std::vector<llama_token> tokens(768);
+ // The supplied source is literal text. Chat special tokens are never interpreted.
+ const int count = llama_tokenize(vocab, transcription.data(), transcription.size(),
+                                  tokens.data(), tokens.size(), false, false);
+ if (count < 1) throw std::runtime_error("Use a shorter labeled snip (up to 768 model tokens).");
+ tokens.resize(count);
+ const auto eos = llama_vocab_eos(vocab);
+ if (eos < 0) throw std::runtime_error("The model has no end-of-transcription token.");
+ tokens.push_back(eos);
+
+ // Masked NextN output exposes the final normalized decoder state without outputting every prompt token.
+ const HeadActivations activations(true);
+ auto position = evaluate_image(rgb, width, height, prompt, tokens.size(), {});
+ candidate_head->add(llama_get_embeddings_nextn_ith(context, -1),
+                     llama_get_logits_ith(context, -1), tokens.front());
+
+ // Teacher-force checked tokens in small blocks to bound the full-vocabulary output buffer.
+ std::unique_ptr<llama_batch_ext, decltype(&llama_batch_ext_free)> batch(
+     llama_batch_ext_init(context), llama_batch_ext_free);
+ if (!batch) throw std::runtime_error("Unable to allocate a training batch.");
+ phase = 8;
+ for (int start = 0; start < count; start += 12) {
+    if (cancelled) throw std::runtime_error("Training cancelled.");
+    llama_batch_ext_clear(batch.get());
+    const int end = std::min(start + 12, count);
+    for (int index = start; index < end; ++index) {
+        const int row = llama_batch_ext_add_token(batch.get(), 0, tokens[index]);
+        if (row < 0 || !llama_batch_ext_set_pos(batch.get(), row, &position)
+            || !llama_batch_ext_set_output_logits(batch.get(), row, true)) {
+            throw std::runtime_error("Unable to prepare a checked token.");
+        }
+        ++position;
+    }
+    if (llama_process(context, LLAMA_PROCESS_TYPE_DECODE, batch.get())) {
+        throw std::runtime_error(cancelled ? "Training cancelled." : "Unable to read training activations.");
+    }
+    for (int index = start; index < end; ++index) {
+        candidate_head->add(llama_get_embeddings_nextn_ith(context, index - start),
+                            llama_get_logits_ith(context, index - start), tokens[index + 1]);
+    }
+    generated = end;
+ }
+}
+
+int fit_training() {
+ std::lock_guard<std::mutex> guard(mutex);
+ if (!candidate_head) throw std::runtime_error("Start a training batch first.");
+ phase = 9;
+ const auto count = candidate_head->training_tokens();
+ candidate_head->fit(cancelled);
+ return candidate_head->empty() ? 0 : int(count);
+}
+
+void save_candidate(const std::string & path) {
+ std::lock_guard<std::mutex> guard(mutex);
+ if (!candidate_head || candidate_head->empty()) throw std::runtime_error("No changed weights to save.");
+ candidate_head->save(path);
+}
+
 }

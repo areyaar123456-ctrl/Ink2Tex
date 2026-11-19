@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.MathLayoutTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-19T13:17:21.035Z" hostname="4060979d6adb" time="0.009">
+<testsuite name="dev.ink2tex.MathLayoutTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-19T14:21:12.172Z" hostname="4060979d6adb" time="0.01">
   <properties/>
   <testcase name="inlineEquationsAndSeparateInlineSpansStayInline" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
-  <testcase name="formattingDoesNotCorrectMistakesOrChangeGrouping" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
-  <testcase name="fencedAndIndentedCodeAreNotReformatted" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
+  <testcase name="formattingDoesNotCorrectMistakesOrChangeGrouping" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
+  <testcase name="fencedAndIndentedCodeAreNotReformatted" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
   <testcase name="existingSavedInlineEquationGetsDisplayPreviewWithoutChangingItsSource" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
-  <testcase name="existingDisplayMathIsIdempotent" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
+  <testcase name="existingDisplayMathIsIdempotent" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
   <testcase name="escapedDollarsInsideMathAreKeptAndCurrencyIsNotRewritten" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
-  <testcase name="standaloneSummationKeepsExactlyTheWrittenExpression" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
-  <testcase name="codeFenceContentCannotCloseFenceWithTrailingProse" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
+  <testcase name="standaloneSummationKeepsExactlyTheWrittenExpression" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
+  <testcase name="codeFenceContentCannotCloseFenceWithTrailingProse" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

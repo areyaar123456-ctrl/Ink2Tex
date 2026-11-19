@@ -2,6 +2,8 @@ package dev.ink2tex.storage
 
 import android.content.Context
 import androidx.room.*
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "documents")
@@ -25,10 +27,23 @@ data class Document(
  @Query("UPDATE documents SET markdown=:text WHERE id=:id") suspend fun edit(id: String, text: String)
  @Query("SELECT source FROM documents") suspend fun sources(): List<String>
  @Query("UPDATE documents SET status=:status, error=:error WHERE id=:id") suspend fun state(id: String, status: String, error: String?)
+ @Query("UPDATE documents SET source='' WHERE id=:id") suspend fun clearSource(id: String)
  @Query("DELETE FROM documents WHERE id=:id") suspend fun delete(id: String)
 }
-@Database(entities = [Document::class], version = 1, exportSchema = true)
+@Database(entities = [Document::class, TrainingLabel::class], version = 2, exportSchema = true)
 abstract class InkDatabase : RoomDatabase() {
  abstract fun documents(): DocumentDao
- companion object { fun create(context: Context) = Room.databaseBuilder(context, InkDatabase::class.java, "ink2tex.db").build() }
+ abstract fun trainingLabels(): TrainingLabelDao
+ companion object {
+  val ADD_TRAINING_LABELS = object : Migration(1, 2) {
+   override fun migrate(db: SupportSQLiteDatabase) {
+    db.execSQL("""CREATE TABLE IF NOT EXISTS training_labels (
+        documentId TEXT NOT NULL, source TEXT NOT NULL, transcription TEXT NOT NULL,
+        review TEXT NOT NULL, evaluation INTEGER NOT NULL, updated INTEGER NOT NULL,
+        PRIMARY KEY(documentId, source))""")
+   }
+  }
+  fun create(context: Context) = Room.databaseBuilder(context, InkDatabase::class.java, "ink2tex.db")
+      .addMigrations(ADD_TRAINING_LABELS).build()
+ }
 }

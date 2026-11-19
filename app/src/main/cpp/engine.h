@@ -18,5 +18,11 @@ struct Example {
  std::string transcription;
 };
 Result recognize(const unsigned char * rgb, int width, int height, const std::string & prompt,
-                 int max_tokens, const std::vector<Example> & examples = {});
+                 int max_tokens, const std::vector<Example> & examples = {}, int head_mode = 0);
+void load_head(const std::string & path);
+void begin_training();
+void train_sample(const unsigned char * rgb, int width, int height,
+                  const std::string & prompt, const std::string & transcription);
+int fit_training();
+void save_candidate(const std::string & path);
 }

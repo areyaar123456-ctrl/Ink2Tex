@@ -26,6 +26,8 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
  override val diagnostics = state.asStateFlow()
  private var active: String? = null
  private var activeBudget=1600
+ private var hasTrainedWeights=false
+ private var checkpointError: String?=null
  private suspend fun <T> native(block: () -> T): T = suspendCancellableCoroutine { continuation ->
   continuation.invokeOnCancellation { NativeBridge.cancel() }
   executor.execute {
@@ -64,7 +66,19 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
   require(!memory.lowMemory && memory.availMem>manifest.ramReserveBytes) { "Not enough free RAM. Close other large apps, then try again. The model reserves a conservative 3 GiB budget." }
   val start=System.nanoTime()
   active=null
-  monitored { NativeBridge.load(File(store.directory(modelId),manifest.components[0].name).absolutePath,File(store.directory(modelId),manifest.components[1].name).absolutePath,Runtime.getRuntime().availableProcessors().coerceIn(1,4),context.applicationInfo.nativeLibraryDir,imageTokenBudget) }
+  monitored { NativeBridge.load(File(store.directory(modelId),manifest.components[0].name).absolutePath,File(store.directory(modelId),manifest.components[1].name).absolutePath,Runtime.getRuntime().availableProcessors().coerceIn(1,4),context.applicationInfo.nativeLibraryDir,imageTokenBudget)
+   val checkpoint=File(store.directory(modelId),HandwritingTrainingWorker.WEIGHTS)
+   hasTrainedWeights=!allowUnvalidated && checkpoint.isFile
+   checkpointError=null
+   if(hasTrainedWeights) {
+    try {
+     NativeBridge.loadHead(checkpoint.absolutePath)
+    } catch (_: IllegalStateException) {
+     hasTrainedWeights=false
+     checkpointError="Saved handwriting weights could not be loaded. Training can replace them."
+    }
+   }
+  }
   val elapsed=(System.nanoTime()-start)/1_000_000
   active=modelId;activeBudget=imageTokenBudget; state.update { it.copy(loadedModel=modelId,initializationMs=elapsed,stage="Ready",lastError=null,backendInfo=NativeBridge.systemInfo(),imageTokenBudget=imageTokenBudget) }
   return LoadResult(modelId,elapsed)
@@ -76,8 +90,10 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
   val start=System.nanoTime()
   try {
    val rgb=withContext(Dispatchers.Default) { toRgb(image) }
+   val usingTrainedWeights=options.weights==HandwritingWeights.ACTIVE && hasTrainedWeights
+   val requestedExamples=if(usingTrainedWeights)emptyList() else options.examples
    val examples=withContext(Dispatchers.IO) {
-    options.examples.take(HandwritingExamples.MAX_EXAMPLES).mapNotNull { example ->
+    requestedExamples.take(HandwritingExamples.MAX_EXAMPLES).mapNotNull { example ->
      val reference=try {
       ImagePipeline.preview(File(example.source), 500)
      } catch (_: IllegalArgumentException) {
@@ -97,7 +113,7 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
      examples.map { it.first.bytes }.toTypedArray(),
      examples.map { it.first.width }.toIntArray(),
      examples.map { it.first.height }.toIntArray(),
-     examples.map { it.second }.toTypedArray()
+     examples.map { it.second }.toTypedArray(), options.weights.nativeId
     ).decodeToString()
     output to NativeBridge.timings()
    }
@@ -105,7 +121,9 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
    val pieces=raw.split('\n',limit=3);require(pieces.size==3) { "Invalid native response" }
    val warnings=mutableListOf("Review against the original. The model supplies no calibrated handwriting confidence.")
    if(examples.isNotEmpty())warnings.add(0,"Used ${examples.size} saved handwriting example(s). Check the result against the original.")
-   if(examples.size<options.examples.size)warnings.add(0,"A saved handwriting example could not be opened.")
+   if(options.weights==HandwritingWeights.ACTIVE) checkpointError?.let { warnings.add(0,it) }
+   if(usingTrainedWeights)warnings.add(0,"Used trained handwriting weights.")
+   if(examples.size<requestedExamples.size)warnings.add(0,"A saved handwriting example could not be opened.")
    if(pieces[1]=="1")warnings+="Output reached the token limit. Rerun smaller regions; the transcription is incomplete."
    if(activeBudget==256)warnings+="Faster scan uses less image detail. Check small symbols; rerun with Full detail if needed."
    val result=RecognitionResult(MathLayout.displayStandalone(normalizeDelimiters(pieces[2])),(System.nanoTime()-start)/1_000_000,pieces[0].toInt(),pieces[1]=="1",warnings)
@@ -113,6 +131,24 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
    return result
   } catch(e: Exception) { state.update { it.copy(lastError=e.message,stage=if(e is CancellationException) "Cancelled" else "Failed") };throw e }
  }
+ suspend fun beginTraining() = native { NativeBridge.beginTraining() }
+
+ suspend fun trainSample(image: Bitmap, transcription: String) {
+  val id=active ?: error("No model loaded")
+  val rgb=withContext(Dispatchers.Default) { toRgb(image) }
+  state.update { it.copy(stage="Reading a labeled image") }
+  monitored {
+   NativeBridge.trainSample(rgb.bytes,rgb.width,rgb.height,store.manifest(id).prompt,transcription.encodeToByteArray())
+  }
+ }
+
+ suspend fun fitTraining(): Int {
+  state.update { it.copy(stage="Updating handwriting weights") }
+  return monitored { NativeBridge.fitTraining() }
+ }
+
+ suspend fun saveCandidate(file: File) = native { NativeBridge.saveCandidate(file.absolutePath) }
+
  private fun toRgb(image: Bitmap): RgbImage {
   val pixels=IntArray(image.width*image.height)
   image.getPixels(pixels,0,image.width,0,0,image.width,image.height)
@@ -127,7 +163,7 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
   }
   return RgbImage(bytes,bounds.width,bounds.height)
  }
- override suspend fun unloadModel() { active=null;native { NativeBridge.unload() };state.update { it.copy(loadedModel=null,stage="Unloaded") } }
+ override suspend fun unloadModel() { active=null;hasTrainedWeights=false;native { NativeBridge.unload() };state.update { it.copy(loadedModel=null,stage="Unloaded") } }
  override fun cancel() { NativeBridge.cancel() }
  companion object {
   // Delimiter normalization only: no algebra, spelling or variable rewriting.

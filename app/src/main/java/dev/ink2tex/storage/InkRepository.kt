@@ -2,6 +2,7 @@ package dev.ink2tex.storage
 
 import android.content.Context
 import android.graphics.Bitmap
+import androidx.room.withTransaction
 import dev.ink2tex.preprocessing.ImagePipeline
 import java.io.File
 import java.util.UUID
@@ -14,6 +15,7 @@ class InkRepository(val context: Context, val database: InkDatabase) {
  val settings = Settings(context)
  val handwriting = HandwritingExamples(context)
  val images = File(context.filesDir, "images").apply { mkdirs() }
+ val training = TrainingLabels(context, database, images)
  suspend fun save(bitmap: Bitmap, title: String = "Handwritten note"): Document = withContext(Dispatchers.IO) {
   val id = UUID.randomUUID().toString()
   val file = File(images, "$id.png")
@@ -32,7 +34,10 @@ class InkRepository(val context: Context, val database: InkDatabase) {
  }
  suspend fun deleteOriginals(document: Document) = withContext(Dispatchers.IO) {
   handwriting.remove(document.id)
-  documents.put(document.copy(source=""))
+  database.withTransaction {
+   database.trainingLabels().removeDocument(document.id)
+   documents.clearSource(document.id)
+  }
   val remaining=documents.sources().flatMap { it.lines() }.toSet()
   document.source.lines().filter { it.isNotBlank() && it !in remaining }.forEach { path ->
    val file=File(path);if(file.canonicalFile.parentFile==images.canonicalFile)file.delete()
@@ -40,7 +45,10 @@ class InkRepository(val context: Context, val database: InkDatabase) {
  }
  suspend fun delete(document: Document) = withContext(Dispatchers.IO) {
   handwriting.remove(document.id)
-  documents.delete(document.id)
+  database.withTransaction {
+   database.trainingLabels().removeDocument(document.id)
+   documents.delete(document.id)
+  }
   val remaining=documents.sources().flatMap { it.lines() }.toSet()
   document.source.split("\n").filter { it.isNotBlank() }.forEach { path ->
    val f = File(path); if (path !in remaining && f.canonicalFile.parentFile == images.canonicalFile) f.delete()

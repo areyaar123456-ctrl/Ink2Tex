@@ -13,7 +13,7 @@ import java.io.File
 data class HandwritingExample(val documentId: String, val source: String, val transcription: String)
 
 data class HandwritingProfile(
-    val enabled: Boolean = true,
+    val enabled: Boolean = false,
     val examples: List<HandwritingExample> = emptyList()
 ) {
     fun forScan(sources: List<String>): List<HandwritingExample> =
@@ -26,7 +26,7 @@ class HandwritingExamples(private val context: Context) {
     private val enabled = booleanPreferencesKey("handwriting_examples_enabled")
 
     val profile = context.settingsStore.data.map {
-        HandwritingProfile(it[enabled] ?: true, decode(it[saved]))
+        HandwritingProfile(it[enabled] ?: false, decode(it[saved]))
     }
 
     suspend fun save(example: HandwritingExample) {

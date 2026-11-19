@@ -8,6 +8,8 @@ object NativeProgress {
    3 -> "Preparing image"
    4 -> "Analyzing image and prompt · CPU"
    5 -> "Generating transcription · $tokens output tokens"
+   8 -> "Reading checked source · $tokens tokens"
+   9 -> "Updating handwriting weights"
    7 -> "Preparing CPU vision cache · first use"
    6 -> "Releasing model memory"
    else -> "Starting native operation"

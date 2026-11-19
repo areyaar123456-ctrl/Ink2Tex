@@ -10,8 +10,10 @@ import androidx.work.WorkManager
 import dev.ink2tex.InkApplication
 import dev.ink2tex.crop.*
 import dev.ink2tex.ocr.RecognitionWorker
+import dev.ink2tex.ocr.HandwritingTrainingWorker
 import dev.ink2tex.preprocessing.ImagePipeline
 import dev.ink2tex.storage.Document
+import dev.ink2tex.storage.TrainingLabel
 import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.*
@@ -24,6 +26,9 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
  val history=repository.history.stateIn(viewModelScope,SharingStarted.Eagerly,emptyList())
  val settings=repository.settings.flow.stateIn(viewModelScope,SharingStarted.Eagerly,dev.ink2tex.storage.ScannerSettings())
  val handwriting=repository.handwriting.profile.stateIn(viewModelScope,SharingStarted.Eagerly,dev.ink2tex.storage.HandwritingProfile())
+ val trainingLabels=repository.training.labels.stateIn(viewModelScope,SharingStarted.Eagerly,emptyList())
+ val trainingJobs=WorkManager.getInstance(app).getWorkInfosForUniqueWorkFlow(HandwritingTrainingWorker.NAME)
+     .stateIn(viewModelScope,SharingStarted.Eagerly,emptyList())
  val navigation=MutableStateFlow(Navigation())
  val message=MutableStateFlow<String?>(null)
  val importing=MutableStateFlow(false)
@@ -83,9 +88,9 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
   val result=Document(UUID.randomUUID().toString(),title,source=docs.joinToString("\n") { it.source })
   repository.documents.put(result);return result
  }
- fun convert(document:Document,model:String=settings.value.model,deduplicate:Boolean=false,fallback:Boolean=false,useExamples:Boolean=true) {
+ fun convert(document:Document,model:String=settings.value.model,deduplicate:Boolean=false,fallback:Boolean=false,useExamples:Boolean=true,trainedWeights:Boolean=true) {
   if(model!="auto" && !app.models.ready(model)) { message.value="Download a compatible model in Model Store before converting.";go("models");return }
-  RecognitionWorker.enqueue(app,document.id,model,deduplicate,fallback,useExamples)
+  RecognitionWorker.enqueue(app,document.id,model,deduplicate,fallback,useExamples,trainedWeights)
  }
  fun save(id:String,text:String) { saveJob?.cancel();saveJob=viewModelScope.launch { delay(300);repository.documents.edit(id,text) } }
  fun flush(id:String,text:String) { saveJob?.cancel();viewModelScope.launch { repository.documents.edit(id,text) } }
@@ -94,14 +99,27 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
  fun delete(doc:Document) { viewModelScope.launch { withContext(Dispatchers.IO) { WorkManager.getInstance(app).cancelUniqueWork("ocr-${doc.id}").result.get() };repository.delete(doc) } }
  fun append(current:Document,target:Document) { viewModelScope.launch { repository.documents.put(target.copy(markdown=target.markdown.trimEnd()+"\n\n"+current.markdown,source=target.source+"\n"+current.source,status="Review"));go("editor",target.id) } }
  fun mergeWith(current:Document,target:Document) { viewModelScope.launch { val merged=combine(listOf(target,current),"Scrolling proof");go("editor",merged.id) } }
- fun compare(doc:Document,other:String,useExamples:Boolean=true) { viewModelScope.launch {
-  val label=if(useExamples) "comparison" else "without examples"
+ fun compare(doc:Document,other:String,useExamples:Boolean=true,trainedWeights:Boolean=true) { viewModelScope.launch {
+  val label=if(!trainedWeights) "stock model" else if(useExamples) "comparison" else "without examples"
   val comparison=doc.copy(id=UUID.randomUUID().toString(),title="${doc.title} · $label",
    markdown="",modelId=other,status="Captured",error=null,durationMs=null,tokens=null,warnings="")
   repository.documents.put(comparison)
-  convert(comparison,other,useExamples=useExamples)
+  convert(comparison,other,useExamples=useExamples,trainedWeights=trainedWeights)
   message.value="Comparison queued. Both results appear in History."
  } }
+ fun recordTraining(label:TrainingLabel, finished:(Boolean)->Unit = {}) { viewModelScope.launch {
+  try {
+   repository.training.save(label)
+   message.value=if(label.evaluation) "Evaluation label saved." else "Training label saved."
+   finished(true)
+  } catch(e:CancellationException) { throw e }
+  catch(e:Exception) {
+   message.value=e.message ?: "Unable to save the training label."
+   finished(false)
+  }
+ } }
+ fun trainHandwriting(model:String) = HandwritingTrainingWorker.enqueue(app,model)
+ fun cancelTraining() { WorkManager.getInstance(app).cancelUniqueWork(HandwritingTrainingWorker.NAME) }
  fun teachHandwriting(documentId:String,text:String) { viewModelScope.launch {
   try {
    repository.teachHandwriting(documentId,text)

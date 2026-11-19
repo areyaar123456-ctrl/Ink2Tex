@@ -41,6 +41,7 @@ import dev.ink2tex.preprocessing.ImagePipeline
 import dev.ink2tex.preprocessing.PdfImport
 import dev.ink2tex.storage.Document
 import dev.ink2tex.storage.HandwritingExamples
+import dev.ink2tex.storage.TrainingLabel
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -52,7 +53,7 @@ private val Mint=Color(0xFFE5F3ED)
 private val Paper=Color(0xFFF6F8F6)
 private val Gold=Color(0xFFB68235)
 private fun bytes(value:Long):String = when { value>=1024L*1024*1024 -> "%.2f GiB".format(value/(1024.0*1024*1024));else->"%.0f MiB".format(value/(1024.0*1024)) }
-private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("history","History",InkIcons.History),Triple("models","Model Store",InkIcons.Memory),Triple("settings","Settings",InkIcons.Tune))
+private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("history","History",InkIcons.History),Triple("models","Model Store",InkIcons.Memory),Triple("training","Training",InkIcons.AutoAwesome),Triple("settings","Settings",InkIcons.Tune))
 
 @Composable fun InkApp(vm:InkViewModel,start:()->Unit,stop:()->Unit) {
  val settings by vm.settings.collectAsStateWithLifecycle()
@@ -89,6 +90,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
        "history" -> HistoryScreen(vm)
        "models" -> ModelScreen(vm)
        "settings" -> SettingsScreen(vm)
+       "training" -> TrainingScreen(vm)
        "diagnostics" -> DiagnosticsScreen(vm)
        "editor" -> EditorScreen(vm)
        "crop" -> CropScreen(vm)
@@ -232,7 +234,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
       scope.launch { vm.repository.handwriting.enable(it) }
      }
      if(handwriting.examples.isEmpty()) {
-      Text("Correct a short snip in Source, then choose Teach my handwriting.",fontSize=12.sp)
+      Text("Correct a short snip in Source, then choose Save scan-time example.",fontSize=12.sp)
      }
      handwriting.examples.asReversed().forEach { example ->
       Row(verticalAlignment=Alignment.CenterVertically) {
@@ -315,6 +317,11 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
  if(doc==null) { Hint("Opening note…");return }
  val context=LocalContext.current
  val handwriting by vm.handwriting.collectAsStateWithLifecycle()
+ val trainingLabels by vm.trainingLabels.collectAsStateWithLifecycle()
+ val originals=doc.source.lines().filter { it.isNotBlank() }
+ val singleOriginal=originals.singleOrNull()
+ val checked=trainingLabels.firstOrNull { it.documentId==doc.id && it.source==singleOriginal }
+ var trainingReview by rememberSaveable(doc.id) { mutableStateOf(false) }
  var teach by rememberSaveable(doc.id) { mutableStateOf(false) }
  var text by rememberSaveable(doc.id) { mutableStateOf(doc.markdown) }
  var copied by rememberSaveable(doc.id) { mutableStateOf("") }
@@ -343,13 +350,20 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
     DropdownMenuItem(text={Text("Share Markdown + LaTeX")},onClick={DocumentExport.share(context,text);menu=false})
     DropdownMenuItem(text={Text("Append to existing proof")},onClick={appending=true;menu=false})
     DropdownMenuItem(text={Text("Rerun / compare models")},onClick={rerun=true;menu=false})
-    DropdownMenuItem(text={Text("Teach my handwriting")},enabled=work==null && text.isNotBlank() &&
+    DropdownMenuItem(text={Text("Save source for weight training")},enabled=work==null && originals.isNotEmpty(),
+      onClick={trainingReview=true;menu=false})
+    DropdownMenuItem(text={Text("Save scan-time example")},enabled=work==null && text.isNotBlank() &&
       doc.source.lineSequence().count { it.isNotBlank() }==1,
       onClick={teach=true;menu=false})
     if(handwriting.enabled && handwriting.examples.isNotEmpty() &&
        doc.modelId.isNotBlank() && vm.app.models.ready(doc.modelId)) {
      DropdownMenuItem(text={Text("Compare without examples")},enabled=work==null && doc.warnings.contains("Used ") && doc.warnings.contains("saved handwriting example"),
       onClick={vm.compare(doc,doc.modelId,useExamples=false);menu=false})
+    }
+    if(doc.warnings.contains("Used trained handwriting weights.") &&
+       doc.modelId.isNotBlank() && vm.app.models.ready(doc.modelId)) {
+     DropdownMenuItem(text={Text("Compare stock model")},enabled=work==null,
+      onClick={vm.compare(doc,doc.modelId,useExamples=false,trainedWeights=false);menu=false})
     }
     DropdownMenuItem(text={Text("Reorder / remove captured sections")},onClick={ordering=true;menu=false})
     DropdownMenuItem(text={Text("Compare saved results")},onClick={comparing=true;menu=false})
@@ -360,6 +374,11 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
   FlowRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
    Button(onClick={vm.flush(doc.id,text);vm.convert(doc,fallback=allowFallback)},enabled=work==null) { Icon(InkIcons.AutoAwesome,null,Modifier.size(18.dp));Spacer(Modifier.width(6.dp));Text(if(text.isBlank())"Convert" else "Rerun OCR") }
    OutlinedButton(onClick={vm.copy(text)},enabled=text.isNotBlank()) { Icon(InkIcons.ContentCopy,null,Modifier.size(18.dp));Spacer(Modifier.width(6.dp));Text("Copy Markdown + LaTeX") }
+   if(singleOriginal!=null) OutlinedButton(
+    onClick={vm.recordTraining(TrainingLabel(doc.id,singleOriginal,text,"accepted",checked?.evaluation ?: false))},
+    enabled=work==null && text.isNotBlank() && checked?.transcription!=text
+   ){Text(if(checked?.transcription==text)"Source checked" else "Mark correct")}
+   if(originals.isNotEmpty()) TextButton(onClick={trainingReview=true},enabled=work==null){Text("Submit corrected source")}
    if(work!=null)OutlinedButton(onClick={WorkManager.getInstance(context).cancelWorkById(work.id)}){Text("Cancel")}
   }
   if(includesPdf) {
@@ -395,9 +414,10 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
   }
   Text("Rendering checks syntax, not transcription accuracy or mathematical correctness.",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
  }
+ if(trainingReview)TrainingReviewDialog(vm,doc,text){trainingReview=false}
  if(teach)AlertDialog(
   onDismissRequest={teach=false},
-  title={Text("Teach my handwriting")},
+  title={Text("Save scan-time example")},
   text={Text("Save this short image and its checked Source as an example. Future scans use the last ${HandwritingExamples.MAX_EXAMPLES} examples on this device. Check every symbol before saving.")},
   confirmButton={TextButton(onClick={vm.teachHandwriting(doc.id,text);teach=false}){Text("Save example")}},
   dismissButton={TextButton(onClick={teach=false}){Text("Cancel")}}

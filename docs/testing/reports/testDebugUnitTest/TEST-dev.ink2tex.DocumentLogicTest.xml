@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.DocumentLogicTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-19T13:17:20.459Z" hostname="4060979d6adb" time="0.468">
+<testsuite name="dev.ink2tex.DocumentLogicTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-19T14:20:59.736Z" hostname="4060979d6adb" time="0.215">
   <properties/>
-  <testcase name="markdownDoesNotRewriteUnderscoresInsideMathematics" classname="dev.ink2tex.DocumentLogicTest" time="0.262"/>
-  <testcase name="smallScreenshotIsOneCoherentInput" classname="dev.ink2tex.DocumentLogicTest" time="0.001"/>
+  <testcase name="markdownDoesNotRewriteUnderscoresInsideMathematics" classname="dev.ink2tex.DocumentLogicTest" time="0.109"/>
+  <testcase name="smallScreenshotIsOneCoherentInput" classname="dev.ink2tex.DocumentLogicTest" time="0.004"/>
   <testcase name="latexExportEscapesProseButKeepsMathSource" classname="dev.ink2tex.DocumentLogicTest" time="0.004"/>
   <testcase name="normalizationOnlyChangesMathDelimiters" classname="dev.ink2tex.DocumentLogicTest" time="0.003"/>
-  <testcase name="tilesCoverLargeExportWithoutGapsAndRemainBounded" classname="dev.ink2tex.DocumentLogicTest" time="0.099"/>
-  <testcase name="ordinaryRepetitionIsPreservedByDefault" classname="dev.ink2tex.DocumentLogicTest" time="0.016"/>
+  <testcase name="tilesCoverLargeExportWithoutGapsAndRemainBounded" classname="dev.ink2tex.DocumentLogicTest" time="0.022"/>
+  <testcase name="ordinaryRepetitionIsPreservedByDefault" classname="dev.ink2tex.DocumentLogicTest" time="0.05"/>
   <testcase name="changedSignsAtBoundaryAreNeverDeduplicated" classname="dev.ink2tex.DocumentLogicTest" time="0.0"/>
-  <testcase name="previewDoesNotExecuteModelHtmlOrRemoteLinks" classname="dev.ink2tex.DocumentLogicTest" time="0.05"/>
+  <testcase name="previewDoesNotExecuteModelHtmlOrRemoteLinks" classname="dev.ink2tex.DocumentLogicTest" time="0.016"/>
   <testcase name="proofErrorsAreNotRewritten" classname="dev.ink2tex.DocumentLogicTest" time="0.004"/>
   <testcase name="exactSubstantialBoundaryOnlyRemovedWhenRequested" classname="dev.ink2tex.DocumentLogicTest" time="0.001"/>
   <testcase name="rejectInvalidTileBudget" classname="dev.ink2tex.DocumentLogicTest" time="0.0"/>

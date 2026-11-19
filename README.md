@@ -1,11 +1,20 @@
 # Ink2TeX
 
-A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.4; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.5; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
 
-## Teach Ink2TeX your handwriting
+## Train handwriting weights on Android
+
+1. After checking a single image, tap **Mark correct**. For mistakes or a multi-image note, tap **Submit corrected source**. Pick the image and enter the exact Markdown and LaTeX that belongs to that image.
+2. Check at least one separate note and choose **Reserve this note for evaluation** on its review dialog. Reuse independently handwritten notes with similar symbols so the check reflects new handwriting.
+3. In **Training**, select a ready OvisOCR2 model through Model Store and tap **Train on tablet**. Training runs locally in the background. The first batch uses up to 12 reviewed training images and three evaluation images. More labels may be kept or exported as a private image-and-source ZIP.
+4. Ink2TeX activates the candidate if it lowers character edits on at least one evaluated image and raises the count on none. The **Compare stock model** editor action saves a separate run on the same image.
+
+Training updates a compact set of the output weights while the vision encoder and decoder stay frozen. It makes one forward pass per labeled image, then reuses the decoder states for six rounds of weight updates. Inference uses the saved weights with one image and no scan-time examples. Expect a separate training cost and some per-token compute for the output weights. Tablet training time, scan speed and handwriting accuracy still need device measurements. Full-model retraining is outside this Android runtime.
+
+## Optional scan-time examples
 
 1. Snip one or two representative lines. Check the result against the original and correct **Source**.
-2. Open the editor menu and choose **Teach my handwriting → Save example**.
+2. Open the editor menu and choose **Save scan-time example → Save example**. Enable examples in Settings.
 3. Scan a different note. Ink2TeX includes up to two saved image-and-text pairs in local inference. The result says when examples were used.
 4. Use **Compare without examples** in that result’s menu to run the same model on a separate copy. In **Settings**, turn examples off or remove them individually.
 

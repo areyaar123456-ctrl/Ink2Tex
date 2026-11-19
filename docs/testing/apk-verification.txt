@@ -1,4 +1,4 @@
-JVM / Robolectric: {'tests': 40, 'failures': 0, 'errors': 0, 'skipped': 0}
+JVM / Robolectric: {'tests': 43, 'failures': 0, 'errors': 0, 'skipped': 0}
 Lint: 0 errors, 40 warnings
 lib/arm64-v8a/libandroidx.graphics.path.so: 16 KB LOAD alignment passed
 lib/arm64-v8a/libc++_shared.so: 16 KB LOAD alignment passed
@@ -13,6 +13,7 @@ lib/arm64-v8a/libggml-cpu-android_armv9.2_1.so: 16 KB LOAD alignment passed
 lib/arm64-v8a/libggml-cpu-android_armv9.2_2.so: 16 KB LOAD alignment passed
 lib/arm64-v8a/libggml.so: 16 KB LOAD alignment passed
 lib/arm64-v8a/libink2tex.so: 16 KB LOAD alignment passed
+Training JNI exports verified
 lib/arm64-v8a/libllama.so: 16 KB LOAD alignment passed
 lib/arm64-v8a/libmtmd.so: 16 KB LOAD alignment passed
 Verifies
@@ -54,4 +55,4 @@ Signer #1 public key MD5 digest: 6889eaf6924d6934f9f0f1755169d13e
 
 app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk: zipalign passed
 Signing certificate matches previous published APK
-package: name='dev.ink2tex' versionCode='5' versionName='0.1.4' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'
+package: name='dev.ink2tex' versionCode='6' versionName='0.1.5' platformBuildVersionName='16' platformBuildVersionCode='36' compileSdkVersion='36' compileSdkVersionCodename='16'

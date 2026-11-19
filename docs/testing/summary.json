@@ -1,11 +1,11 @@
 {
   "app": "Ink2TeX",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "date": "2026-11-19",
   "androidTarget": 36,
   "androidMinimum": 31,
   "abi": "arm64-v8a",
-  "unitAndRobolectricTests": 40,
+  "unitAndRobolectricTests": 43,
   "testFailures": 0,
   "testSkips": 0,
   "lintErrors": 0,
@@ -27,5 +27,6 @@
     "baselineInputTokens": 334,
     "exampleInputTokens": 745,
     "scope": "Same target and model. One host comparison. Private inputs and outputs excluded."
-  }
+  },
+  "supervisedTraining": "Native weight-update, persistence, shape and control tests passed. OvisOCR2 host: 21 checked token targets, weight updates and reload passed. Different handwritten crop produced identical output with stock and candidate. Gate would reject the tie. No Android target attached."
 }

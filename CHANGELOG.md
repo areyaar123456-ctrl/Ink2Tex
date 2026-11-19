@@ -1,5 +1,12 @@
 # Changes
 
+## 0.1.5 — On-device output weight training
+
+- Mark a scan correct or save corrected source for a particular image. Reviewed pairs stay private and can be exported explicitly.
+- Run supervised training batches on the tablet using OvisOCR2's final decoder activations. Small sparse output weights are updated with gradient steps, then tested with actual OCR on reserved images from separate notes. A candidate that fails the comparison leaves the active checkpoint intact.
+- Loaded weights run in the normal one-image path. **Compare stock model** bypasses trained weights and scan-time examples. The older scan-time examples can be enabled separately and are off by default.
+- Preserve prior history with a Room migration. Labels are removed when their teaching note or its original is deleted.
+
 ## 0.1.4 — Handwriting examples
 
 - Teach from a short, checked crop using the editor menu. The two latest confirmed examples are used locally as image-and-text demonstrations on later scans.
