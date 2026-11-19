@@ -1,6 +1,10 @@
 # Ink2TeX
 
-A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.2; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.3; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+
+## 0.1.3 PDF imports
+
+Reimport your original PDF to use the new reader. Tall pages are rendered as full-width sections at a readable scale. Tap **Original** to review each section in order. PDF conversion uses Full detail, and any empty, truncated or overlapping sections are flagged for review. Verify exponents and divisibility symbols before using the transcription.
 
 ## 0.1.2 equation layout and scan speed
 
@@ -34,7 +38,7 @@ Gradle wrapper, Kotlin source, resources, Room schema, native JNI code, and pinn
 4. Review the original, editable Markdown + LaTeX and rendered result. Copy or export after checking uncertain symbols. On a wide tablet screen the panels appear together.
 5. Tap **Stop Conversion Mode** in the panel or notification to end capture authorization.
 
-The panel also offers screenshot, freeform, multi-snip and manually guided scrolling scans. Imports use the Android file picker. PDF pages are processed at a bounded raster resolution. Long image exports use tiles; check the boundaries. No Accessibility Service is requested.
+The panel also offers screenshot, freeform, multi-snip and manually guided scrolling scans. Imports use the Android file picker. Tall PDF pages are rendered directly in bounded sections. Long image exports use tiles; check the boundaries. No Accessibility Service is requested.
 
 The benchmark action uses a clearly labelled printed runtime smoke image and records real time/tokens. For handwriting acceptance use the supplied scanned evaluation image or your own Nebo export; compare actual source fidelity. Do not interpret the smoke benchmark as handwriting accuracy.
 

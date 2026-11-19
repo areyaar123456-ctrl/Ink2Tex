@@ -1,5 +1,11 @@
 # Changes
 
+## 0.1.3 — Tall PDF imports
+
+- Render tall PDF pages in full-width sections directly from the PDF. The importer keeps more handwriting detail and looks for blank horizontal gaps around each cut. If it finds no clear gap, neighboring sections share 128 pixels and the app flags the overlap for review.
+- Keep all pages and sections together in one editable result. PDF recognition uses Full detail and warns about sections with empty or truncated output.
+- Reimport previously scanned PDFs from their source files to use the new rasterization. Earlier imports saved small images with the detail already lost.
+
 ## 0.1.2 — equation layout and explicit speed option
 
 - Promote an inline-delimited formula occupying its own source line to display math, preserving the formula body exactly. Inline prose formulas, existing display math, fenced and indented code are retained. This applies to new OCR output and existing rendered previews. Operators now use display sizing and summation limits above/below, with equations aligned to the text margin. Existing saved source is not silently edited when opening a preview.

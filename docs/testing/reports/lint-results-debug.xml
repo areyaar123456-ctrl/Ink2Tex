@@ -321,7 +321,7 @@
         errorLine2="  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="281"
+            line="282"
             column="3"/>
     </issue>
 
@@ -433,7 +433,7 @@
         errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="236"
+            line="237"
             column="534"/>
     </issue>
 
@@ -451,6 +451,22 @@
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/modelmanager/ModelDownloadWorker.kt"
             line="30"
             column="22"/>
+    </issue>
+
+    <issue
+        id="UsableSpace"
+        severity="Warning"
+        message="Consider also using `StorageManager#getAllocatableBytes` and `allocateBytes` which will consider clearable cached data"
+        category="Performance"
+        priority="3"
+        summary="Using getUsableSpace()"
+        explanation="When you need to allocate disk space for large files, consider using the new `allocateBytes(FileDescriptor, long)` API, which will automatically clear cached files belonging to other apps (as needed) to meet your request.&#xA;&#xA;When deciding if the device has enough disk space to hold your new data, call `getAllocatableBytes(UUID)` instead of using `getUsableSpace()`, since the former will consider any cached data that the system is willing to clear on your behalf.&#xA;&#xA;Note that these methods require API level 26. If your app is running on older devices, you will probably need to use both APIs, conditionally switching on `Build.VERSION.SDK_INT`. Lint only looks in the same compilation unit to see if you are already using both APIs, so if it warns even though you are already using the new API, consider moving the calls to the same file or suppressing the warning."
+        errorLine1="                        require(repository.images.usableSpace > MIN_FREE_BYTES + rawBytes) {"
+        errorLine2="                                                  ~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/PdfImport.kt"
+            line="65"
+            column="51"/>
     </issue>
 
     <issue
@@ -504,22 +520,6 @@
     <issue
         id="UseKtx"
         severity="Warning"
-        message="Use the KTX function `createBitmap` instead?"
-        category="Productivity"
-        priority="6"
-        summary="Use KTX extension function"
-        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
-        errorLine1="      val bitmap=Bitmap.createBitmap((page.width*scale).toInt().coerceAtLeast(1),(page.height*scale).toInt().coerceAtLeast(1),Bitmap.Config.ARGB_8888)"
-        errorLine2="                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/ImagePipeline.kt"
-            line="25"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UseKtx"
-        severity="Warning"
         message="Use the KTX extension function `String.toUri` instead?"
         category="Productivity"
         priority="6"
@@ -529,7 +529,7 @@
         errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="203"
+            line="204"
             column="74"/>
     </issue>
 
@@ -545,7 +545,7 @@
         errorLine2="   ~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt"
-            line="58"
+            line="57"
             column="4"/>
     </issue>
 
@@ -561,7 +561,7 @@
         errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt"
-            line="64"
+            line="63"
             column="23"/>
     </issue>
 
@@ -611,6 +611,22 @@
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/stitching/OverlapDetector.kt"
             line="15"
             column="61"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX function `createBitmap` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        val bitmap = Bitmap.createBitmap(sections.width, rows.count(), Bitmap.Config.ARGB_8888)"
+        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/PdfImport.kt"
+            line="99"
+            column="22"/>
     </issue>
 
     <issue

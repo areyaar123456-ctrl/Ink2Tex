@@ -38,6 +38,7 @@ import dev.ink2tex.capture.CaptureService
 import dev.ink2tex.crop.CropView
 import dev.ink2tex.export.DocumentExport
 import dev.ink2tex.preprocessing.ImagePipeline
+import dev.ink2tex.preprocessing.PdfImport
 import dev.ink2tex.storage.Document
 import java.io.File
 import java.text.SimpleDateFormat
@@ -301,6 +302,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
  var output by remember { mutableStateOf("") };var outputType by remember { mutableStateOf("md") };var web by remember { mutableStateOf<WebView?>(null) };var allowFallback by rememberSaveable { mutableStateOf(false) };var ordering by remember { mutableStateOf(false) };var deleteOriginals by remember { mutableStateOf(false) };val editorScope=rememberCoroutineScope()
  val export=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri -> uri?.let { runCatching { DocumentExport.write(context,it,output) }.onSuccess {vm.message.value="Saved ${outputType.uppercase()} document"}.onFailure {e->vm.message.value=e.message} } }
  val work=queue.firstOrNull { doc.id in it.tags && !it.state.isFinished }
+ val includesPdf=doc.source.lineSequence().any(PdfImport::isSection)
  LaunchedEffect(doc.markdown) { if(text==databaseText)text=doc.markdown;databaseText=doc.markdown }
  LaunchedEffect(doc.status,doc.markdown,settings.autoCopy) { if(settings.autoCopy && doc.status=="Review" && doc.markdown.isNotBlank() && copied!=doc.markdown) { vm.copy(doc.markdown);copied=doc.markdown } }
  DisposableEffect(doc.id) { onDispose { vm.flush(doc.id,text) } }
@@ -329,7 +331,9 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
    OutlinedButton(onClick={vm.copy(text)},enabled=text.isNotBlank()) { Icon(InkIcons.ContentCopy,null,Modifier.size(18.dp));Spacer(Modifier.width(6.dp));Text("Copy Markdown + LaTeX") }
    if(work!=null)OutlinedButton(onClick={WorkManager.getInstance(context).cancelWorkById(work.id)}){Text("Cancel")}
   }
-  Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+  if(includesPdf) {
+   Text("PDF scans use full detail",fontSize=11.sp)
+  } else Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)) {
    FilterChip(selected=settings.fastScan,onClick={editorScope.launch { vm.repository.settings.fastScan(!settings.fastScan) }},enabled=work==null,label={Text(if(settings.fastScan)"Faster scan" else "Full detail")})
    Text(if(settings.fastScan)"Less detail · check small symbols" else "Best detail for small symbols",fontSize=11.sp)
   }

@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 39 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 40 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Sat Nov 14 13:26:49 UTC 2026 by AGP (8.11.1)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Nov 19 12:36:21 UTC 2026 by AGP (8.11.1)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -192,7 +192,7 @@ document.getElementById(id).style.display = 'none';
       <a class="mdl-navigation__link" href="#ChromeOsAbiSupport"><i class="material-icons warning-icon">warning</i>Missing ABI Support for ChromeOS (1)</a>
       <a class="mdl-navigation__link" href="#SetJavaScriptEnabled"><i class="material-icons warning-icon">warning</i>Using <code>setJavaScriptEnabled</code> (1)</a>
       <a class="mdl-navigation__link" href="#DrawAllocation"><i class="material-icons warning-icon">warning</i>Memory allocations within drawing code (6)</a>
-      <a class="mdl-navigation__link" href="#UsableSpace"><i class="material-icons warning-icon">warning</i>Using getUsableSpace() (2)</a>
+      <a class="mdl-navigation__link" href="#UsableSpace"><i class="material-icons warning-icon">warning</i>Using getUsableSpace() (3)</a>
       <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (10)</a>
       <a class="mdl-navigation__link" href="#RtlHardcoded"><i class="material-icons warning-icon">warning</i>Using left/right instead of start/end attributes (1)</a>
     </nav>
@@ -234,7 +234,7 @@ document.getElementById(id).style.display = 'none';
 <td class="countColumn">6</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#DrawAllocation">DrawAllocation</a>: Memory allocations within drawing code</td></tr>
 <tr>
-<td class="countColumn">2</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">3</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#UsableSpace">UsableSpace</a>: Using getUsableSpace()</td></tr>
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Productivity">Productivity</a>
 </td></tr>
@@ -559,8 +559,8 @@ Dismiss</button>            </div>
 <div class="issue">
 <div class="warningslist">
 <span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:19</span>: <span class="message">Missing x86_64 ABI support for ChromeOS</span><br /><pre class="errorlines">
-<span class="lineno"> 16 </span>  versionCode = 3
-<span class="lineno"> 17 </span>  versionName = "0.1.2"
+<span class="lineno"> 16 </span>  versionCode = 4
+<span class="lineno"> 17 </span>  versionName = "0.1.3"
 <span class="lineno"> 18 </span>  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 <span class="caretline"><span class="lineno"> 19 </span>  ndk { abiFilters += <span class="warning">"arm64-v8a"</span> }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 <span class="lineno"> 20 </span>  externalNativeBuild { cmake { cppFlags += listOf("-std=c++17", "-O2"); arguments += "-DANDROID_STL=c++_shared" } }
@@ -610,14 +610,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:281</span>: <span class="message">Using <code>setJavaScriptEnabled</code> can introduce XSS vulnerabilities into your application, review carefully</span><br /><pre class="errorlines">
-<span class="lineno"> 278 </span> <span class="keyword">val</span> loader=remember { WebViewAssetLoader.Builder().addPathHandler(<span class="string">"/assets/"</span>,WebViewAssetLoader.AssetsPathHandler(context)).build() }
-<span class="lineno"> 279 </span> <span class="keyword">val</span> html=remember(text,dark) { DocumentExport.html(text,dark) }
-<span class="lineno"> 280 </span> AndroidView(factory={ WebView(it).apply {
-<span class="caretline"><span class="lineno"> 281 </span>  <span class="warning">settings.javaScriptEnabled=<span class="keyword">true</span></span>;settings.allowFileAccess=<span class="keyword">false</span>;settings.allowContentAccess=<span class="keyword">false</span>;settings.domStorageEnabled=<span class="keyword">false</span>;settings.blockNetworkLoads=<span class="keyword">true</span></span>
-<span class="lineno"> 282 </span>  webViewClient=<span class="keyword">object</span>:WebViewClient() {
-<span class="lineno"> 283 </span>   override <span class="keyword">fun</span> shouldInterceptRequest(view:WebView,request:WebResourceRequest):WebResourceResponse? = loader.shouldInterceptRequest(request.url) ?: WebResourceResponse(<span class="string">"text/plain"</span>,<span class="string">"utf-8"</span>,java.io.ByteArrayInputStream(ByteArray(<span class="number">0</span>)))
-<span class="lineno"> 284 </span>   override <span class="keyword">fun</span> shouldOverrideUrlLoading(view:WebView,request:WebResourceRequest)=<span class="keyword">true</span></pre>
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:282</span>: <span class="message">Using <code>setJavaScriptEnabled</code> can introduce XSS vulnerabilities into your application, review carefully</span><br /><pre class="errorlines">
+<span class="lineno"> 279 </span> <span class="keyword">val</span> loader=remember { WebViewAssetLoader.Builder().addPathHandler(<span class="string">"/assets/"</span>,WebViewAssetLoader.AssetsPathHandler(context)).build() }
+<span class="lineno"> 280 </span> <span class="keyword">val</span> html=remember(text,dark) { DocumentExport.html(text,dark) }
+<span class="lineno"> 281 </span> AndroidView(factory={ WebView(it).apply {
+<span class="caretline"><span class="lineno"> 282 </span>  <span class="warning">settings.javaScriptEnabled=<span class="keyword">true</span></span>;settings.allowFileAccess=<span class="keyword">false</span>;settings.allowContentAccess=<span class="keyword">false</span>;settings.domStorageEnabled=<span class="keyword">false</span>;settings.blockNetworkLoads=<span class="keyword">true</span></span>
+<span class="lineno"> 283 </span>  webViewClient=<span class="keyword">object</span>:WebViewClient() {
+<span class="lineno"> 284 </span>   override <span class="keyword">fun</span> shouldInterceptRequest(view:WebView,request:WebResourceRequest):WebResourceResponse? = loader.shouldInterceptRequest(request.url) ?: WebResourceResponse(<span class="string">"text/plain"</span>,<span class="string">"utf-8"</span>,java.io.ByteArrayInputStream(ByteArray(<span class="number">0</span>)))
+<span class="lineno"> 285 </span>   override <span class="keyword">fun</span> shouldOverrideUrlLoading(view:WebView,request:WebResourceRequest)=<span class="keyword">true</span></pre>
 
 </div>
 <div class="metadata"><div class="explanation" id="explanationSetJavaScriptEnabled" style="display: none;">
@@ -757,14 +757,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:236</span>: <span class="message">Consider also using <code>StorageManager#getAllocatableBytes</code> and <code>allocateBytes</code> which will consider clearable cached data</span><br /><pre class="errorlines">
-<span class="lineno"> 233 </span> LaunchedEffect(Unit) { <span class="keyword">while</span>(<span class="keyword">true</span>) { memory=ActivityManager.MemoryInfo().also { context.getSystemService(ActivityManager::<span class="keyword">class</span>.java).getMemoryInfo(it) };javaMemory=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();nativeMemory=Debug.getNativeHeapAllocatedSize();delay(<span class="number">2000</span>) } }
-<span class="lineno"> 234 </span> LazyColumn(verticalArrangement=Arrangement.spacedBy(<span class="number">14.d</span>p)) {
-<span class="lineno"> 235 </span>  item { PageTitle(<span class="string">"Diagnostics"</span>,<span class="string">"Measured values from this running process"</span>) }
-<span class="caretline"><span class="lineno"> 236 </span>  <span class="keyword">val</span> entries=listOf(<span class="string">"Device"</span> to <span class="string">"${</span>android.os.Build.MANUFACTURER<span class="string">} ${</span>android.os.Build.MODEL<span class="string">}"</span>,<span class="string">"Android / ABI"</span> to <span class="string">"${</span>android.os.Build.VERSION.RELEASE<span class="string">} / ${</span>android.os.Build.SUPPORTED_ABIS.joinToString()<span class="string">}"</span>,<span class="string">"Engine"</span> to diagnostic.stage,<span class="string">"Loaded model"</span> to (diagnostic.loadedModel ?: <span class="string">"None"</span>),<span class="string">"CPU backend capabilities"</span> to (diagnostic.backendInfo ?: <span class="string">"Not loaded"</span>),<span class="string">"Available RAM"</span> to bytes(memory.availMem),<span class="string">"Java heap allocated"</span> to bytes(javaMemory),<span class="string">"Native heap allocated"</span> to bytes(nativeMemory),<span class="string">"Free app storage"</span> to bytes(context.filesDir.<span class="warning">usableSpace</span>),<span class="string">"Model initialization"</span> to (diagnostic.initializationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>),<span class="string">"Last inference"</span> to (diagnostic.inferenceMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>),<span class="string">"Last image budget"</span> to <span class="string">"${</span>diagnostic.imageTokenBudget<span class="string">} image tokens maximum"</span>, <span class="string">"Last input tokens"</span> to (diagnostic.inputTokens?.toString() ?: <span class="string">"Not measured"</span>), <span class="string">"Image preparation"</span> to (diagnostic.preprocessingMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Image and prompt analysis"</span> to (diagnostic.evaluationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Text generation"</span> to (diagnostic.generationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Last output tokens"</span> to (diagnostic.outputTokens?.toString() ?: <span class="string">"Not measured"</span>),<span class="string">"Queued / running conversions"</span> to queue.count { !it.state.isFinished }.toString(),<span class="string">"Last engine error"</span> to (diagnostic.lastError ?: <span class="string">"None"</span>))</span>
-<span class="lineno"> 237 </span>  items(entries) { (key,value) -> Surface(shape=RoundedCornerShape(<span class="number">12.d</span>p)) { Row(Modifier.fillMaxWidth().padding(<span class="number">16.d</span>p)) { Text(key,Modifier.weight(<span class="number">1f</span>),fontSize=<span class="number">13.</span>sp);Text(value,Modifier.weight(<span class="number">1f</span>),fontSize=<span class="number">13.</span>sp,fontWeight=FontWeight.Medium) } } }
-<span class="lineno"> 238 </span>  item { Hint(<span class="string">"Heap allocation is not total process RSS or peak model memory. Benchmark timings include real local execution. The bundled printed smoke page tests the runtime, not handwritten-math accuracy."</span>) }
-<span class="lineno"> 239 </span> }
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:237</span>: <span class="message">Consider also using <code>StorageManager#getAllocatableBytes</code> and <code>allocateBytes</code> which will consider clearable cached data</span><br /><pre class="errorlines">
+<span class="lineno"> 234 </span> LaunchedEffect(Unit) { <span class="keyword">while</span>(<span class="keyword">true</span>) { memory=ActivityManager.MemoryInfo().also { context.getSystemService(ActivityManager::<span class="keyword">class</span>.java).getMemoryInfo(it) };javaMemory=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();nativeMemory=Debug.getNativeHeapAllocatedSize();delay(<span class="number">2000</span>) } }
+<span class="lineno"> 235 </span> LazyColumn(verticalArrangement=Arrangement.spacedBy(<span class="number">14.d</span>p)) {
+<span class="lineno"> 236 </span>  item { PageTitle(<span class="string">"Diagnostics"</span>,<span class="string">"Measured values from this running process"</span>) }
+<span class="caretline"><span class="lineno"> 237 </span>  <span class="keyword">val</span> entries=listOf(<span class="string">"Device"</span> to <span class="string">"${</span>android.os.Build.MANUFACTURER<span class="string">} ${</span>android.os.Build.MODEL<span class="string">}"</span>,<span class="string">"Android / ABI"</span> to <span class="string">"${</span>android.os.Build.VERSION.RELEASE<span class="string">} / ${</span>android.os.Build.SUPPORTED_ABIS.joinToString()<span class="string">}"</span>,<span class="string">"Engine"</span> to diagnostic.stage,<span class="string">"Loaded model"</span> to (diagnostic.loadedModel ?: <span class="string">"None"</span>),<span class="string">"CPU backend capabilities"</span> to (diagnostic.backendInfo ?: <span class="string">"Not loaded"</span>),<span class="string">"Available RAM"</span> to bytes(memory.availMem),<span class="string">"Java heap allocated"</span> to bytes(javaMemory),<span class="string">"Native heap allocated"</span> to bytes(nativeMemory),<span class="string">"Free app storage"</span> to bytes(context.filesDir.<span class="warning">usableSpace</span>),<span class="string">"Model initialization"</span> to (diagnostic.initializationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>),<span class="string">"Last inference"</span> to (diagnostic.inferenceMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>),<span class="string">"Last image budget"</span> to <span class="string">"${</span>diagnostic.imageTokenBudget<span class="string">} image tokens maximum"</span>, <span class="string">"Last input tokens"</span> to (diagnostic.inputTokens?.toString() ?: <span class="string">"Not measured"</span>), <span class="string">"Image preparation"</span> to (diagnostic.preprocessingMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Image and prompt analysis"</span> to (diagnostic.evaluationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Text generation"</span> to (diagnostic.generationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Last output tokens"</span> to (diagnostic.outputTokens?.toString() ?: <span class="string">"Not measured"</span>),<span class="string">"Queued / running conversions"</span> to queue.count { !it.state.isFinished }.toString(),<span class="string">"Last engine error"</span> to (diagnostic.lastError ?: <span class="string">"None"</span>))</span>
+<span class="lineno"> 238 </span>  items(entries) { (key,value) -> Surface(shape=RoundedCornerShape(<span class="number">12.d</span>p)) { Row(Modifier.fillMaxWidth().padding(<span class="number">16.d</span>p)) { Text(key,Modifier.weight(<span class="number">1f</span>),fontSize=<span class="number">13.</span>sp);Text(value,Modifier.weight(<span class="number">1f</span>),fontSize=<span class="number">13.</span>sp,fontWeight=FontWeight.Medium) } } }
+<span class="lineno"> 239 </span>  item { Hint(<span class="string">"Heap allocation is not total process RSS or peak model memory. Benchmark timings include real local execution. The bundled printed smoke page tests the runtime, not handwritten-math accuracy."</span>) }
+<span class="lineno"> 240 </span> }
 </pre>
 
 <span class="location"><a href="../../src/main/java/dev/ink2tex/modelmanager/ModelDownloadWorker.kt">../../src/main/java/dev/ink2tex/modelmanager/ModelDownloadWorker.kt</a>:30</span>: <span class="message">Consider also using <code>StorageManager#getAllocatableBytes</code> and <code>allocateBytes</code> which will consider clearable cached data</span><br /><pre class="errorlines">
@@ -775,6 +775,16 @@ Dismiss</button>            </div>
 <span class="lineno">  31 </span>  <span class="keyword">for</span> (component <span class="keyword">in</span> model.components) {
 <span class="lineno">  32 </span>   ensureActive()
 <span class="lineno">  33 </span>   setProgress(workDataOf(<span class="string">"stage"</span> to <span class="string">"Checking ${</span>component.name<span class="string">}"</span>))
+</pre>
+
+<span class="location"><a href="../../src/main/java/dev/ink2tex/preprocessing/PdfImport.kt">../../src/main/java/dev/ink2tex/preprocessing/PdfImport.kt</a>:65</span>: <span class="message">Consider also using <code>StorageManager#getAllocatableBytes</code> and <code>allocateBytes</code> which will consider clearable cached data</span><br /><pre class="errorlines">
+<span class="lineno">  62 </span>    <span class="keyword">val</span> suffix = <span class="keyword">if</span> (band.overlapsNext) OVERLAP_SUFFIX <span class="keyword">else</span> SECTION_SUFFIX
+<span class="lineno">  63 </span>    <span class="keyword">val</span> file = File(repository.images, <span class="string">"$id-${</span>files.size + <span class="number">1</span><span class="string">}$suffix"</span>)
+<span class="lineno">  64 </span>    <span class="keyword">val</span> rawBytes = sections.width.toLong() * band.rows.count() * <span class="number">4</span>
+<span class="caretline"><span class="lineno">  65 </span>    require(repository.images.<span class="warning">usableSpace</span> > MIN_FREE_BYTES + rawBytes) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  66 </span>        <span class="string">"Free up storage, then import the PDF again."</span>
+<span class="lineno">  67 </span>    }
+<span class="lineno">  68 </span>    files += file
 </pre>
 
 </div>
@@ -848,46 +858,36 @@ Dismiss</button>            </div>
 <span class="lineno"> 127 </span> }
 </pre>
 
-<span class="location"><a href="../../src/main/java/dev/ink2tex/preprocessing/ImagePipeline.kt">../../src/main/java/dev/ink2tex/preprocessing/ImagePipeline.kt</a>:25</span>: <span class="message">Use the KTX function <code>createBitmap</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno"> 22 </span>   currentCoroutineContext().ensureActive()
-<span class="lineno"> 23 </span>   pdf.openPage(index).use { page ->
-<span class="lineno"> 24 </span>    <span class="keyword">val</span> scale=min(<span class="number">2f</span>,<span class="number">1800f</span>/max(page.width,page.height))
-<span class="caretline"><span class="lineno"> 25 </span>    <span class="keyword">val</span> bitmap=<span class="warning">Bitmap.createBitmap((page.width*scale).toInt().coerceAtLeast(<span class="number">1</span>),(page.height*scale).toInt().coerceAtLeast(<span class="number">1</span>),Bitmap.Config.ARGB_8888)</span></span>
-<span class="lineno"> 26 </span>    <span class="keyword">try</span> { bitmap.eraseColor(Color.WHITE);page.render(bitmap,<span class="keyword">null</span>,<span class="keyword">null</span>,PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);repository.save(bitmap,<span class="string">"Imported PDF · page ${</span>index+<span class="number">1</span><span class="string">}"</span>) } finally { bitmap.recycle() }
-<span class="lineno"> 27 </span>   }
-<span class="lineno"> 28 </span>  }
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:204</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 201 </span>      <span class="keyword">if</span>(installed || partial) TextButton(onClick={vm.removeModel(model.id);refresh++}){Text(<span class="string">"Delete"</span>)}
+<span class="lineno"> 202 </span>     }
+<span class="lineno"> 203 </span>     <span class="keyword">val</span> context=LocalContext.current
+<span class="caretline"><span class="lineno"> 204 </span>     TextButton(onClick={context.startActivity(Intent(Intent.ACTION_VIEW,<span class="warning">Uri.parse(model.licenseUrl)</span>))}) { Text(model.license+<span class="string">" ↗"</span>) }</span>
+<span class="lineno"> 205 </span>    }
+<span class="lineno"> 206 </span>   } }
+<span class="lineno"> 207 </span>  }
 </pre>
 
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:203</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno"> 200 </span>      <span class="keyword">if</span>(installed || partial) TextButton(onClick={vm.removeModel(model.id);refresh++}){Text(<span class="string">"Delete"</span>)}
-<span class="lineno"> 201 </span>     }
-<span class="lineno"> 202 </span>     <span class="keyword">val</span> context=LocalContext.current
-<span class="caretline"><span class="lineno"> 203 </span>     TextButton(onClick={context.startActivity(Intent(Intent.ACTION_VIEW,<span class="warning">Uri.parse(model.licenseUrl)</span>))}) { Text(model.license+<span class="string">" ↗"</span>) }</span>
-<span class="lineno"> 204 </span>    }
-<span class="lineno"> 205 </span>   } }
-<span class="lineno"> 206 </span>  }
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:57</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  54 </span>    result=previous.copy(source=previous.source+<span class="string">"\n"</span>+document.source,status=<span class="string">"Captured"</span>,error=<span class="keyword">null</span>)
+<span class="lineno">  55 </span>    repository.documents.put(result)
+<span class="lineno">  56 </span>   }
+<span class="caretline"><span class="lineno">  57 </span>   <span class="warning">preferences.edit()</span>.putString(<span class="string">"target"</span>,result.id).apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  58 </span>   message.value=<span class="string">"Section added. Scroll Nebo manually, then tap Scrolling Proof Scan again. Finish when all sections are captured."</span>
+<span class="lineno">  59 </span>  }
+<span class="lineno">  60 </span>  go(<span class="string">"editor"</span>,result.id)
 </pre>
 
 <button class="mdl-button mdl-js-button mdl-button--primary" id="UseKtxDivLink" onclick="reveal('UseKtxDiv');" />+ 5 More Occurrences...</button>
 <div id="UseKtxDiv" style="display: none">
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:58</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno">  55 </span>    result=previous.copy(source=previous.source+<span class="string">"\n"</span>+document.source,status=<span class="string">"Captured"</span>,error=<span class="keyword">null</span>)
-<span class="lineno">  56 </span>    repository.documents.put(result)
-<span class="lineno">  57 </span>   }
-<span class="caretline"><span class="lineno">  58 </span>   <span class="warning">preferences.edit()</span>.putString(<span class="string">"target"</span>,result.id).apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  59 </span>   message.value=<span class="string">"Section added. Scroll Nebo manually, then tap Scrolling Proof Scan again. Finish when all sections are captured."</span>
-<span class="lineno">  60 </span>  }
-<span class="lineno">  61 </span>  go(<span class="string">"editor"</span>,result.id)
-</pre>
-
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:64</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno">  61 </span>  go(<span class="string">"editor"</span>,result.id)
-<span class="lineno">  62 </span>  <span class="keyword">if</span>(!guided &amp;&amp; app.models.available().isNotEmpty())convert(result)
-<span class="lineno">  63 </span> }
-<span class="caretline"><span class="lineno">  64 </span> <span class="keyword">fun</span> finishScroll() { <span class="warning">app.getSharedPreferences(<span class="string">"guided-proof"</span>,<span class="number">0</span>).edit()</span>.remove(<span class="string">"target"</span>).apply();message.value=<span class="string">"Guided capture finished. Review the section order, then convert."</span> }</span>
-<span class="lineno">  65 </span> <span class="keyword">fun</span> useWholeCapture() { viewModelScope.launch { repository.documents.get(navigation.value.documentId ?: <span class="string">""</span>)?.let { finishCropDocument(it) } } }
-<span class="lineno">  66 </span>
-<span class="lineno">  67 </span> <span class="keyword">fun</span> addCrop(selection:CropSelection,finish:Boolean) { viewModelScope.launch {
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:63</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  60 </span>  go(<span class="string">"editor"</span>,result.id)
+<span class="lineno">  61 </span>  <span class="keyword">if</span>(!guided &amp;&amp; app.models.available().isNotEmpty())convert(result)
+<span class="lineno">  62 </span> }
+<span class="caretline"><span class="lineno">  63 </span> <span class="keyword">fun</span> finishScroll() { <span class="warning">app.getSharedPreferences(<span class="string">"guided-proof"</span>,<span class="number">0</span>).edit()</span>.remove(<span class="string">"target"</span>).apply();message.value=<span class="string">"Guided capture finished. Review the section order, then convert."</span> }</span>
+<span class="lineno">  64 </span> <span class="keyword">fun</span> useWholeCapture() { viewModelScope.launch { repository.documents.get(navigation.value.documentId ?: <span class="string">""</span>)?.let { finishCropDocument(it) } } }
+<span class="lineno">  65 </span>
+<span class="lineno">  66 </span> <span class="keyword">fun</span> addCrop(selection:CropSelection,finish:Boolean) { viewModelScope.launch {
 </pre>
 
 <span class="location"><a href="../../src/main/java/dev/ink2tex/MainActivity.kt">../../src/main/java/dev/ink2tex/MainActivity.kt</a>:62</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
@@ -918,6 +918,16 @@ Dismiss</button>            </div>
 <span class="lineno"> 16 </span>    <span class="keyword">fun</span> gray(v:Int)=((v shr <span class="number">16</span> and <span class="number">255</span>)+(v shr <span class="number">8</span> and <span class="number">255</span>)+(v and <span class="number">255</span>))/<span class="number">3</span>
 <span class="lineno"> 17 </span>    <span class="keyword">val</span> av=gray(a);<span class="keyword">val</span> bv=gray(b);total+=abs(av-bv);count++;<span class="keyword">if</span>(av&lt;<span class="number">180</span>)ink++
 <span class="lineno"> 18 </span>   }
+</pre>
+
+<span class="location"><a href="../../src/main/java/dev/ink2tex/preprocessing/PdfImport.kt">../../src/main/java/dev/ink2tex/preprocessing/PdfImport.kt</a>:99</span>: <span class="message">Use the KTX function <code>createBitmap</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  96 </span>       rows: IntRange,
+<span class="lineno">  97 </span>       consume: (Bitmap) -> T
+<span class="lineno">  98 </span>   ): T {
+<span class="caretline"><span class="lineno">  99 </span>       <span class="keyword">val</span> bitmap = <span class="warning">Bitmap.createBitmap(sections.width, rows.count(), Bitmap.Config.ARGB_8888)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 100 </span>       <span class="keyword">try</span> {
+<span class="lineno"> 101 </span>           bitmap.eraseColor(Color.WHITE)
+<span class="lineno"> 102 </span>           <span class="keyword">val</span> transform = Matrix().apply {
 </pre>
 
 </div>

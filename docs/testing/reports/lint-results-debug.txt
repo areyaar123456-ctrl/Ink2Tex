@@ -91,7 +91,7 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 
    https://developer.android.com/ndk/guides/abis
 
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:281: Warning: Using setJavaScriptEnabled can introduce XSS vulnerabilities into your application, review carefully [SetJavaScriptEnabled]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:282: Warning: Using setJavaScriptEnabled can introduce XSS vulnerabilities into your application, review carefully [SetJavaScriptEnabled]
   settings.javaScriptEnabled=true;settings.allowFileAccess=false;settings.allowContentAccess=false;settings.domStorageEnabled=false;settings.blockNetworkLoads=true
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -132,12 +132,15 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    Some methods allocate memory on your behalf (such as Bitmap.create), and
    these should be handled in the same way.
 
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:236: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:237: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
   val entries=listOf("Device" to "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}","Android / ABI" to "${android.os.Build.VERSION.RELEASE} / ${android.os.Build.SUPPORTED_ABIS.joinToString()}","Engine" to diagnostic.stage,"Loaded model" to (diagnostic.loadedModel ?: "None"),"CPU backend capabilities" to (diagnostic.backendInfo ?: "Not loaded"),"Available RAM" to bytes(memory.availMem),"Java heap allocated" to bytes(javaMemory),"Native heap allocated" to bytes(nativeMemory),"Free app storage" to bytes(context.filesDir.usableSpace),"Model initialization" to (diagnostic.initializationMs?.let { "$it ms" } ?: "Not measured"),"Last inference" to (diagnostic.inferenceMs?.let { "$it ms" } ?: "Not measured"),"Last image budget" to "${diagnostic.imageTokenBudget} image tokens maximum", "Last input tokens" to (diagnostic.inputTokens?.toString() ?: "Not measured"), "Image preparation" to (diagnostic.preprocessingMs?.let { "$it ms" } ?: "Not measured"), "Image and prompt analysis" to (diagnostic.evaluationMs?.let { "$it ms" } ?: "Not measured"), "Text generation" to (diagnostic.generationMs?.let { "$it ms" } ?: "Not measured"), "Last output tokens" to (diagnostic.outputTokens?.toString() ?: "Not measured"),"Queued / running conversions" to queue.count { !it.state.isFinished }.toString(),"Last engine error" to (diagnostic.lastError ?: "None"))
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/modelmanager/ModelDownloadWorker.kt:30: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
    require(directory.usableSpace > remaining + 256L*1024*1024) { "Insufficient storage. Free space and tap Resume." }
                      ~~~~~~~~~~~
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/PdfImport.kt:65: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
+                        require(repository.images.usableSpace > MIN_FREE_BYTES + rawBytes) {
+                                                  ~~~~~~~~~~~
 
    Explanation for issues of type "UsableSpace":
    When you need to allocate disk space for large files, consider using the
@@ -165,16 +168,13 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/crop/CropView.kt:124: Warning: Use the KTX extension function Canvas.withClip instead? [UseKtx]
     canvas.save();canvas.clipPath(path);canvas.drawBitmap(decoded,0f,0f,null);canvas.restore();decoded.recycle();return result
     ~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/ImagePipeline.kt:25: Warning: Use the KTX function createBitmap instead? [UseKtx]
-      val bitmap=Bitmap.createBitmap((page.width*scale).toInt().coerceAtLeast(1),(page.height*scale).toInt().coerceAtLeast(1),Bitmap.Config.ARGB_8888)
-                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:203: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:204: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
      TextButton(onClick={context.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(model.licenseUrl)))}) { Text(model.license+" ↗") }
                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:58: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:57: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
    preferences.edit().putString("target",result.id).apply()
    ~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:64: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:63: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
  fun finishScroll() { app.getSharedPreferences("guided-proof",0).edit().remove("target").apply();message.value="Guided capture finished. Review the section order, then convert." }
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/MainActivity.kt:62: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
@@ -186,6 +186,9 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/stitching/OverlapDetector.kt:15: Warning: Use the KTX extension function Bitmap.get instead? [UseKtx]
     val a=previous.getPixel(x,previous.height-rows+y);val b=next.getPixel(x,y)
                                                             ~~~~~~~~~~~~~~~~~~
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/PdfImport.kt:99: Warning: Use the KTX function createBitmap instead? [UseKtx]
+        val bitmap = Bitmap.createBitmap(sections.width, rows.count(), Bitmap.Config.ARGB_8888)
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    Explanation for issues of type "UseKtx":
    The Android KTX libraries decorates the Android platform SDK as well as
@@ -266,4 +269,4 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    the left bitmask. Therefore, you can use gravity="start" rather than
    gravity="left|start".)
 
-0 errors, 39 warnings
+0 errors, 40 warnings

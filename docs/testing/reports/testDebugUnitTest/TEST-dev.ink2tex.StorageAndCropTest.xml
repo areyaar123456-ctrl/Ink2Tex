@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.StorageAndCropTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-14T13:29:04.528Z" hostname="facf080c67d3" time="21.079">
+<testsuite name="dev.ink2tex.StorageAndCropTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-19T12:35:45.287Z" hostname="4060979d6adb" time="14.339">
   <properties/>
-  <testcase name="checksumDetectsCorruption" classname="dev.ink2tex.StorageAndCropTest" time="18.754"/>
-  <testcase name="cancellationStatusCannotOverwriteManualCorrections" classname="dev.ink2tex.StorageAndCropTest" time="0.897"/>
-  <testcase name="freeformMaskKeepsInkInsideAndWhitesOutside" classname="dev.ink2tex.StorageAndCropTest" time="0.602"/>
-  <testcase name="deletingASectionDoesNotBreakACombinedProof" classname="dev.ink2tex.StorageAndCropTest" time="0.247"/>
-  <testcase name="rectangleCropUsesOriginalCoordinates" classname="dev.ink2tex.StorageAndCropTest" time="0.205"/>
-  <testcase name="filesWithoutValidationMarkerCannotBecomeReady" classname="dev.ink2tex.StorageAndCropTest" time="0.199"/>
-  <testcase name="allDownloadableModelsIncludePinnedWeightsAndVisionChecksums" classname="dev.ink2tex.StorageAndCropTest" time="0.171"/>
+  <testcase name="checksumDetectsCorruption" classname="dev.ink2tex.StorageAndCropTest" time="10.176"/>
+  <testcase name="cancellationStatusCannotOverwriteManualCorrections" classname="dev.ink2tex.StorageAndCropTest" time="2.203"/>
+  <testcase name="freeformMaskKeepsInkInsideAndWhitesOutside" classname="dev.ink2tex.StorageAndCropTest" time="1.163"/>
+  <testcase name="deletingASectionDoesNotBreakACombinedProof" classname="dev.ink2tex.StorageAndCropTest" time="0.457"/>
+  <testcase name="rectangleCropUsesOriginalCoordinates" classname="dev.ink2tex.StorageAndCropTest" time="0.145"/>
+  <testcase name="filesWithoutValidationMarkerCannotBecomeReady" classname="dev.ink2tex.StorageAndCropTest" time="0.102"/>
+  <testcase name="allDownloadableModelsIncludePinnedWeightsAndVisionChecksums" classname="dev.ink2tex.StorageAndCropTest" time="0.092"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

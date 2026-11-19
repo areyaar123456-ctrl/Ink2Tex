@@ -1,3 +1,4 @@
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir=/dev/shm/ink2tex-pdf-gradle
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
@@ -27,11 +28,10 @@
 > Task :app:mergeExtDexDebug UP-TO-DATE
 > Task :app:mergeLibDexDebug UP-TO-DATE
 > Task :app:configureCMakeDebug[arm64-v8a]
-> Task :app:kspDebugKotlin
 > Task :app:buildCMakeDebug[arm64-v8a]
 > Task :app:mergeDebugJniLibFolders UP-TO-DATE
-> Task :app:mergeDebugNativeLibs
-> Task :app:stripDebugDebugSymbols
+> Task :app:mergeDebugNativeLibs UP-TO-DATE
+> Task :app:stripDebugDebugSymbols UP-TO-DATE
 > Task :app:validateSigningDebug UP-TO-DATE
 > Task :app:writeDebugAppMetadata UP-TO-DATE
 > Task :app:writeDebugSigningConfigVersions UP-TO-DATE
@@ -64,14 +64,15 @@
 > Task :app:stripDebugAndroidTestDebugSymbols NO-SOURCE
 > Task :app:validateSigningDebugAndroidTest UP-TO-DATE
 > Task :app:writeDebugAndroidTestSigningConfigVersions UP-TO-DATE
+> Task :app:kspDebugKotlin
 > Task :app:compileDebugKotlin
 > Task :app:compileDebugJavaWithJavac UP-TO-DATE
 > Task :app:dexBuilderDebug
 > Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
 > Task :app:processDebugJavaRes UP-TO-DATE
 > Task :app:mergeDebugJavaResource UP-TO-DATE
-> Task :app:mergeProjectDexDebug
 > Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:mergeProjectDexDebug
 > Task :app:bundleDebugClassesToCompileJar
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect UP-TO-DATE
@@ -83,23 +84,29 @@
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes UP-TO-DATE
-> Task :app:lintAnalyzeDebug
+
 > Task :app:testDebugUnitTest
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir=/dev/shm/ink2tex-pdf-gradle
+
+> Task :app:lintAnalyzeDebug
 > Task :app:lintAnalyzeDebugAndroidTest
-> Task :app:kspDebugAndroidTestKotlin
 > Task :app:lintAnalyzeDebugUnitTest
-> Task :app:lintReportDebug UP-TO-DATE
-> Task :app:lintDebug
+> Task :app:kspDebugAndroidTestKotlin
 > Task :app:compileDebugAndroidTestKotlin
 > Task :app:compileDebugAndroidTestJavaWithJavac UP-TO-DATE
-> Task :app:dexBuilderDebugAndroidTest
+> Task :app:dexBuilderDebugAndroidTest UP-TO-DATE
 > Task :app:mergeDebugAndroidTestGlobalSynthetics UP-TO-DATE
 > Task :app:processDebugAndroidTestJavaRes UP-TO-DATE
 > Task :app:mergeDebugAndroidTestJavaResource UP-TO-DATE
-> Task :app:mergeProjectDexDebugAndroidTest
-> Task :app:packageDebugAndroidTest
+> Task :app:mergeProjectDexDebugAndroidTest UP-TO-DATE
+> Task :app:packageDebugAndroidTest UP-TO-DATE
 > Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
-> Task :app:assembleDebugAndroidTest
+> Task :app:assembleDebugAndroidTest UP-TO-DATE
 
-BUILD SUCCESSFUL in 1m 32s
-87 actionable tasks: 26 executed, 61 up-to-date
+> Task :app:lintReportDebug
+Wrote HTML report to file:///workspace/Ink2TeX/app/build/reports/lint-results-debug.html
+
+> Task :app:lintDebug
+
+BUILD SUCCESSFUL in 1m 23s
+87 actionable tasks: 22 executed, 65 up-to-date

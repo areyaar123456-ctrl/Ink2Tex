@@ -2,7 +2,6 @@ package dev.ink2tex.preprocessing
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import dev.ink2tex.storage.InkRepository
 import dev.ink2tex.storage.Document
@@ -11,22 +10,11 @@ import kotlin.math.*
 import kotlinx.coroutines.*
 
 object ImagePipeline {
- suspend fun import(context: Context, uri: Uri, repository: InkRepository): List<Document> = withContext(Dispatchers.IO) {
+ suspend fun import(context: Context, uri: Uri, repository: InkRepository): Document = withContext(Dispatchers.IO) {
   val type=context.contentResolver.getType(uri) ?: ""
   require(type!="image/svg+xml") { "SVG import is unavailable in this release. Export PNG or PDF from Nebo." }
   if(type=="application/pdf") {
-   val descriptor=context.contentResolver.openFileDescriptor(uri,"r") ?: error("Unable to open PDF")
-   descriptor.use { fd -> PdfRenderer(fd).use { pdf ->
-    require(pdf.pageCount in 1..500) { "PDF must contain 1–500 pages. Split larger exports." }
-    (0 until pdf.pageCount).map { index ->
-     currentCoroutineContext().ensureActive()
-     pdf.openPage(index).use { page ->
-      val scale=min(2f,1800f/max(page.width,page.height))
-      val bitmap=Bitmap.createBitmap((page.width*scale).toInt().coerceAtLeast(1),(page.height*scale).toInt().coerceAtLeast(1),Bitmap.Config.ARGB_8888)
-      try { bitmap.eraseColor(Color.WHITE);page.render(bitmap,null,null,PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);repository.save(bitmap,"Imported PDF · page ${index+1}") } finally { bitmap.recycle() }
-     }
-    }
-   } }
+   PdfImport.read(context,uri,repository)
   } else {
    require(type.startsWith("image/") || type.isBlank()) { "Choose PNG, JPEG, WebP or PDF." }
    val id=java.util.UUID.randomUUID().toString()
@@ -38,7 +26,7 @@ object ImagePipeline {
     } } ?: error("Unable to read the selected image")
     val bounds=bounds(file);require(bounds.first>0 && bounds.second>0) { "Unsupported or damaged image" }
     val doc=Document(id,"Imported note",source=file.absolutePath)
-    repository.documents.put(doc);listOf(doc)
+    repository.documents.put(doc);doc
    } catch(e: Exception) { file.delete();throw e }
   }
  }

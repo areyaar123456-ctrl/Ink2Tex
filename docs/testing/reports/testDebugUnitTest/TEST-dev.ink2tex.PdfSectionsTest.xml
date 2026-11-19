@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="dev.ink2tex.PdfSectionsTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-19T12:35:44.029Z" hostname="4060979d6adb" time="0.039">
+  <properties/>
+  <testcase name="missingBlankSeparatorKeepsBoundaryRowsInBothSections" classname="dev.ink2tex.PdfSectionsTest" time="0.034"/>
+  <testcase name="ordinaryPortraitPageStaysInOneImage" classname="dev.ink2tex.PdfSectionsTest" time="0.001"/>
+  <testcase name="landscapePageRetainsItsFullWidth" classname="dev.ink2tex.PdfSectionsTest" time="0.0"/>
+  <testcase name="narrowPageJustPastSplitThresholdKeepsEveryRowInsideTheRaster" classname="dev.ink2tex.PdfSectionsTest" time="0.0"/>
+  <testcase name="tallNoteKeepsReadableWidthAndSplitsOnlyInBlankRowsWhenAvailable" classname="dev.ink2tex.PdfSectionsTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

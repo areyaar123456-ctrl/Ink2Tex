@@ -35,8 +35,7 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
  fun import(uri:Uri) { viewModelScope.launch {
   importing.value=true
   try {
-   val docs=ImagePipeline.import(app,uri,repository)
-   val result=if(docs.size==1)docs.first() else combine(docs,"Imported PDF")
+   val result=ImagePipeline.import(app,uri,repository)
    go("editor",result.id)
   } catch(e:Exception) { message.value=e.message }
   finally { importing.value=false }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.InferenceProgressTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-14T13:28:26.333Z" hostname="facf080c67d3" time="0.057">
+<testsuite name="dev.ink2tex.InferenceProgressTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-19T12:35:19.978Z" hostname="4060979d6adb" time="0.061">
   <properties/>
-  <testcase name="ruledLinesArePreserved" classname="dev.ink2tex.InferenceProgressTest" time="0.006"/>
-  <testcase name="imageAnalysisDoesNotPretendToHaveGeneratedTokens" classname="dev.ink2tex.InferenceProgressTest" time="0.006"/>
-  <testcase name="trimRetainsEvenAlmostInvisibleMarks" classname="dev.ink2tex.InferenceProgressTest" time="0.008"/>
+  <testcase name="ruledLinesArePreserved" classname="dev.ink2tex.InferenceProgressTest" time="0.015"/>
+  <testcase name="imageAnalysisDoesNotPretendToHaveGeneratedTokens" classname="dev.ink2tex.InferenceProgressTest" time="0.007"/>
+  <testcase name="trimRetainsEvenAlmostInvisibleMarks" classname="dev.ink2tex.InferenceProgressTest" time="0.013"/>
   <testcase name="nonuniformCornersPreventTrimming" classname="dev.ink2tex.InferenceProgressTest" time="0.0"/>
   <testcase name="generationReportsActualNativeTokenCount" classname="dev.ink2tex.InferenceProgressTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
