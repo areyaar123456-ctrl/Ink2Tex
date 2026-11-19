@@ -5,6 +5,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import dev.ink2tex.modelmanager.ModelStore
 import dev.ink2tex.preprocessing.SolidBorderTrim
+import dev.ink2tex.preprocessing.ImagePipeline
+import dev.ink2tex.storage.HandwritingExamples
 import dev.ink2tex.format.MathLayout
 import java.io.File
 import java.util.concurrent.Executors
@@ -73,30 +75,57 @@ class LocalOcrEngine(private val context: Context, private val store: ModelStore
   state.update { it.copy(stage="Preparing image") }
   val start=System.nanoTime()
   try {
-   val rgb=withContext(Dispatchers.Default) {
-    val pixels=IntArray(image.width*image.height); image.getPixels(pixels,0,image.width,0,0,image.width,image.height)
-    val bounds=SolidBorderTrim.bounds(pixels,image.width,image.height)
-    val bytes=ByteArray(bounds.width*bounds.height*3)
-    var offset=0
-    for(y in bounds.top until bounds.bottom) for(x in bounds.left until bounds.right) {
-     val pixel=pixels[y*image.width+x]
-     bytes[offset++]=(pixel shr 16).toByte();bytes[offset++]=(pixel shr 8).toByte();bytes[offset++]=pixel.toByte()
+   val rgb=withContext(Dispatchers.Default) { toRgb(image) }
+   val examples=withContext(Dispatchers.IO) {
+    options.examples.take(HandwritingExamples.MAX_EXAMPLES).mapNotNull { example ->
+     val reference=try {
+      ImagePipeline.preview(File(example.source), 500)
+     } catch (_: IllegalArgumentException) {
+      null
+     } catch (_: IllegalStateException) {
+      null
+     }
+     reference?.let { bitmap ->
+      try { toRgb(bitmap) to example.transcription.encodeToByteArray() }
+      finally { bitmap.recycle() }
+     }
     }
-    RgbImage(bytes,bounds.width,bounds.height)
    }
    val response=monitored {
-    val output=NativeBridge.recognize(rgb.bytes,rgb.width,rgb.height,store.manifest(id).prompt,options.maxTokens.coerceIn(32,4096)).decodeToString()
+    val output=NativeBridge.recognize(
+     rgb.bytes,rgb.width,rgb.height,store.manifest(id).prompt,options.maxTokens.coerceIn(32,4096),
+     examples.map { it.first.bytes }.toTypedArray(),
+     examples.map { it.first.width }.toIntArray(),
+     examples.map { it.first.height }.toIntArray(),
+     examples.map { it.second }.toTypedArray()
+    ).decodeToString()
     output to NativeBridge.timings()
    }
    val raw=response.first;val timing=response.second
    val pieces=raw.split('\n',limit=3);require(pieces.size==3) { "Invalid native response" }
    val warnings=mutableListOf("Review against the original. The model supplies no calibrated handwriting confidence.")
+   if(examples.isNotEmpty())warnings.add(0,"Used ${examples.size} saved handwriting example(s). Check the result against the original.")
+   if(examples.size<options.examples.size)warnings.add(0,"A saved handwriting example could not be opened.")
    if(pieces[1]=="1")warnings+="Output reached the token limit. Rerun smaller regions; the transcription is incomplete."
    if(activeBudget==256)warnings+="Faster scan uses less image detail. Check small symbols; rerun with Full detail if needed."
    val result=RecognitionResult(MathLayout.displayStandalone(normalizeDelimiters(pieces[2])),(System.nanoTime()-start)/1_000_000,pieces[0].toInt(),pieces[1]=="1",warnings)
    state.update { it.copy(inferenceMs=result.durationMs,outputTokens=result.tokens,stage="Ready",lastError=null,inputTokens=timing[0],preprocessingMs=timing[1],evaluationMs=timing[2],generationMs=timing[3]) }
    return result
   } catch(e: Exception) { state.update { it.copy(lastError=e.message,stage=if(e is CancellationException) "Cancelled" else "Failed") };throw e }
+ }
+ private fun toRgb(image: Bitmap): RgbImage {
+  val pixels=IntArray(image.width*image.height)
+  image.getPixels(pixels,0,image.width,0,0,image.width,image.height)
+  val bounds=SolidBorderTrim.bounds(pixels,image.width,image.height)
+  val bytes=ByteArray(bounds.width*bounds.height*3)
+  var offset=0
+  for(y in bounds.top until bounds.bottom) for(x in bounds.left until bounds.right) {
+   val pixel=pixels[y*image.width+x]
+   bytes[offset++]=(pixel shr 16).toByte()
+   bytes[offset++]=(pixel shr 8).toByte()
+   bytes[offset++]=pixel.toByte()
+  }
+  return RgbImage(bytes,bounds.width,bounds.height)
  }
  override suspend fun unloadModel() { active=null;native { NativeBridge.unload() };state.update { it.copy(loadedModel=null,stage="Unloaded") } }
  override fun cancel() { NativeBridge.cancel() }

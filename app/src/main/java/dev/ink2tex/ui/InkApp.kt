@@ -40,6 +40,7 @@ import dev.ink2tex.export.DocumentExport
 import dev.ink2tex.preprocessing.ImagePipeline
 import dev.ink2tex.preprocessing.PdfImport
 import dev.ink2tex.storage.Document
+import dev.ink2tex.storage.HandwritingExamples
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -211,6 +212,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
 
 @Composable private fun SettingsScreen(vm:InkViewModel) {
  val settings by vm.settings.collectAsStateWithLifecycle();val scope=rememberCoroutineScope()
+ val handwriting by vm.handwriting.collectAsStateWithLifecycle()
  LazyColumn(verticalArrangement=Arrangement.spacedBy(18.dp)) {
   item { PageTitle("Scanner settings","Make room for your handwriting") }
   item { Surface(shape=RoundedCornerShape(20.dp)) { Column(Modifier.padding(22.dp),verticalArrangement=Arrangement.spacedBy(18.dp)) {
@@ -222,6 +224,25 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
    Slider(settings.opacity,{ value -> scope.launch { vm.repository.settings.alpha(value) } },valueRange=0.4f..1f)
    Text("Panel changes apply when Conversion Mode starts again. Drag the bubble or panel header to move it; release to snap it to an edge.",fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
   } } }
+  item {
+   Surface(shape=RoundedCornerShape(20.dp)) {
+    Column(Modifier.padding(22.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+     SettingSwitch("Use handwriting examples",
+      "Adds your checked examples to future scans. Scans can take longer.",handwriting.enabled) {
+      scope.launch { vm.repository.handwriting.enable(it) }
+     }
+     if(handwriting.examples.isEmpty()) {
+      Text("Correct a short snip in Source, then choose Teach my handwriting.",fontSize=12.sp)
+     }
+     handwriting.examples.asReversed().forEach { example ->
+      Row(verticalAlignment=Alignment.CenterVertically) {
+       Text(example.transcription,Modifier.weight(1f),fontSize=12.sp,maxLines=2,overflow=TextOverflow.Ellipsis)
+       TextButton(onClick={scope.launch { vm.repository.handwriting.remove(example.documentId) }}) { Text("Remove") }
+      }
+     }
+    }
+   }
+  }
   item { Hint("Screen-capture permission ends when you stop Conversion Mode or Android ends the session. Restarting always uses Android's consent dialog. Secure app content may appear blank.",InkIcons.ScreenLockPortrait) }
   item { Hint("Imports, captures, models and history are stored in private app storage. Backups and analytics are disabled. Only model files are downloaded; handwriting is never uploaded.",InkIcons.PrivacyTip) }
   item { OutlinedButton(onClick={vm.go("diagnostics")}) { Icon(InkIcons.MonitorHeart,null);Spacer(Modifier.width(8.dp));Text("Open diagnostics") } }
@@ -293,6 +314,8 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
  val doc=docs.firstOrNull { it.id==nav.documentId }
  if(doc==null) { Hint("Opening note…");return }
  val context=LocalContext.current
+ val handwriting by vm.handwriting.collectAsStateWithLifecycle()
+ var teach by rememberSaveable(doc.id) { mutableStateOf(false) }
  var text by rememberSaveable(doc.id) { mutableStateOf(doc.markdown) }
  var copied by rememberSaveable(doc.id) { mutableStateOf("") }
  var databaseText by remember(doc.id) { mutableStateOf(doc.markdown) }
@@ -320,6 +343,14 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
     DropdownMenuItem(text={Text("Share Markdown + LaTeX")},onClick={DocumentExport.share(context,text);menu=false})
     DropdownMenuItem(text={Text("Append to existing proof")},onClick={appending=true;menu=false})
     DropdownMenuItem(text={Text("Rerun / compare models")},onClick={rerun=true;menu=false})
+    DropdownMenuItem(text={Text("Teach my handwriting")},enabled=work==null && text.isNotBlank() &&
+      doc.source.lineSequence().count { it.isNotBlank() }==1,
+      onClick={teach=true;menu=false})
+    if(handwriting.enabled && handwriting.examples.isNotEmpty() &&
+       doc.modelId.isNotBlank() && vm.app.models.ready(doc.modelId)) {
+     DropdownMenuItem(text={Text("Compare without examples")},enabled=work==null && doc.warnings.contains("Used ") && doc.warnings.contains("saved handwriting example"),
+      onClick={vm.compare(doc,doc.modelId,useExamples=false);menu=false})
+    }
     DropdownMenuItem(text={Text("Reorder / remove captured sections")},onClick={ordering=true;menu=false})
     DropdownMenuItem(text={Text("Compare saved results")},onClick={comparing=true;menu=false})
     DropdownMenuItem(text={Text("Delete original images")},onClick={deleteOriginals=true;menu=false})
@@ -364,6 +395,13 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
   }
   Text("Rendering checks syntax, not transcription accuracy or mathematical correctness.",fontSize=10.sp,color=MaterialTheme.colorScheme.onSurfaceVariant)
  }
+ if(teach)AlertDialog(
+  onDismissRequest={teach=false},
+  title={Text("Teach my handwriting")},
+  text={Text("Save this short image and its checked Source as an example. Future scans use the last ${HandwritingExamples.MAX_EXAMPLES} examples on this device. Check every symbol before saving.")},
+  confirmButton={TextButton(onClick={vm.teachHandwriting(doc.id,text);teach=false}){Text("Save example")}},
+  dismissButton={TextButton(onClick={teach=false}){Text("Cancel")}}
+ )
  if(rerun)AlertDialog(onDismissRequest={rerun=false},title={Text("Choose a ready model")},text={Column { vm.app.models.available().forEach { model -> Row(verticalAlignment=Alignment.CenterVertically) { Text(model.name,Modifier.weight(1f));TextButton(onClick={vm.convert(doc,model.id);rerun=false}){Text("Rerun")};TextButton(onClick={vm.compare(doc,model.id);rerun=false}){Text("Compare")} } };if(vm.app.models.available().isEmpty())Text("Download and validate a model in Model Store.") }},confirmButton={TextButton(onClick={rerun=false}){Text("Close")}})
  if(appending || comparing)AlertDialog(onDismissRequest={appending=false;comparing=false},title={Text(if(appending)"Append or add to a proof" else "Compare with a saved result")},text={LazyColumn(Modifier.heightIn(max=360.dp)) { items(docs.filter { it.id!=doc.id }) { other -> Column { Text(other.title,fontWeight=FontWeight.Medium);Row { if(appending) {TextButton(onClick={vm.append(doc.copy(markdown=text),other);appending=false}){Text("Append text")};TextButton(onClick={vm.mergeWith(doc,other);appending=false}){Text("Merge captures")}} else TextButton(onClick={comparison=other;comparing=false}){Text("Compare sources")} } } } }},confirmButton={TextButton(onClick={appending=false;comparing=false}){Text("Close")}})
  if(deleteOriginals)AlertDialog(onDismissRequest={deleteOriginals=false},title={Text("Delete this note's original images?")},text={Text("The editable transcription stays. Images still used by another saved note are retained for that note.")},confirmButton={TextButton(onClick={editorScope.launch { vm.repository.deleteOriginals(doc);deleteOriginals=false }}){Text("Delete originals")}},dismissButton={TextButton(onClick={deleteOriginals=false}){Text("Keep")}})

@@ -321,7 +321,7 @@
         errorLine2="  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="282"
+            line="303"
             column="3"/>
     </issue>
 
@@ -433,7 +433,7 @@
         errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="237"
+            line="258"
             column="534"/>
     </issue>
 
@@ -529,7 +529,7 @@
         errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="204"
+            line="205"
             column="74"/>
     </issue>
 
@@ -545,7 +545,7 @@
         errorLine2="   ~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt"
-            line="57"
+            line="58"
             column="4"/>
     </issue>
 
@@ -561,7 +561,7 @@
         errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt"
-            line="63"
+            line="64"
             column="23"/>
     </issue>
 

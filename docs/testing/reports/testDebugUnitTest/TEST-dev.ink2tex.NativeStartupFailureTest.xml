@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.NativeStartupFailureTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-19T12:35:20.877Z" hostname="4060979d6adb" time="23.103">
+<testsuite name="dev.ink2tex.NativeStartupFailureTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-19T13:17:21.059Z" hostname="4060979d6adb" time="0.779">
   <properties/>
-  <testcase name="missingAndroidNativeLibraryReturnsFailureInsteadOfHanging" classname="dev.ink2tex.NativeStartupFailureTest" time="23.103"/>
+  <testcase name="missingAndroidNativeLibraryReturnsFailureInsteadOfHanging" classname="dev.ink2tex.NativeStartupFailureTest" time="0.779"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

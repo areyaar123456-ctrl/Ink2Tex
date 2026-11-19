@@ -26,3 +26,7 @@ The importer keeps ordinary pages in one image at up to 1800 pixels on the longe
 ## Equation layout and timing in 0.1.2
 
 `format/MathLayout` promotes math-only lines from inline to display delimiters without changing their contents and skips fenced/indented code. OCR stores this formatting for new results; HTML previews also apply it to existing results without editing saved source. KaTeX remains locally bundled with untrusted content disabled. The faster-scan preference is read once per worker; native processor bounds are set at model load and included in active-model identity. Validation remains full detail. Native monotonic timers distinguish preprocessing, combined vision/prompt evaluation and output generation; they are read on the same executor as inference.
+
+## Handwriting examples
+
+The app saves the two latest confirmed examples in private DataStore, with exact corrected text and links to existing private source images. Snapshot text is preserved until explicitly saved again. Deletion of the teaching note or its original clears its example. Eligible input is one short raster, at most 1600 × 800 and 400 characters. Examples are resized for inference, excluded from a scan of their own source, and omitted during installation validation and benchmarks. JNI sends each bitmap and literal UTF-8 transcription as a prior Qwen chat turn. The trusted template controls chat tokens and the demonstration text is tokenized without interpreting special markers. The Android multimodal log callback suppresses private prompt text.

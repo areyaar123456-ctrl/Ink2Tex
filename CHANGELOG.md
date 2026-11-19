@@ -1,5 +1,11 @@
 # Changes
 
+## 0.1.4 — Handwriting examples
+
+- Teach from a short, checked crop using the editor menu. The two latest confirmed examples are used locally as image-and-text demonstrations on later scans.
+- Keep a separate comparison with the same model and no examples. Settings provides a switch and removal for individual examples.
+- Keep samples private. A note cannot serve as its own example. Removing the teaching note or its original also removes its saved example. Validation and speed benchmarks omit examples.
+
 ## 0.1.3 — Tall PDF imports
 
 - Render tall PDF pages in full-width sections directly from the PDF. The importer keeps more handwriting detail and looks for blank horizontal gaps around each cut. If it finds no clear gap, neighboring sections share 128 pixels and the app flags the overlap for review.

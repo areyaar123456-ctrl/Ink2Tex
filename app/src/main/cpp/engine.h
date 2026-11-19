@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include <atomic>
 #include <cstdint>
 namespace ink {
@@ -10,5 +11,12 @@ extern std::atomic<int64_t> input_tokens, preprocessing_ms, evaluation_ms, gener
 void load(const std::string & model, const std::string & projector, int threads, const std::string & backend_directory = "", int image_token_budget = 1600);
 void unload();
 struct Result { std::string text; int tokens; bool truncated; };
-Result recognize(const unsigned char * rgb, int width, int height, const std::string & prompt, int max_tokens);
+struct Example {
+ std::vector<unsigned char> rgb;
+ int width;
+ int height;
+ std::string transcription;
+};
+Result recognize(const unsigned char * rgb, int width, int height, const std::string & prompt,
+                 int max_tokens, const std::vector<Example> & examples = {});
 }

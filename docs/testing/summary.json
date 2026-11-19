@@ -1,11 +1,11 @@
 {
   "app": "Ink2TeX",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "date": "2026-11-19",
   "androidTarget": 36,
   "androidMinimum": 31,
   "abi": "arm64-v8a",
-  "unitAndRobolectricTests": 38,
+  "unitAndRobolectricTests": 40,
   "testFailures": 0,
   "testSkips": 0,
   "lintErrors": 0,
@@ -17,5 +17,15 @@
   "androidPerformance": "User-supplied 0.1.1 screenshot: 10667 ms for 33 output tokens. New Faster scan timing unmeasured; no target device attached.",
   "rendererCheck": "Bundled KaTeX host JavaScript: display summation above/below limits and inline side limits passed. Android WebView not executed.",
   "privatePdfHostSample": "OvisOCR2 Compact on a high-resolution three-line crop kept the exponents but misread two divisor symbols. Failed strict fidelity. No private file or generated text in the release.",
-  "pdfImport": "Five raster planning regressions passed. Host raster and production planner kept a tall export at 1013 pixels wide and produced five ordered sections with four white-gap cuts. Android PdfRenderer instrumentation compiled and awaits a target."
+  "pdfImport": "Five raster planning regressions passed. Host raster and production planner kept a tall export at 1013 pixels wide and produced five ordered sections with four white-gap cuts. Android PdfRenderer instrumentation compiled and awaits a target.",
+  "handwritingExamples": "Private example persistence, self-exclusion, disable and deletion regressions passed. Android instrumentation compiled. No device accuracy result.",
+  "handwritingExamplesHostComparison": {
+    "model": "OvisOCR2 Compact",
+    "target": "one private held-out handwritten line",
+    "baseline": "misread divisor",
+    "withOneCheckedExample": "read correct divisor and relation",
+    "baselineInputTokens": 334,
+    "exampleInputTokens": 745,
+    "scope": "Same target and model. One host comparison. Private inputs and outputs excluded."
+  }
 }

@@ -23,6 +23,7 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
  val repository=app.repository
  val history=repository.history.stateIn(viewModelScope,SharingStarted.Eagerly,emptyList())
  val settings=repository.settings.flow.stateIn(viewModelScope,SharingStarted.Eagerly,dev.ink2tex.storage.ScannerSettings())
+ val handwriting=repository.handwriting.profile.stateIn(viewModelScope,SharingStarted.Eagerly,dev.ink2tex.storage.HandwritingProfile())
  val navigation=MutableStateFlow(Navigation())
  val message=MutableStateFlow<String?>(null)
  val importing=MutableStateFlow(false)
@@ -82,9 +83,9 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
   val result=Document(UUID.randomUUID().toString(),title,source=docs.joinToString("\n") { it.source })
   repository.documents.put(result);return result
  }
- fun convert(document:Document,model:String=settings.value.model,deduplicate:Boolean=false,fallback:Boolean=false) {
+ fun convert(document:Document,model:String=settings.value.model,deduplicate:Boolean=false,fallback:Boolean=false,useExamples:Boolean=true) {
   if(model!="auto" && !app.models.ready(model)) { message.value="Download a compatible model in Model Store before converting.";go("models");return }
-  RecognitionWorker.enqueue(app,document.id,model,deduplicate,fallback)
+  RecognitionWorker.enqueue(app,document.id,model,deduplicate,fallback,useExamples)
  }
  fun save(id:String,text:String) { saveJob?.cancel();saveJob=viewModelScope.launch { delay(300);repository.documents.edit(id,text) } }
  fun flush(id:String,text:String) { saveJob?.cancel();viewModelScope.launch { repository.documents.edit(id,text) } }
@@ -93,12 +94,29 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
  fun delete(doc:Document) { viewModelScope.launch { withContext(Dispatchers.IO) { WorkManager.getInstance(app).cancelUniqueWork("ocr-${doc.id}").result.get() };repository.delete(doc) } }
  fun append(current:Document,target:Document) { viewModelScope.launch { repository.documents.put(target.copy(markdown=target.markdown.trimEnd()+"\n\n"+current.markdown,source=target.source+"\n"+current.source,status="Review"));go("editor",target.id) } }
  fun mergeWith(current:Document,target:Document) { viewModelScope.launch { val merged=combine(listOf(target,current),"Scrolling proof");go("editor",merged.id) } }
- fun compare(doc:Document,other:String) { viewModelScope.launch { val comparison=doc.copy(id=UUID.randomUUID().toString(),title=doc.title+" · comparison",markdown="",modelId=other,status="Captured");repository.documents.put(comparison);convert(comparison,other);message.value="Comparison queued. Both results appear in History." } }
+ fun compare(doc:Document,other:String,useExamples:Boolean=true) { viewModelScope.launch {
+  val label=if(useExamples) "comparison" else "without examples"
+  val comparison=doc.copy(id=UUID.randomUUID().toString(),title="${doc.title} · $label",
+   markdown="",modelId=other,status="Captured",error=null,durationMs=null,tokens=null,warnings="")
+  repository.documents.put(comparison)
+  convert(comparison,other,useExamples=useExamples)
+  message.value="Comparison queued. Both results appear in History."
+ } }
+ fun teachHandwriting(documentId:String,text:String) { viewModelScope.launch {
+  try {
+   repository.teachHandwriting(documentId,text)
+   message.value="Handwriting example saved."
+  } catch(e:CancellationException) {
+   throw e
+  } catch(e:Exception) {
+   message.value=e.message ?: "Unable to save handwriting example."
+  }
+ } }
  fun selectModel(id:String) { viewModelScope.launch { repository.settings.model(id) } }
  fun benchmark(id:String) { viewModelScope.launch {
   try {
    val bitmap=app.assets.open("validation.png").use { android.graphics.BitmapFactory.decodeStream(it) } ?: error("Benchmark image missing")
-   val doc=repository.save(bitmap,"Benchmark · printed smoke image");bitmap.recycle();convert(doc,id);go("editor",doc.id)
+   val doc=repository.save(bitmap,"Benchmark · printed smoke image");bitmap.recycle();convert(doc,id,useExamples=false);go("editor",doc.id)
   } catch(e:Exception) { message.value=e.message }
  } }
  fun install(id:String) { runCatching { app.models.install(id) }.onFailure { message.value=it.message } }

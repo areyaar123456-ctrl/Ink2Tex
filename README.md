@@ -1,6 +1,15 @@
 # Ink2TeX
 
-A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.3; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.4; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+
+## Teach Ink2TeX your handwriting
+
+1. Snip one or two representative lines. Check the result against the original and correct **Source**.
+2. Open the editor menu and choose **Teach my handwriting → Save example**.
+3. Scan a different note. Ink2TeX includes up to two saved image-and-text pairs in local inference. The result says when examples were used.
+4. Use **Compare without examples** in that result’s menu to run the same model on a separate copy. In **Settings**, turn examples off or remove them individually.
+
+The examples give the installed model context during recognition. This approach does not train model weights or learn from unreviewed scans. Added images can slow inference, and an example can still make recognition worse. Only explicitly saved examples are used. Saving a third replaces the oldest. Deleting a teaching note or its original removes the related example.
 
 ## 0.1.3 PDF imports
 
