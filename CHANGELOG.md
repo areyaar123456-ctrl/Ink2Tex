@@ -1,5 +1,11 @@
 # Changes
 
+## 0.1.7 — Smaller snips for long training notes
+
+- Split long evaluation images at clear horizontal gaps. Current and candidate weights read the same snips in order against the existing checked source.
+- Allow a retry for batches whose previous candidate evaluation ended incomplete. Scorecards show the number of snips and report an empty or token-limited snip for each set of weights.
+- Add **Split into snips** during image review. The new note keeps the snips in order and links them to the original for evaluation grouping.
+
 ## 0.1.6 — Guided, repeatable handwriting training
 
 - Check images directly in Training. New conversions retain a separate draft for each original. The screen explains how to unblock a batch and opens the next review.

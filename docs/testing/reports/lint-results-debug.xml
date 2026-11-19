@@ -520,6 +520,22 @@
     <issue
         id="UseKtx"
         severity="Warning"
+        message="Use the KTX extension function `Bitmap.get` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="            return try { pixel.getPixel(0,0) } finally { pixel.recycle() }"
+        errorLine2="                         ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/ImageSections.kt"
+            line="108"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
         message="Use the KTX extension function `String.toUri` instead?"
         category="Productivity"
         priority="6"

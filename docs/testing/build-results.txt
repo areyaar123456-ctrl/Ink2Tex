@@ -1,4 +1,3 @@
-Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
@@ -72,8 +71,8 @@ Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for de
 > Task :app:processDebugJavaRes UP-TO-DATE
 > Task :app:mergeDebugJavaResource UP-TO-DATE
 > Task :app:bundleDebugClassesToRuntimeJar
-> Task :app:bundleDebugClassesToCompileJar
 > Task :app:mergeProjectDexDebug
+> Task :app:bundleDebugClassesToCompileJar
 > Task :app:packageDebug
 > Task :app:createDebugApkListingFileRedirect UP-TO-DATE
 > Task :app:assembleDebug
@@ -81,15 +80,17 @@ Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for de
 > Task :app:generateDebugLintReportModel
 > Task :app:generateDebugUnitTestLintModel
 > Task :app:kspDebugUnitTestKotlin
-> Task :app:lintAnalyzeDebug
-> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestKotlin UP-TO-DATE
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :app:lintAnalyzeDebug
 > Task :app:testDebugUnitTest
 > Task :app:lintAnalyzeDebugAndroidTest
 > Task :app:lintAnalyzeDebugUnitTest
+> Task :app:lintReportDebug UP-TO-DATE
+> Task :app:lintDebug
 > Task :app:kspDebugAndroidTestKotlin
-> Task :app:compileDebugAndroidTestKotlin
+> Task :app:compileDebugAndroidTestKotlin UP-TO-DATE
 > Task :app:compileDebugAndroidTestJavaWithJavac UP-TO-DATE
 > Task :app:dexBuilderDebugAndroidTest UP-TO-DATE
 > Task :app:mergeDebugAndroidTestGlobalSynthetics UP-TO-DATE
@@ -100,10 +101,5 @@ Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for de
 > Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
 > Task :app:assembleDebugAndroidTest UP-TO-DATE
 
-> Task :app:lintReportDebug
-Wrote HTML report to file:///workspace/Ink2TeX/app/build/reports/lint-results-debug.html
-
-> Task :app:lintDebug
-
-BUILD SUCCESSFUL in 5m
-87 actionable tasks: 22 executed, 65 up-to-date
+BUILD SUCCESSFUL in 3m 14s
+87 actionable tasks: 19 executed, 68 up-to-date

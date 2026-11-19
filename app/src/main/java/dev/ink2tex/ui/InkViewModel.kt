@@ -124,6 +124,17 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
    finished(false)
   }
  } }
+ fun splitTrainingImage(documentId:String, source:String, finished:(String?)->Unit) { viewModelScope.launch {
+  try {
+   val note = repository.splitTrainingImage(documentId,source)
+   finished(null)
+   go("editor",note.id)
+   message.value = "Created ${note.source.lineSequence().count()} snips. Convert, then check the source for each snip."
+  } catch(e:CancellationException) { throw e }
+  catch(e:Exception) {
+   finished(e.message ?: "Unable to split this image.")
+  }
+ } }
  fun trainHandwriting(model:String, plan:TrainingPlan) = HandwritingTrainingWorker.enqueue(app,model,plan)
  fun restoreHandwriting(model:String) { viewModelScope.launch {
   try {

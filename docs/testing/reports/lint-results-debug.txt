@@ -168,6 +168,9 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/crop/CropView.kt:124: Warning: Use the KTX extension function Canvas.withClip instead? [UseKtx]
     canvas.save();canvas.clipPath(path);canvas.drawBitmap(decoded,0f,0f,null);canvas.restore();decoded.recycle();return result
     ~~~~~~~~~~~~~
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/ImageSections.kt:108: Warning: Use the KTX extension function Bitmap.get instead? [UseKtx]
+            return try { pixel.getPixel(0,0) } finally { pixel.recycle() }
+                         ~~~~~~~~~~~~~~~~~~~
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:207: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
      TextButton(onClick={context.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(model.licenseUrl)))}) { Text(model.license+" ↗") }
                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -272,4 +275,4 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    the left bitmask. Therefore, you can use gravity="start" rather than
    gravity="left|start".)
 
-0 errors, 41 warnings
+0 errors, 42 warnings

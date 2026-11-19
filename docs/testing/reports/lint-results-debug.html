@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 41 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 42 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Nov 19 15:09:59 UTC 2026 by AGP (8.11.1)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Nov 19 16:04:55 UTC 2026 by AGP (8.11.1)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -193,7 +193,7 @@ document.getElementById(id).style.display = 'none';
       <a class="mdl-navigation__link" href="#SetJavaScriptEnabled"><i class="material-icons warning-icon">warning</i>Using <code>setJavaScriptEnabled</code> (1)</a>
       <a class="mdl-navigation__link" href="#DrawAllocation"><i class="material-icons warning-icon">warning</i>Memory allocations within drawing code (6)</a>
       <a class="mdl-navigation__link" href="#UsableSpace"><i class="material-icons warning-icon">warning</i>Using getUsableSpace() (3)</a>
-      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (11)</a>
+      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (12)</a>
       <a class="mdl-navigation__link" href="#RtlHardcoded"><i class="material-icons warning-icon">warning</i>Using left/right instead of start/end attributes (1)</a>
     </nav>
   </div>
@@ -239,7 +239,7 @@ document.getElementById(id).style.display = 'none';
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Productivity">Productivity</a>
 </td></tr>
 <tr>
-<td class="countColumn">11</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">12</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#UseKtx">UseKtx</a>: Use KTX extension function</td></tr>
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Internationalization:Bidirectional Text">Internationalization:Bidirectional Text</a>
 </td></tr>
@@ -559,8 +559,8 @@ Dismiss</button>            </div>
 <div class="issue">
 <div class="warningslist">
 <span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:19</span>: <span class="message">Missing x86_64 ABI support for ChromeOS</span><br /><pre class="errorlines">
-<span class="lineno"> 16 </span>  versionCode = 7
-<span class="lineno"> 17 </span>  versionName = "0.1.6"
+<span class="lineno"> 16 </span>  versionCode = 8
+<span class="lineno"> 17 </span>  versionName = "0.1.7"
 <span class="lineno"> 18 </span>  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 <span class="caretline"><span class="lineno"> 19 </span>  ndk { abiFilters += <span class="warning">"arm64-v8a"</span> }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 <span class="lineno"> 20 </span>  externalNativeBuild { cmake { cppFlags += listOf("-std=c++17", "-O2"); arguments += "-DANDROID_STL=c++_shared" } }
@@ -858,6 +858,15 @@ Dismiss</button>            </div>
 <span class="lineno"> 127 </span> }
 </pre>
 
+<span class="location"><a href="../../src/main/java/dev/ink2tex/preprocessing/ImageSections.kt">../../src/main/java/dev/ink2tex/preprocessing/ImageSections.kt</a>:108</span>: <span class="message">Use the KTX extension function <code>Bitmap.get</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 105 </span>
+<span class="lineno"> 106 </span>  <span class="keyword">fun</span> corner(x: Int, y: Int): Int {
+<span class="lineno"> 107 </span>      <span class="keyword">val</span> pixel = decoder.decodeRegion(Rect(x,y,x+<span class="number">1</span>,y+<span class="number">1</span>), options) ?: <span class="keyword">return</span> Color.WHITE
+<span class="caretline"><span class="lineno"> 108 </span>      <span class="keyword">return</span> <span class="keyword">try</span> { <span class="warning">pixel.getPixel(<span class="number">0</span>,<span class="number">0</span>)</span> } finally { pixel.recycle() }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 109 </span>  }
+<span class="lineno"> 110 </span>
+<span class="lineno"> 111 </span>  <span class="comment">// Shared corners also support off-white and dark pages. Treat every color variation as ink.</span></pre>
+
 <span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:207</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
 <span class="lineno"> 204 </span>      <span class="keyword">if</span>(installed || partial) TextButton(onClick={vm.removeModel(model.id);refresh++}){Text(<span class="string">"Delete"</span>)}
 <span class="lineno"> 205 </span>     }
@@ -868,6 +877,8 @@ Dismiss</button>            </div>
 <span class="lineno"> 210 </span>  }
 </pre>
 
+<button class="mdl-button mdl-js-button mdl-button--primary" id="UseKtxDivLink" onclick="reveal('UseKtxDiv');" />+ 7 More Occurrences...</button>
+<div id="UseKtxDiv" style="display: none">
 <span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:69</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
 <span class="lineno">  66 </span>    result=previous.copy(source=previous.source+<span class="string">"\n"</span>+document.source,status=<span class="string">"Captured"</span>,error=<span class="keyword">null</span>)
 <span class="lineno">  67 </span>    repository.documents.put(result)
@@ -878,8 +889,6 @@ Dismiss</button>            </div>
 <span class="lineno">  72 </span>  go(<span class="string">"editor"</span>,result.id)
 </pre>
 
-<button class="mdl-button mdl-js-button mdl-button--primary" id="UseKtxDivLink" onclick="reveal('UseKtxDiv');" />+ 6 More Occurrences...</button>
-<div id="UseKtxDiv" style="display: none">
 <span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:75</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
 <span class="lineno">  72 </span>  go(<span class="string">"editor"</span>,result.id)
 <span class="lineno">  73 </span>  <span class="keyword">if</span>(!guided &amp;&amp; app.models.available().isNotEmpty())convert(result)

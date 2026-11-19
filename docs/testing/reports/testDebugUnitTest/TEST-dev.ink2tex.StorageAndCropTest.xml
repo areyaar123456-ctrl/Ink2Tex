@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.StorageAndCropTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-19T15:08:23.646Z" hostname="4060979d6adb" time="23.084">
+<testsuite name="dev.ink2tex.StorageAndCropTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-19T16:08:34.120Z" hostname="4060979d6adb" time="27.962">
   <properties/>
-  <testcase name="checksumDetectsCorruption" classname="dev.ink2tex.StorageAndCropTest" time="19.507"/>
-  <testcase name="cancellationStatusCannotOverwriteManualCorrections" classname="dev.ink2tex.StorageAndCropTest" time="0.796"/>
-  <testcase name="freeformMaskKeepsInkInsideAndWhitesOutside" classname="dev.ink2tex.StorageAndCropTest" time="0.51"/>
-  <testcase name="deletingASectionDoesNotBreakACombinedProof" classname="dev.ink2tex.StorageAndCropTest" time="0.811"/>
-  <testcase name="rectangleCropUsesOriginalCoordinates" classname="dev.ink2tex.StorageAndCropTest" time="0.407"/>
-  <testcase name="filesWithoutValidationMarkerCannotBecomeReady" classname="dev.ink2tex.StorageAndCropTest" time="0.647"/>
-  <testcase name="allDownloadableModelsIncludePinnedWeightsAndVisionChecksums" classname="dev.ink2tex.StorageAndCropTest" time="0.403"/>
+  <testcase name="checksumDetectsCorruption" classname="dev.ink2tex.StorageAndCropTest" time="25.246"/>
+  <testcase name="cancellationStatusCannotOverwriteManualCorrections" classname="dev.ink2tex.StorageAndCropTest" time="1.377"/>
+  <testcase name="freeformMaskKeepsInkInsideAndWhitesOutside" classname="dev.ink2tex.StorageAndCropTest" time="0.323"/>
+  <testcase name="deletingASectionDoesNotBreakACombinedProof" classname="dev.ink2tex.StorageAndCropTest" time="0.555"/>
+  <testcase name="rectangleCropUsesOriginalCoordinates" classname="dev.ink2tex.StorageAndCropTest" time="0.125"/>
+  <testcase name="filesWithoutValidationMarkerCannotBecomeReady" classname="dev.ink2tex.StorageAndCropTest" time="0.186"/>
+  <testcase name="allDownloadableModelsIncludePinnedWeightsAndVisionChecksums" classname="dev.ink2tex.StorageAndCropTest" time="0.15"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[System.logW: A resource was acquired at attached stack trace but never released. See java.io.Closeable for information on avoiding resource leaks.
 java.lang.Throwable: Explicit termination method 'close' not called

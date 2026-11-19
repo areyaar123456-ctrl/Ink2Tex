@@ -1,8 +1,15 @@
 package dev.ink2tex
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.ink2tex.modelmanager.ModelStore
+import dev.ink2tex.preprocessing.ImageSections
+import java.io.File
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,5 +39,33 @@ class DeviceStorageTest {
   val store=ModelStore(context)
   assertEquals(8,store.manifests.size)
   assertTrue(store.manifests.filter { !it.compatible }.all { !store.ready(it.id) })
+ }
+ @Test fun splitsSavedImageIntoOrderedNonOverlappingSnips() = runBlocking {
+  val context = InstrumentationRegistry.getInstrumentation().targetContext
+  val file = File.createTempFile("training-snips", ".png", context.cacheDir)
+  val original = Bitmap.createBitmap(300, 1000, Bitmap.Config.ARGB_8888)
+  try {
+   original.eraseColor(Color.WHITE)
+   val paint = Paint()
+   val colors = listOf(Color.RED, Color.BLUE)
+   val canvas = Canvas(original)
+   paint.color = colors[0]
+   canvas.drawRect(20f, 90f, 280f, 180f, paint)
+   paint.color = colors[1]
+   canvas.drawRect(20f, 800f, 280f, 900f, paint)
+   file.outputStream().use { assertTrue(original.compress(Bitmap.CompressFormat.PNG, 100, it)) }
+   var coveredRows = 0
+   val count = ImageSections.forEach(file, requireSplit = true) { snip, index, total ->
+    assertEquals(2, total)
+    assertEquals(original.width, snip.width)
+    assertEquals(colors[index], snip.getPixel(150, (if (index == 0) 100 else 810) - coveredRows))
+    coveredRows += snip.height
+   }
+   assertEquals(2, count)
+   assertEquals(original.height, coveredRows)
+  } finally {
+   original.recycle()
+   file.delete()
+  }
  }
 }

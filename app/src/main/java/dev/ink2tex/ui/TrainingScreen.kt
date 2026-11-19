@@ -124,7 +124,9 @@ internal fun TrainingScreen(vm: InkViewModel) {
                     Text(batch.problem)
                 } else {
                     Text("${batch.fit.size} training · ${batch.evaluate.size} reserved for evaluation")
-                    Text("${batch.newImages} new or revised image(s) available. Results are checked before weights are activated.", fontSize = 13.sp)
+                    Text(if (batch.sectionRetry) "Retry available for the incomplete evaluation."
+                        else "${batch.newImages} new or revised images available.", fontSize = 13.sp)
+                    Text("Long evaluation images are split at clear gaps and scored against your saved source.", fontSize = 13.sp)
                     Button(onClick = { vm.trainHandwriting(model.id, batch) }) { Text("Train on tablet") }
                 }
                 jobFailure?.let { Text(it, fontSize = 13.sp) }
@@ -204,13 +206,16 @@ internal fun TrainingScreen(vm: InkViewModel) {
         if (run.summary.isNotBlank()) Text(run.summary)
         if (details != null) for (index in 0 until details.length()) {
             val score = details.getJSONObject(index)
-            val after = if (score.isNull("after")) "incomplete" else score.getInt("after").toString()
+            fun count(key: String) = if (score.isNull(key)) "incomplete" else score.getInt(key).toString()
             val math = if (score.has("beforeMath")) {
-                val afterMath = if (score.isNull("afterMath")) "incomplete" else score.getInt("afterMath").toString()
-                " · math edits ${score.getInt("beforeMath")} → $afterMath"
+                " · math edits ${count("beforeMath")} → ${count("afterMath")}"
             } else ""
-            Text("Image ${index + 1} · text edits ${score.getInt("before")} → $after$math · " +
+            val snips = score.optInt("sections", 1)
+            val section = if (snips > 1) " · $snips snips" else ""
+            Text("Image ${index + 1}$section · text edits ${count("before")} → ${count("after")}$math · " +
                 "${score.getLong("currentMs")} ms → ${score.getLong("newMs")} ms", fontSize = 12.sp)
+            if (score.has("currentIssue")) Text("Current weights · ${score.getString("currentIssue")}", fontSize = 12.sp)
+            if (score.has("candidateIssue")) Text("New weights · ${score.getString("candidateIssue")}", fontSize = 12.sp)
         }
     }
 }
@@ -233,14 +238,18 @@ internal fun TrainingReviewDialog(vm: InkViewModel, doc: Document, editorSource:
     val text = manualText ?: suggested
     var evaluation by rememberSaveable(path) { mutableStateOf(prior?.evaluation ?: false) }
     var saving by remember { mutableStateOf(false) }
-    val image by produceState<Bitmap?>(null, path) {
-        val bitmap = withContext(Dispatchers.IO) {
-            try { ImagePipeline.preview(File(path), 850) }
-            catch (_: IllegalArgumentException) { null }
-            catch (_: IllegalStateException) { null }
+    var splitting by remember { mutableStateOf(false) }
+    var splitError by remember(path) { mutableStateOf<String?>(null) }
+    val image by key(path) {
+        produceState<Bitmap?>(null) {
+            val bitmap = withContext(Dispatchers.IO) {
+                try { ImagePipeline.preview(File(path), 850) }
+                catch (_: IllegalArgumentException) { null }
+                catch (_: IllegalStateException) { null }
+            }
+            value = bitmap
+            awaitDispose { bitmap?.recycle() }
         }
-        value = bitmap
-        awaitDispose { bitmap?.recycle() }
     }
     fun save(review: String) {
         saving = true
@@ -251,29 +260,41 @@ internal fun TrainingReviewDialog(vm: InkViewModel, doc: Document, editorSource:
         }
     }
     AlertDialog(
-        onDismissRequest = { if (!saving) dismiss() },
+        onDismissRequest = { if (!saving && !splitting) dismiss() },
         title = { Text("Check this image") },
         text = {
             Column(Modifier.heightIn(max = 570.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (paths.size > 1) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = { index = visibleIndex - 1 }, enabled = !saving && visibleIndex > 0) { Text("Previous") }
+                        TextButton(onClick = { index = visibleIndex - 1 }, enabled = !saving && !splitting && visibleIndex > 0) { Text("Previous") }
                         Text("Image ${visibleIndex + 1} of ${paths.size}", Modifier.weight(1f))
-                        TextButton(onClick = { index = visibleIndex + 1 }, enabled = !saving && visibleIndex < paths.lastIndex) { Text("Next") }
+                        TextButton(onClick = { index = visibleIndex + 1 }, enabled = !saving && !splitting && visibleIndex < paths.lastIndex) { Text("Next") }
                     }
                 }
                 image?.let {
                     Image(it.asImageBitmap(), "Original handwriting", Modifier.fillMaxWidth().heightIn(max = 190.dp))
+                    OutlinedButton(onClick = {
+                        splitting = true
+                        splitError = null
+                        vm.splitTrainingImage(doc.id, path) { failure ->
+                            splitting = false
+                            splitError = failure
+                            if (failure == null) dismiss()
+                        }
+                    }, enabled = !saving && !splitting) {
+                        Text(if (splitting) "Splitting…" else "Split into snips")
+                    }
+                    splitError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 }
                 if (draft?.incomplete == true) Text("The scan is incomplete. Fill in missing source before saving.")
                 if (paths.size > 1 && drafts != null && draft == null && prior == null) {
                     Text("This image has no saved draft. Enter its source here, or rerun the note to create drafts.")
                 }
-                OutlinedTextField(text, { manualText = it }, Modifier.fillMaxWidth(), enabled = !saving,
+                OutlinedTextField(text, { manualText = it }, Modifier.fillMaxWidth(), enabled = !saving && !splitting,
                     label = { Text("Exact Markdown and LaTeX for this image") }, minLines = 3, maxLines = 8)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(evaluation, { evaluation = it }, enabled = !saving)
+                    Checkbox(evaluation, { evaluation = it }, enabled = !saving && !splitting)
                     Text("Reserve this note for evaluation")
                 }
             }
@@ -282,10 +303,10 @@ internal fun TrainingReviewDialog(vm: InkViewModel, doc: Document, editorSource:
             val completeDraft = draft?.incomplete != true && text.isNotBlank() && text == suggested
             TextButton(
                 onClick = { save(if (completeDraft) "accepted" else "corrected") },
-                enabled = !saving && image != null && text.isNotBlank() &&
+                enabled = !saving && !splitting && image != null && text.isNotBlank() &&
                     (paths.size == 1 || drafts != null) && (draft?.incomplete != true || manualText != null)
             ) { Text(if (saving) "Saving…" else if (completeDraft) "Mark correct" else "Save corrected source") }
         },
-        dismissButton = { TextButton(onClick = dismiss, enabled = !saving) { Text("Close") } }
+        dismissButton = { TextButton(onClick = dismiss, enabled = !saving && !splitting) { Text("Close") } }
     )
 }

@@ -64,6 +64,21 @@ class TrainingPlannerTest {
         assertTrue(blocked.problem!!.contains("already used for training"))
     }
 
+    @Test fun legacyIncompleteEvaluationCanRetryOnceWithSnips() {
+        val training = image("a")
+        val evaluation = image("b", time = 20)
+        val first = plan(listOf(training, evaluation))
+        val legacy = completed(first.fit).copy(scorecard = """[{"before":1932,"after":null}]""")
+        val retry = plan(listOf(training, evaluation), runs = listOf(legacy), pins = first.reserved)
+        assertTrue(retry.sectionRetry)
+        assertEquals(first.fit, retry.fit)
+        assertEquals(first.evaluate, retry.evaluate)
+        val checkedSnips = legacy.copy(id = "new", scorecard = """[{"sections":2,"before":1932,"after":null}]""")
+        val done = plan(listOf(training, evaluation), runs = listOf(legacy, checkedSnips), pins = first.reserved)
+        assertFalse(done.sectionRetry)
+        assertTrue(done.problem!!.contains("used all eligible labels"))
+    }
+
     @Test fun improvedProseCannotMaskChangedMath() {
         val expected = "The answer is \$p \\nmid x^{2023}\$."
         val old = "T answer is \$p \\nmid x^{2023}\$."

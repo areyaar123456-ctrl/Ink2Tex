@@ -1,6 +1,6 @@
 # Ink2TeX
 
-A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.6; not a device-certified production release.** It contains no mock OCR or hardcoded conversion output.
+A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.7.**
 
 ## Train handwriting weights on Android
 
@@ -9,7 +9,9 @@ A real Android/Kotlin application for a floating, user-authorized handwriting sc
 3. Tap **Train on tablet**. Each batch prioritizes new or revised labels, uses up to 12 training images with limited replay, and checks up to three evaluation images before applying new weights.
 4. Review the saved scorecard. Ink2TeX installs a candidate only if at least one text or math score improves and neither score worsens on any evaluation image. **Restore previous weights** returns to the last checkpoint. **Compare stock model** runs the same note with stock weights.
 
-Training uses real supervised updates to a compact set of output weights. Later batches start from the installed checkpoint. The encoder and decoder stay frozen. Training and ordinary scans each use individual input images. Everything runs on the tablet. Training and scan times on the Moto Pad still need device measurements. Whole-model retraining remains unavailable in this Android runtime.
+Long evaluation images are split automatically at clear gaps between lines. Both sets of weights read the same ordered snips, and the joined text is scored against your existing checked source. Batches with an incomplete evaluation from 0.1.6 can be retried. For long training images, select **Review → Split into snips** to create a new note of ordered crops. Convert it, then check each crop's source.
+
+Training uses supervised updates to a compact set of output weights. Later batches start from the installed checkpoint. The encoder and decoder stay frozen. Everything runs on the tablet. Training and scan times on the Moto Pad still need device measurements. Whole-model retraining remains unavailable in this Android runtime.
 
 ## Optional scan-time examples
 

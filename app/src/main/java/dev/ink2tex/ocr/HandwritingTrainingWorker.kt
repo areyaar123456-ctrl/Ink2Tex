@@ -6,6 +6,8 @@ import androidx.work.*
 import dev.ink2tex.InkApplication
 import dev.ink2tex.format.MathLayout
 import dev.ink2tex.preprocessing.ImagePipeline
+import dev.ink2tex.preprocessing.ImageSections
+import dev.ink2tex.stitching.ProofSequence
 import dev.ink2tex.storage.TrainingRun
 import java.io.File
 import kotlinx.coroutines.*
@@ -73,33 +75,46 @@ class HandwritingTrainingWorker(context: Context, parameters: WorkerParameters) 
                     val baselineMath = mutableListOf<Int>()
                     val candidateMath = mutableListOf<Int>()
                     val scorecard = JSONArray()
+                    var allComplete = true
                     plan.evaluate.forEachIndexed { index, sample ->
-                        val image = withContext(Dispatchers.IO) { ImagePipeline.preview(File(sample.label.source), 1440) }
-                        try {
-                            val expected = trainingSource(sample.label.transcription)
-                            val step = "image ${index + 1} of ${plan.evaluate.size}"
-                            progress("Checking current weights · $step")
-                            val baseline = app.engine.recognize(image,
-                                RecognitionOptions(maxTokens = 1024, weights = HandwritingWeights.ACTIVE))
-                            completed++
-                            progress("Checking new weights · $step")
-                            val proposed = app.engine.recognize(image,
-                                RecognitionOptions(maxTokens = 1024, weights = HandwritingWeights.CANDIDATE))
-                            completed++
-                            val before = TrainingEvaluation.errors(expected, baseline.markdown)
-                            val after = if (proposed.truncated || proposed.markdown.isBlank()) null
-                            else TrainingEvaluation.errors(expected, proposed.markdown)
+                        val expected = trainingSource(sample.label.transcription)
+                        val baseline = EvaluationRead()
+                        val candidate = EvaluationRead()
+                        val step = "image ${index + 1} of ${plan.evaluate.size}"
+                        progress("Finding snips · $step")
+                        val sections = ImageSections.forEach(File(sample.label.source), expected.length, plan.sectionRetry) { image, part, total ->
+                            val section = "$step · snip ${part + 1} of $total"
+                            if (baseline.issue == null) {
+                                progress("Checking current weights · $section")
+                                baseline.add(app.engine.recognize(image,
+                                    RecognitionOptions(maxTokens = 1024, weights = HandwritingWeights.ACTIVE)), part)
+                            }
+                            if (candidate.issue == null) {
+                                progress("Checking new weights · $section")
+                                candidate.add(app.engine.recognize(image,
+                                    RecognitionOptions(maxTokens = 1024, weights = HandwritingWeights.CANDIDATE)), part)
+                            }
+                        }
+                        completed += 2
+                        val originalText = baseline.text
+                        val proposedText = candidate.text
+                        val before = originalText?.let { TrainingEvaluation.errors(expected, it) }
+                        val after = proposedText?.let { TrainingEvaluation.errors(expected, it) }
+                        val beforeMath = originalText?.let { TrainingEvaluation.mathErrors(expected, it) }
+                        val afterMath = proposedText?.let { TrainingEvaluation.mathErrors(expected, it) }
+                        if (before != null && after != null && beforeMath != null && afterMath != null) {
                             baselineErrors += before
-                            candidateErrors += after ?: Int.MAX_VALUE / 8
-                            val beforeMath = TrainingEvaluation.mathErrors(expected, baseline.markdown)
-                            val afterMath = after?.let { TrainingEvaluation.mathErrors(expected, proposed.markdown) }
+                            candidateErrors += after
                             baselineMath += beforeMath
-                            candidateMath += afterMath ?: Int.MAX_VALUE / 8
-                            scorecard.put(JSONObject().put("beforeMath", beforeMath).put("afterMath", afterMath ?: JSONObject.NULL).put("before", before).put("after", after ?: JSONObject.NULL)
-                                .put("currentMs", baseline.durationMs).put("newMs", proposed.durationMs))
-                        } finally { image.recycle() }
+                            candidateMath += afterMath
+                        } else allComplete = false
+                        scorecard.put(JSONObject().put("sections", sections)
+                            .put("beforeMath", beforeMath ?: JSONObject.NULL).put("afterMath", afterMath ?: JSONObject.NULL)
+                            .put("before", before ?: JSONObject.NULL).put("after", after ?: JSONObject.NULL)
+                            .put("currentMs", baseline.durationMs).put("newMs", candidate.durationMs)
+                            .put("currentIssue", baseline.issue).put("candidateIssue", candidate.issue))
                     }
-                    if (TrainingEvaluation.accept(baselineErrors, candidateErrors, baselineMath, candidateMath)) {
+                    if (allComplete && TrainingEvaluation.accept(baselineErrors, candidateErrors, baselineMath, candidateMath)) {
                         progress("Saving the improved checkpoint")
                         app.engine.saveCandidate(staged)
                         currentCoroutineContext().ensureActive()
@@ -112,7 +127,9 @@ class HandwritingTrainingWorker(context: Context, parameters: WorkerParameters) 
                         }
                         accepted
                     } else {
-                        Trial("kept", "Kept current weights. The candidate tied, worsened, or left an evaluation image incomplete.", scorecard)
+                        val reason = if (allComplete) "The new weights did not improve evaluation without worsening any image score."
+                            else "An evaluation snip was incomplete. See the affected snip below."
+                        Trial("kept", "Kept current weights. $reason", scorecard)
                     }
                 } finally {
                     withContext(NonCancellable + Dispatchers.IO) {
@@ -147,6 +164,25 @@ class HandwritingTrainingWorker(context: Context, parameters: WorkerParameters) 
     )
 
     private data class Trial(val outcome: String, val summary: String, val scorecard: JSONArray = JSONArray())
+
+    private class EvaluationRead {
+        private val parts = mutableListOf<String>()
+        var durationMs = 0L
+            private set
+        var issue: String? = null
+            private set
+        val text get() = if (issue != null) null else ProofSequence.merge(parts).text
+
+        fun add(result: RecognitionResult, index: Int) {
+            durationMs += result.durationMs
+            issue = when {
+                result.truncated -> "Snip ${index + 1} reached the output limit."
+                result.markdown.isBlank() -> "Snip ${index + 1} returned no text."
+                else -> null
+            }
+            if (issue == null) parts += result.markdown
+        }
+    }
 
     private fun trainingSource(text: String): String =
         MathLayout.displayStandalone(LocalOcrEngine.normalizeDelimiters(text)).trim()

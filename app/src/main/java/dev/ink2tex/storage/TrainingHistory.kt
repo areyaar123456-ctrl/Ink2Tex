@@ -18,6 +18,7 @@ data class TrainingRun(
     val summary: String
 ) {
     val evaluated get() = outcome in setOf("promoted", "kept", "unchanged")
+    val needsSectionRetry get() = outcome == "kept" && "\"after\":null" in scorecard && "\"sections\":" !in scorecard
 }
 
 @Entity(tableName = "training_drafts", primaryKeys = ["documentId", "source"])

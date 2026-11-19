@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.MathLayoutTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-19T15:08:22.383Z" hostname="4060979d6adb" time="0.056">
+<testsuite name="dev.ink2tex.MathLayoutTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-19T16:08:33.158Z" hostname="4060979d6adb" time="0.016">
   <properties/>
-  <testcase name="inlineEquationsAndSeparateInlineSpansStayInline" classname="dev.ink2tex.MathLayoutTest" time="0.036"/>
-  <testcase name="formattingDoesNotCorrectMistakesOrChangeGrouping" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
-  <testcase name="fencedAndIndentedCodeAreNotReformatted" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
-  <testcase name="existingSavedInlineEquationGetsDisplayPreviewWithoutChangingItsSource" classname="dev.ink2tex.MathLayoutTest" time="0.004"/>
+  <testcase name="inlineEquationsAndSeparateInlineSpansStayInline" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
+  <testcase name="formattingDoesNotCorrectMistakesOrChangeGrouping" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
+  <testcase name="fencedAndIndentedCodeAreNotReformatted" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
+  <testcase name="existingSavedInlineEquationGetsDisplayPreviewWithoutChangingItsSource" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
   <testcase name="existingDisplayMathIsIdempotent" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
-  <testcase name="escapedDollarsInsideMathAreKeptAndCurrencyIsNotRewritten" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
+  <testcase name="escapedDollarsInsideMathAreKeptAndCurrencyIsNotRewritten" classname="dev.ink2tex.MathLayoutTest" time="0.004"/>
   <testcase name="standaloneSummationKeepsExactlyTheWrittenExpression" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
-  <testcase name="codeFenceContentCannotCloseFenceWithTrailingProse" classname="dev.ink2tex.MathLayoutTest" time="0.001"/>
+  <testcase name="codeFenceContentCannotCloseFenceWithTrailingProse" classname="dev.ink2tex.MathLayoutTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

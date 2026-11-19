@@ -18,9 +18,10 @@ data class TrainingPlan(
     val reserved: Set<String> = emptySet(),
     val newImages: Int = 0,
     val reservedNotes: Set<String> = emptySet(),
+    val sectionRetry: Boolean = false,
     val problem: String? = null
 ) {
-    val key: String get() = digest("output-v2\n" + fit.joinToString("\n") { it.historyKey } +
+    val key: String get() = digest("output-v3-sections:$sectionRetry\n" + fit.joinToString("\n") { it.historyKey } +
         "\n--evaluation--\n" + evaluate.joinToString("\n") { it.historyKey })
 }
 
@@ -83,7 +84,7 @@ object TrainingPlanner {
         if (pool.isEmpty()) return TrainingPlan(evaluate = evaluation, reserved = pinKeys, reservedNotes = reservedNotes,
             problem = "These images all belong to evaluation notes. Check an image from a separate note for training.")
 
-        val seen = runs.filter { it.modelId == modelId && it.evaluated }
+        val seen = runs.filter { it.modelId == modelId && it.evaluated && !it.needsSectionRetry }
             .flatMap { it.trainingKeys.lines() }.map { it.substringAfterLast(':') }.toSet()
         val new = pool.filterNot { it.revision in seen }
             .sortedWith(compareBy<CheckedImage> { it.label.updated }.thenBy { it.identity })
@@ -94,7 +95,10 @@ object TrainingPlanner {
         val long = (fit + evaluation).firstOrNull { it.label.transcription.encodeToByteArray().size > 12_000 }
         if (long != null) return TrainingPlan(evaluate = evaluation, reserved = pinKeys, reservedNotes = reservedNotes,
             problem = "A selected source is too long. Review it as smaller snips before training.")
-        return TrainingPlan(fit, evaluation, pinKeys, new.size, reservedNotes)
+        val retryRevisions = runs.filter { it.modelId == modelId && it.needsSectionRetry }
+            .flatMap { it.trainingKeys.lines() }.map { it.substringAfterLast(':') }.toSet()
+        return TrainingPlan(fit, evaluation, pinKeys, new.size, reservedNotes,
+            sectionRetry = fit.any { it.revision in retryRevisions && it.revision !in seen })
     }
 
     private class Groups {

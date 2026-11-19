@@ -4,9 +4,13 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.room.withTransaction
 import dev.ink2tex.preprocessing.ImagePipeline
+import dev.ink2tex.preprocessing.ImageSections
 import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 
 class InkRepository(val context: Context, val database: InkDatabase) {
@@ -26,6 +30,37 @@ class InkRepository(val context: Context, val database: InkDatabase) {
    parentSource?.let { database.trainingHistory().putOrigin(CropOrigin(document.source,it)) }
   }
   document
+ }
+ suspend fun splitTrainingImage(documentId: String, source: String): Document = withContext(Dispatchers.IO) {
+  val original = documents.get(documentId) ?: error("This note is no longer available.")
+  val input = File(source).canonicalFile
+  require(source in original.source.lineSequence() && input.parentFile == images.canonicalFile && input.isFile) {
+   "Original image unavailable."
+  }
+  val files = mutableListOf<File>()
+  var committed = false
+  try {
+   ImageSections.forEach(input, requireSplit = true) { bitmap, _, _ ->
+    val file = File(images, "${UUID.randomUUID()}.png")
+    files += file
+    file.outputStream().use { check(bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)) { "Unable to save a snip." } }
+   }
+   val snips = Document(UUID.randomUUID().toString(), "Snips · ${original.title}".take(120),
+    source = files.joinToString("\n") { it.absolutePath })
+   currentCoroutineContext().ensureActive()
+   withContext(NonCancellable) {
+    database.withTransaction {
+     val current = documents.get(documentId)
+     require(current != null && source in current.source.lineSequence()) { "Original image unavailable." }
+     documents.put(snips)
+     files.forEach { database.trainingHistory().putOrigin(CropOrigin(it.absolutePath, source)) }
+    }
+    committed = true
+   }
+   snips
+  } finally {
+   if (!committed) files.forEach { it.delete() }
+  }
  }
  suspend fun teachHandwriting(documentId: String, correctedText: String) = withContext(Dispatchers.IO) {
   val document = documents.get(documentId) ?: error("This note is no longer available.")
