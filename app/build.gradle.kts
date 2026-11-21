@@ -4,6 +4,8 @@ plugins {
  id("org.jetbrains.kotlin.plugin.compose")
  id("com.google.devtools.ksp")
 }
+val myScriptPilot = providers.gradleProperty("ink2texMyScriptPilot").orNull == "true"
+
 android {
  namespace = "dev.ink2tex"
  compileSdk = 36
@@ -13,8 +15,9 @@ android {
   applicationId = "dev.ink2tex"
   minSdk = 31
   targetSdk = 36
-  versionCode = 8
-  versionName = "0.1.7"
+  versionCode = 9
+  versionName = "0.1.8"
+  buildConfigField("boolean", "MYSCRIPT_PILOT", myScriptPilot.toString())
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   ndk { abiFilters += "arm64-v8a" }
   externalNativeBuild { cmake { cppFlags += listOf("-std=c++17", "-O2"); arguments += "-DANDROID_STL=c++_shared" } }
@@ -23,7 +26,16 @@ android {
  externalNativeBuild { cmake { path = file("src/main/cpp/CMakeLists.txt"); version = "3.22.1" } }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
  kotlinOptions { jvmTarget = "17" }
- packaging { jniLibs.useLegacyPackaging = true; resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+ packaging {
+  jniLibs.useLegacyPackaging = true
+  if (myScriptPilot) jniLibs.pickFirsts += "lib/arm64-v8a/libc++_shared.so"
+  resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+ }
+ sourceSets.getByName("main").java.srcDir(if (myScriptPilot) "src/myscript/java" else "src/noMyscript/java")
+ if (myScriptPilot) {
+  buildTypes.getByName("debug").applicationIdSuffix = ".pilot"
+  providers.gradleProperty("ink2texMyScriptAssets").orNull?.let { sourceSets.getByName("main").assets.srcDir(it) }
+ }
  testOptions { unitTests.isIncludeAndroidResources = true }
 }
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }
@@ -43,6 +55,11 @@ dependencies {
  implementation("androidx.core:core-ktx:1.16.0")
  implementation("androidx.webkit:webkit:1.13.0")
  implementation("org.commonmark:commonmark:0.24.0")
+ implementation("com.caverock:androidsvg-aar:1.4")
+ implementation("com.google.mlkit:digital-ink-recognition:19.0.0")
+ implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
+ implementation("com.microsoft.onnxruntime:onnxruntime-android:1.23.2")
+ if (myScriptPilot) implementation("com.myscript:iink:4.5.1")
  testImplementation("junit:junit:4.13.2")
  testImplementation("org.robolectric:robolectric:4.14.1")
  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")

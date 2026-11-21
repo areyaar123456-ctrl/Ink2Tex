@@ -9,46 +9,46 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    with an older version. However, you may simply not be aware that a more
    recent version is available, and that is what this lint check helps find.
 
-/workspace/Ink2TeX/app/build.gradle.kts:31: Warning: A newer version of androidx.compose:compose-bom than 2025.05.01 is available: 2026.09.00 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:43: Warning: A newer version of androidx.compose:compose-bom than 2025.05.01 is available: 2026.11.01 [GradleDependency]
  implementation(platform("androidx.compose:compose-bom:2025.05.01"))
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:32: Warning: A newer version of androidx.activity:activity-compose than 1.10.1 is available: 1.13.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:44: Warning: A newer version of androidx.activity:activity-compose than 1.10.1 is available: 1.13.0 [GradleDependency]
  implementation("androidx.activity:activity-compose:1.10.1")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:36: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.0 is available: 2.11.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:48: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.0 is available: 2.11.1 [GradleDependency]
  implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:37: Warning: A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.0 is available: 2.11.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:49: Warning: A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.0 is available: 2.11.1 [GradleDependency]
  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:38: Warning: A newer version of androidx.room:room-runtime than 2.7.1 is available: 2.8.5 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:50: Warning: A newer version of androidx.room:room-runtime than 2.7.1 is available: 2.8.5 [GradleDependency]
  implementation("androidx.room:room-runtime:2.7.1")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:39: Warning: A newer version of androidx.room:room-ktx than 2.7.1 is available: 2.8.5 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:51: Warning: A newer version of androidx.room:room-ktx than 2.7.1 is available: 2.8.5 [GradleDependency]
  implementation("androidx.room:room-ktx:2.7.1")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:40: Warning: A newer version of androidx.room:room-compiler than 2.7.1 is available: 2.8.5 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:52: Warning: A newer version of androidx.room:room-compiler than 2.7.1 is available: 2.8.5 [GradleDependency]
  ksp("androidx.room:room-compiler:2.7.1")
      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:41: Warning: A newer version of androidx.datastore:datastore-preferences than 1.1.7 is available: 1.3.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:53: Warning: A newer version of androidx.datastore:datastore-preferences than 1.1.7 is available: 1.3.0 [GradleDependency]
  implementation("androidx.datastore:datastore-preferences:1.1.7")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:42: Warning: A newer version of androidx.work:work-runtime-ktx than 2.10.1 is available: 2.12.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:54: Warning: A newer version of androidx.work:work-runtime-ktx than 2.10.1 is available: 2.12.0 [GradleDependency]
  implementation("androidx.work:work-runtime-ktx:2.10.1")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:43: Warning: A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.19.1 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:55: Warning: A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.19.1 [GradleDependency]
  implementation("androidx.core:core-ktx:1.16.0")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:44: Warning: A newer version of androidx.webkit:webkit than 1.13.0 is available: 1.18.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:56: Warning: A newer version of androidx.webkit:webkit than 1.13.0 is available: 1.18.0 [GradleDependency]
  implementation("androidx.webkit:webkit:1.13.0")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:49: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:66: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
  androidTestImplementation("androidx.test.ext:junit:1.2.1")
                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:50: Warning: A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:67: Warning: A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0 [GradleDependency]
  androidTestImplementation("androidx.test:runner:1.6.2")
                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:51: Warning: A newer version of androidx.test:rules than 1.6.1 is available: 1.7.0 [GradleDependency]
+/workspace/Ink2TeX/app/build.gradle.kts:68: Warning: A newer version of androidx.test:rules than 1.6.1 is available: 1.7.0 [GradleDependency]
  androidTestImplementation("androidx.test:rules:1.6.1")
                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -59,13 +59,19 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    However, you may simply not be aware that a more recent version is
    available, and that is what this lint check helps find.
 
-/workspace/Ink2TeX/app/build.gradle.kts:45: Warning: A newer version of org.commonmark:commonmark than 0.24.0 is available: 0.32.0 [NewerVersionAvailable]
+/workspace/Ink2TeX/app/build.gradle.kts:57: Warning: A newer version of org.commonmark:commonmark than 0.24.0 is available: 0.32.0 [NewerVersionAvailable]
  implementation("org.commonmark:commonmark:0.24.0")
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:47: Warning: A newer version of org.robolectric:robolectric than 4.14.1 is available: 4.18 [NewerVersionAvailable]
+/workspace/Ink2TeX/app/build.gradle.kts:60: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-play-services than 1.10.2 is available: 1.11.0 [NewerVersionAvailable]
+ implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ink2TeX/app/build.gradle.kts:61: Warning: A newer version of com.microsoft.onnxruntime:onnxruntime-android than 1.23.2 is available: 1.32.0 [NewerVersionAvailable]
+ implementation("com.microsoft.onnxruntime:onnxruntime-android:1.23.2")
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ink2TeX/app/build.gradle.kts:64: Warning: A newer version of org.robolectric:robolectric than 4.14.1 is available: 4.18 [NewerVersionAvailable]
  testImplementation("org.robolectric:robolectric:4.14.1")
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/build.gradle.kts:48: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-test than 1.10.2 is available: 1.11.0 [NewerVersionAvailable]
+/workspace/Ink2TeX/app/build.gradle.kts:65: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-test than 1.10.2 is available: 1.11.0 [NewerVersionAvailable]
  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -77,7 +83,7 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    MavenCentral dependency, and connects to the library every time, which
    makes it more flexible but also much slower.
 
-/workspace/Ink2TeX/app/build.gradle.kts:19: Warning: Missing x86_64 ABI support for ChromeOS [ChromeOsAbiSupport]
+/workspace/Ink2TeX/app/build.gradle.kts:22: Warning: Missing x86_64 ABI support for ChromeOS [ChromeOsAbiSupport]
   ndk { abiFilters += "arm64-v8a" }
                       ~~~~~~~~~~~
 
@@ -91,7 +97,7 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 
    https://developer.android.com/ndk/guides/abis
 
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:305: Warning: Using setJavaScriptEnabled can introduce XSS vulnerabilities into your application, review carefully [SetJavaScriptEnabled]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:351: Warning: Using setJavaScriptEnabled can introduce XSS vulnerabilities into your application, review carefully [SetJavaScriptEnabled]
   settings.javaScriptEnabled=true;settings.allowFileAccess=false;settings.allowContentAccess=false;settings.domStorageEnabled=false;settings.blockNetworkLoads=true
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -132,7 +138,7 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    Some methods allocate memory on your behalf (such as Bitmap.create), and
    these should be handled in the same way.
 
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:260: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:306: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
   val entries=listOf("Device" to "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}","Android / ABI" to "${android.os.Build.VERSION.RELEASE} / ${android.os.Build.SUPPORTED_ABIS.joinToString()}","Engine" to diagnostic.stage,"Loaded model" to (diagnostic.loadedModel ?: "None"),"CPU backend capabilities" to (diagnostic.backendInfo ?: "Not loaded"),"Available RAM" to bytes(memory.availMem),"Java heap allocated" to bytes(javaMemory),"Native heap allocated" to bytes(nativeMemory),"Free app storage" to bytes(context.filesDir.usableSpace),"Model initialization" to (diagnostic.initializationMs?.let { "$it ms" } ?: "Not measured"),"Last inference" to (diagnostic.inferenceMs?.let { "$it ms" } ?: "Not measured"),"Last image budget" to "${diagnostic.imageTokenBudget} image tokens maximum", "Last input tokens" to (diagnostic.inputTokens?.toString() ?: "Not measured"), "Image preparation" to (diagnostic.preprocessingMs?.let { "$it ms" } ?: "Not measured"), "Image and prompt analysis" to (diagnostic.evaluationMs?.let { "$it ms" } ?: "Not measured"), "Text generation" to (diagnostic.generationMs?.let { "$it ms" } ?: "Not measured"), "Last output tokens" to (diagnostic.outputTokens?.toString() ?: "Not measured"),"Queued / running conversions" to queue.count { !it.state.isFinished }.toString(),"Last engine error" to (diagnostic.lastError ?: "None"))
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ~~~~~~~~~~~
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/modelmanager/ModelDownloadWorker.kt:30: Warning: Consider also using StorageManager#getAllocatableBytes and allocateBytes which will consider clearable cached data [UsableSpace]
@@ -171,13 +177,22 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/preprocessing/ImageSections.kt:108: Warning: Use the KTX extension function Bitmap.get instead? [UseKtx]
             return try { pixel.getPixel(0,0) } finally { pixel.recycle() }
                          ~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:207: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:211: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
      TextButton(onClick={context.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(model.licenseUrl)))}) { Text(model.license+" ↗") }
                                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:69: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt:252: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
+     TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://creativecommons.org/licenses/by-sa/4.0/"))) }) { Text("Weights license ↗") }
+                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ink/InkPage.kt:37: Warning: Use the KTX function createBitmap instead? [UseKtx]
+        val bounds = page.bounds ?: return Bitmap.createBitmap(600, 800, Bitmap.Config.ARGB_8888)
+                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ink/InkPage.kt:41: Warning: Use the KTX function createBitmap instead? [UseKtx]
+        val bitmap = Bitmap.createBitmap(
+                     ^
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:71: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
    preferences.edit().putString("target",result.id).apply()
    ~~~~~~~~~~~~~~~~~~
-/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:75: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt:77: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
  fun finishScroll() { app.getSharedPreferences("guided-proof",0).edit().remove("target").apply();message.value="Guided capture finished. Review the section order, then convert." }
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/MainActivity.kt:62: Warning: Use the KTX extension function String.toUri instead? [UseKtx]
@@ -195,6 +210,9 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
 /workspace/Ink2TeX/app/src/main/java/dev/ink2tex/storage/TrainingLabels.kt:86: Warning: Use the KTX extension function SharedPreferences.edit instead? [UseKtx]
         check(storage.edit().putStringSet("reserved-images", pinned + plan.reserved).commit()) {
               ~~~~~~~~~~~~~~
+/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ink/VectorImport.kt:96: Warning: Use the KTX function createBitmap instead? [UseKtx]
+        val image = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    Explanation for issues of type "UseKtx":
    The Android KTX libraries decorates the Android platform SDK as well as
@@ -275,4 +293,4 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
    the left bitmask. Therefore, you can use gravity="start" rather than
    gravity="left|start".)
 
-0 errors, 42 warnings
+0 errors, 48 warnings

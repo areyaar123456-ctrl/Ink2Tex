@@ -39,6 +39,9 @@ import dev.ink2tex.crop.CropView
 import dev.ink2tex.export.DocumentExport
 import dev.ink2tex.preprocessing.ImagePipeline
 import dev.ink2tex.preprocessing.PdfImport
+import dev.ink2tex.ink.MyScriptStroke
+import dev.ink2tex.ink.StrokeModels
+import dev.ink2tex.ink.VectorImport
 import dev.ink2tex.storage.Document
 import dev.ink2tex.storage.HandwritingExamples
 import dev.ink2tex.storage.TrainingLabel
@@ -65,7 +68,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
  val importLauncher=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { it?.let(vm::import) }
  val colors=if(settings.dark) darkColorScheme(primary=Color(0xFF78D9C4),secondary=Color(0xFFEBC482)) else lightColorScheme(primary=Teal,secondary=Gold,background=Paper,surface=Color.White,surfaceVariant=Color(0xFFEDF2EE),onSurface=Slate)
  LaunchedEffect(message) { message?.let { snackbar.showSnackbar(it);vm.message.value=null } }
- LaunchedEffect(nav.page) { if(nav.page=="import") { vm.go("home");importLauncher.launch(arrayOf("image/png","image/jpeg","image/webp","application/pdf")) } }
+ LaunchedEffect(nav.page) { if(nav.page=="import") { vm.go("home");importLauncher.launch(arrayOf("*/*")) } }
  BackHandler(nav.page!="home") { vm.go("home") }
  MaterialTheme(colorScheme=colors,typography=Typography()) {
   BoxWithConstraints(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
@@ -86,7 +89,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
     }) { padding ->
      Box(Modifier.fillMaxSize().padding(padding).padding(if(tablet)28.dp else 16.dp)) {
       when(nav.page) {
-       "home","import" -> HomeScreen(vm,start,stop) { importLauncher.launch(arrayOf("image/png","image/jpeg","image/webp","application/pdf")) }
+       "home","import" -> HomeScreen(vm,start,stop) { importLauncher.launch(arrayOf("*/*")) }
        "history" -> HistoryScreen(vm)
        "models" -> ModelScreen(vm)
        "settings" -> SettingsScreen(vm)
@@ -128,7 +131,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
    }
   } }
   item { Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-   ActionCard("Import a note","PNG, JPEG, WebP or PDF",InkIcons.AddPhotoAlternate,Modifier.weight(1f),onImport)
+   ActionCard("Import a note","Nebo, SVG, PDF or image",InkIcons.AddPhotoAlternate,Modifier.weight(1f),onImport)
    ActionCard("Last conversion",docs.firstOrNull { it.markdown.isNotBlank() }?.title ?: "Your next proof starts here",InkIcons.Description,Modifier.weight(1f)) { docs.firstOrNull { it.markdown.isNotBlank() }?.let { vm.go("editor",it.id) } ?: run { vm.message.value="Capture or import a note to begin" } }
   } }
   item { Surface(shape=RoundedCornerShape(18.dp)) { Row(Modifier.fillMaxWidth().padding(20.dp),verticalAlignment=Alignment.CenterVertically) {
@@ -173,6 +176,7 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
   item { PageTitle("Model Store","Verified artifacts. Private inference. Honest compatibility.") }
   item { Hint("Start with OvisOCR2 Quality when you have at least 3 GiB of free RAM. That is a conservative admission budget, not measured usage. Moto Pad speed and handwriting accuracy are unmeasured.",InkIcons.AutoAwesome) }
   item { Row(verticalAlignment=Alignment.CenterVertically) { Text("Auto-select a ready model",Modifier.weight(1f));Switch(settings.model=="auto",{ if(it)vm.selectModel("auto") else ready.firstOrNull()?.let { m -> vm.selectModel(m.id) } }) } }
+  item { StrokeModelCard(vm, works) }
   items(vm.app.models.manifests,key={it.id}) { model ->
    val work=works.filter { model.id in it.tags }.maxByOrNull { it.runAttemptCount.toLong()+if(!it.state.isFinished)100000L else 0L }
    val running=work!=null && !work.state.isFinished
@@ -209,6 +213,48 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
    } }
   }
   item { Hint("Unavailable candidates have no install button. The app never downloads executable model code, starts a server, or sends note images to the internet.",InkIcons.Lock) }
+ }
+}
+
+@Composable private fun StrokeModelCard(vm: InkViewModel, works: List<WorkInfo>) {
+ val context = LocalContext.current
+ val scope = rememberCoroutineScope()
+ val changes by vm.app.models.changes.collectAsStateWithLifecycle()
+ val active = works.firstOrNull { StrokeModels.HYBRID in it.tags && !it.state.isFinished }
+ val ready = remember(works, changes) { StrokeModels.ready(context) }
+ var removing by remember { mutableStateOf(false) }
+ Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface) {
+  Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+   Text("Nebo stroke recognition", style = MaterialTheme.typography.titleMedium)
+   Text("ML Kit English + Abel Notes math · experimental. Converts prose and formulas together from imported Nebo ink.", fontSize = 13.sp)
+   Text("Abel weights 15 MB · CC BY-SA 4.0 · Google manages the English model download", fontSize = 12.sp)
+   if (active != null) {
+    val bytes = active.progress.getLong("bytes", 0)
+    if (bytes > 0) LinearProgressIndicator(progress = { (bytes.toFloat() / StrokeModels.BYTES).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth())
+    else LinearProgressIndicator(Modifier.fillMaxWidth())
+    Text(active.progress.getString("stage") ?: "Waiting for a network connection or the local engine", fontSize = 12.sp)
+    TextButton(onClick = { WorkManager.getInstance(context).cancelWorkById(active.id) }) { Text("Cancel setup") }
+   } else {
+    if (ready) Text("Ready · runtime checks passed. Choose it from a Nebo note.")
+    else works.firstOrNull { StrokeModels.HYBRID in it.tags && it.state == WorkInfo.State.FAILED }
+      ?.outputData?.getString("error")?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+     Button(onClick = { StrokeModels.setup(context) }, enabled = !removing) { Text(if (ready) "Recheck setup" else "Set up stroke models") }
+     if (ready) TextButton(onClick = {
+      removing = true
+      scope.launch {
+       try { StrokeModels.remove(vm.app) }
+       catch (cancelled: kotlinx.coroutines.CancellationException) { throw cancelled }
+       catch (error: Exception) { vm.message.value = error.message ?: "Unable to remove the stroke models." }
+       finally { removing = false }
+      }
+     }, enabled = !removing) { Text("Remove") }
+     TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://creativecommons.org/licenses/by-sa/4.0/"))) }) { Text("Weights license ↗") }
+    }
+   }
+   Text(if (MyScriptStroke.available(context)) "MyScript iink · licensed pilot · activation may require a connection"
+     else "MyScript iink is available in the licensed pilot build.", fontSize = 12.sp)
+  }
  }
 }
 
@@ -333,6 +379,9 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
  val export=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri -> uri?.let { runCatching { DocumentExport.write(context,it,output) }.onSuccess {vm.message.value="Saved ${outputType.uppercase()} document"}.onFailure {e->vm.message.value=e.message} } }
  val work=queue.firstOrNull { doc.id in it.tags && !it.state.isFinished }
  val includesPdf=doc.source.lineSequence().any(PdfImport::isSection)
+ val includesInk = originals.isNotEmpty() && originals.all { it.endsWith(VectorImport.PREVIEW_SUFFIX) }
+ val reportedEngine = StrokeModels.name(doc.modelId).takeIf { StrokeModels.isStroke(doc.modelId) }
+ var showWarnings by rememberSaveable(doc.id) { mutableStateOf(false) }
  LaunchedEffect(doc.markdown) { if(text==databaseText)text=doc.markdown;databaseText=doc.markdown }
  LaunchedEffect(doc.status,doc.markdown,settings.autoCopy) { if(settings.autoCopy && doc.status=="Review" && doc.markdown.isNotBlank() && copied!=doc.markdown) { vm.copy(doc.markdown);copied=doc.markdown } }
  DisposableEffect(doc.id) { onDispose { vm.flush(doc.id,text) } }
@@ -340,7 +389,8 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
  Column(Modifier.fillMaxSize(),verticalArrangement=Arrangement.spacedBy(12.dp)) {
   Row(verticalAlignment=Alignment.CenterVertically) {
    IconButton(onClick={vm.flush(doc.id,text);vm.go("history")}) { Icon(InkIcons.ArrowBack,"Back to notebook") }
-   Column(Modifier.weight(1f)) { Text(doc.title,fontWeight=FontWeight.SemiBold,fontSize=21.sp);Text(if(doc.durationMs!=null)"${doc.status} · ${doc.durationMs} ms · ${doc.tokens} output tokens" else doc.status,fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant) }
+   Column(Modifier.weight(1f)) { Text(doc.title,fontWeight=FontWeight.SemiBold,fontSize=21.sp);Text(if(doc.durationMs!=null) "${doc.status} · ${doc.durationMs} ms" +
+    (doc.tokens?.let { " · $it output tokens" } ?: "") else doc.status,fontSize=12.sp,color=MaterialTheme.colorScheme.onSurfaceVariant) }
    IconButton(onClick={menu=true}){Icon(InkIcons.MoreVert,"Export and proof actions")}
    DropdownMenu(expanded=menu,onDismissRequest={menu=false}) {
     DropdownMenuItem(text={Text("Copy TeX document source")},onClick={vm.copy(DocumentExport.tex(text));menu=false})
@@ -349,19 +399,19 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
     DropdownMenuItem(text={Text("Export PDF / Print")},onClick={tab=2;web?.let { (context.getSystemService(Context.PRINT_SERVICE) as PrintManager).print("Ink2TeX proof",it.createPrintDocumentAdapter("Ink2TeX"),null) } ?: run {vm.message.value="Open Rendered preview, then choose Export PDF again"};menu=false})
     DropdownMenuItem(text={Text("Share Markdown + LaTeX")},onClick={DocumentExport.share(context,text);menu=false})
     DropdownMenuItem(text={Text("Append to existing proof")},onClick={appending=true;menu=false})
-    DropdownMenuItem(text={Text("Rerun / compare models")},onClick={rerun=true;menu=false})
+    DropdownMenuItem(text={Text("Rerun / compare models")},enabled=work==null,onClick={rerun=true;menu=false})
     DropdownMenuItem(text={Text("Save source for weight training")},enabled=work==null && originals.isNotEmpty(),
       onClick={trainingReview=true;menu=false})
     DropdownMenuItem(text={Text("Save scan-time example")},enabled=work==null && text.isNotBlank() &&
       doc.source.lineSequence().count { it.isNotBlank() }==1,
       onClick={teach=true;menu=false})
     if(handwriting.enabled && handwriting.examples.isNotEmpty() &&
-       doc.modelId.isNotBlank() && vm.app.models.ready(doc.modelId)) {
+       doc.modelId.isNotBlank() && !StrokeModels.isStroke(doc.modelId) && vm.app.models.ready(doc.modelId)) {
      DropdownMenuItem(text={Text("Compare without examples")},enabled=work==null && doc.warnings.contains("Used ") && doc.warnings.contains("saved handwriting example"),
       onClick={vm.compare(doc,doc.modelId,useExamples=false);menu=false})
     }
     if(doc.warnings.contains("Used trained handwriting weights.") &&
-       doc.modelId.isNotBlank() && vm.app.models.ready(doc.modelId)) {
+       doc.modelId.isNotBlank() && !StrokeModels.isStroke(doc.modelId) && vm.app.models.ready(doc.modelId)) {
      DropdownMenuItem(text={Text("Compare stock model")},enabled=work==null,
       onClick={vm.compare(doc,doc.modelId,useExamples=false,trainedWeights=false);menu=false})
     }
@@ -372,25 +422,31 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
    }
   }
   FlowRow(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-   Button(onClick={vm.flush(doc.id,text);vm.convert(doc,fallback=allowFallback)},enabled=work==null) { Icon(InkIcons.AutoAwesome,null,Modifier.size(18.dp));Spacer(Modifier.width(6.dp));Text(if(text.isBlank())"Convert" else "Rerun OCR") }
+   Button(onClick={vm.flush(doc.id,text);if(includesInk) rerun=true else vm.convert(doc,fallback=allowFallback)},enabled=work==null) { Icon(InkIcons.AutoAwesome,null,Modifier.size(18.dp));Spacer(Modifier.width(6.dp));Text(if(text.isBlank())"Convert" else "Rerun OCR") }
    OutlinedButton(onClick={vm.copy(text)},enabled=text.isNotBlank()) { Icon(InkIcons.ContentCopy,null,Modifier.size(18.dp));Spacer(Modifier.width(6.dp));Text("Copy Markdown + LaTeX") }
    if(singleOriginal!=null) OutlinedButton(
     onClick={vm.recordTraining(TrainingLabel(doc.id,singleOriginal,text,"accepted",checked?.evaluation ?: false))},
-    enabled=work==null && text.isNotBlank() && checked?.transcription!=text
+    enabled=work==null && doc.status!="Needs review" && text.isNotBlank() && checked?.transcription!=text
    ){Text(if(checked?.transcription==text)"Source checked" else "Mark correct")}
    if(originals.isNotEmpty()) TextButton(onClick={trainingReview=true},enabled=work==null){Text("Submit corrected source")}
    if(work!=null)OutlinedButton(onClick={WorkManager.getInstance(context).cancelWorkById(work.id)}){Text("Cancel")}
   }
-  if(includesPdf) {
+  if(includesInk) {
+   Text(reportedEngine ?: "Imported pen strokes · choose a recognition engine", fontSize = 12.sp)
+  } else if(includesPdf) {
    Text("PDF scans use full detail",fontSize=11.sp)
   } else Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)) {
    FilterChip(selected=settings.fastScan,onClick={editorScope.launch { vm.repository.settings.fastScan(!settings.fastScan) }},enabled=work==null,label={Text(if(settings.fastScan)"Faster scan" else "Full detail")})
    Text(if(settings.fastScan)"Less detail · check small symbols" else "Best detail for small symbols",fontSize=11.sp)
   }
-  Row(verticalAlignment=Alignment.CenterVertically) { Checkbox(allowFallback,{allowFallback=it});Text("Try another ready model if inference fails",fontSize=11.sp) }
+  if(!includesInk) Row(verticalAlignment=Alignment.CenterVertically) { Checkbox(allowFallback,{allowFallback=it});Text("Try another ready model if inference fails",fontSize=11.sp) }
   if(work!=null) { LinearProgressIndicator(Modifier.fillMaxWidth());Text(work.progress.getString("stage") ?: if(work.state==WorkInfo.State.RUNNING) "Starting conversion worker" else "Waiting for Android to start conversion",fontSize=12.sp) }
   doc.error?.let { Text(it,fontSize=12.sp,color=MaterialTheme.colorScheme.error) }
-  if(doc.warnings.isNotBlank())Text(doc.warnings,fontSize=11.sp,lineHeight=16.sp,color=MaterialTheme.colorScheme.onSurfaceVariant,maxLines=3,overflow=TextOverflow.Ellipsis)
+  if(doc.warnings.isNotBlank()) {
+   Text(doc.warnings, fontSize=11.sp, lineHeight=16.sp, color=MaterialTheme.colorScheme.onSurfaceVariant, maxLines=3,
+    overflow=TextOverflow.Ellipsis)
+   if(doc.warnings.lines().size > 2) TextButton(onClick={showWarnings=true}) { Text("Review details") }
+  }
   if(doc.title.contains("Scrolling") || context.getSharedPreferences("guided-proof",0).getString("target",null)==doc.id) {
    Hint("Scroll Nebo manually and tap Scrolling Proof Scan for the next section. Images remain in capture order. Check overlaps before finishing.")
    Row { TextButton(onClick={(context as? Activity)?.moveTaskToBack(true)}){Text("Return to notes")};TextButton(onClick={vm.finishScroll()}){Text("Finish guided capture")};TextButton(onClick={vm.convert(doc,deduplicate=true)}){Text("Convert · exact overlap removal")} }
@@ -422,7 +478,33 @@ private val navItems=listOf(Triple("home","Scanner",InkIcons.CropFree),Triple("h
   confirmButton={TextButton(onClick={vm.teachHandwriting(doc.id,text);teach=false}){Text("Save example")}},
   dismissButton={TextButton(onClick={teach=false}){Text("Cancel")}}
  )
- if(rerun)AlertDialog(onDismissRequest={rerun=false},title={Text("Choose a ready model")},text={Column { vm.app.models.available().forEach { model -> Row(verticalAlignment=Alignment.CenterVertically) { Text(model.name,Modifier.weight(1f));TextButton(onClick={vm.convert(doc,model.id);rerun=false}){Text("Rerun")};TextButton(onClick={vm.compare(doc,model.id);rerun=false}){Text("Compare")} } };if(vm.app.models.available().isEmpty())Text("Download and validate a model in Model Store.") }},confirmButton={TextButton(onClick={rerun=false}){Text("Close")}})
+ if (rerun) {
+  val choices = buildList {
+   if (includesInk && StrokeModels.ready(context)) add(StrokeModels.HYBRID to "ML Kit + Abel Notes")
+   if (includesInk && MyScriptStroke.available(context)) add(StrokeModels.MYSCRIPT to "MyScript iink pilot")
+   vm.app.models.available().forEach { add(it.id to it.name) }
+  }
+  AlertDialog(onDismissRequest = { rerun = false }, title = { Text("Choose a recognition engine") },
+   text = {
+    Column(Modifier.heightIn(max = 380.dp).verticalScroll(rememberScrollState())) {
+     choices.forEach { (id, name) ->
+      Row(verticalAlignment = Alignment.CenterVertically) {
+       Text(name, Modifier.weight(1f))
+       TextButton(onClick = { vm.flush(doc.id, text); vm.convert(doc, id); rerun = false }) { Text("Convert") }
+       if (text.isNotBlank()) TextButton(onClick = { vm.flush(doc.id, text); vm.compare(doc, id); rerun = false }) { Text("Compare") }
+      }
+     }
+     if (choices.isEmpty() || (includesInk && !StrokeModels.ready(context))) {
+      TextButton(onClick = { rerun = false; vm.go("models") }) {
+       Text(if (includesInk) "Set up stroke models" else "Open Model Store")
+      }
+     }
+    }
+   }, confirmButton = { TextButton(onClick = { rerun = false }) { Text("Close") } })
+ }
+ if (showWarnings) AlertDialog(onDismissRequest = { showWarnings = false }, title = { Text("Review details") },
+  text = { Text(doc.warnings, Modifier.heightIn(max = 430.dp).verticalScroll(rememberScrollState())) },
+  confirmButton = { TextButton(onClick = { showWarnings = false }) { Text("Close") } })
  if(appending || comparing)AlertDialog(onDismissRequest={appending=false;comparing=false},title={Text(if(appending)"Append or add to a proof" else "Compare with a saved result")},text={LazyColumn(Modifier.heightIn(max=360.dp)) { items(docs.filter { it.id!=doc.id }) { other -> Column { Text(other.title,fontWeight=FontWeight.Medium);Row { if(appending) {TextButton(onClick={vm.append(doc.copy(markdown=text),other);appending=false}){Text("Append text")};TextButton(onClick={vm.mergeWith(doc,other);appending=false}){Text("Merge captures")}} else TextButton(onClick={comparison=other;comparing=false}){Text("Compare sources")} } } } }},confirmButton={TextButton(onClick={appending=false;comparing=false}){Text("Close")}})
  if(deleteOriginals)AlertDialog(onDismissRequest={deleteOriginals=false},title={Text("Delete this note's original images?")},text={Text("The editable transcription stays. Images still used by another saved note are retained for that note.")},confirmButton={TextButton(onClick={editorScope.launch { vm.repository.deleteOriginals(doc);deleteOriginals=false }}){Text("Delete originals")}},dismissButton={TextButton(onClick={deleteOriginals=false}){Text("Keep")}})
  if(ordering) SectionOrderDialog(doc,vm) { ordering=false }

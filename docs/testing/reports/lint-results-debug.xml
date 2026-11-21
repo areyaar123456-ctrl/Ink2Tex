@@ -20,7 +20,7 @@
     <issue
         id="GradleDependency"
         severity="Warning"
-        message="A newer version of androidx.compose:compose-bom than 2025.05.01 is available: 2026.09.00"
+        message="A newer version of androidx.compose:compose-bom than 2025.05.01 is available: 2026.11.01"
         category="Correctness"
         priority="4"
         summary="Obsolete Gradle Dependency"
@@ -29,7 +29,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="31"
+            line="43"
             column="17"/>
     </issue>
 
@@ -45,14 +45,14 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="32"
+            line="44"
             column="17"/>
     </issue>
 
     <issue
         id="GradleDependency"
         severity="Warning"
-        message="A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.0 is available: 2.11.0"
+        message="A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.0 is available: 2.11.1"
         category="Correctness"
         priority="4"
         summary="Obsolete Gradle Dependency"
@@ -61,14 +61,14 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="36"
+            line="48"
             column="17"/>
     </issue>
 
     <issue
         id="GradleDependency"
         severity="Warning"
-        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.0 is available: 2.11.0"
+        message="A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.0 is available: 2.11.1"
         category="Correctness"
         priority="4"
         summary="Obsolete Gradle Dependency"
@@ -77,7 +77,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="37"
+            line="49"
             column="17"/>
     </issue>
 
@@ -93,7 +93,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="38"
+            line="50"
             column="17"/>
     </issue>
 
@@ -109,7 +109,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="39"
+            line="51"
             column="17"/>
     </issue>
 
@@ -125,7 +125,7 @@
         errorLine2="     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="40"
+            line="52"
             column="6"/>
     </issue>
 
@@ -141,7 +141,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="41"
+            line="53"
             column="17"/>
     </issue>
 
@@ -157,7 +157,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="42"
+            line="54"
             column="17"/>
     </issue>
 
@@ -173,7 +173,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="43"
+            line="55"
             column="17"/>
     </issue>
 
@@ -189,7 +189,7 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="44"
+            line="56"
             column="17"/>
     </issue>
 
@@ -205,7 +205,7 @@
         errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="49"
+            line="66"
             column="28"/>
     </issue>
 
@@ -221,7 +221,7 @@
         errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="50"
+            line="67"
             column="28"/>
     </issue>
 
@@ -237,7 +237,7 @@
         errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="51"
+            line="68"
             column="28"/>
     </issue>
 
@@ -253,7 +253,39 @@
         errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="45"
+            line="57"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        severity="Warning"
+        message="A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-play-services than 1.10.2 is available: 1.11.0"
+        category="Correctness"
+        priority="4"
+        summary="Newer Library Versions Available"
+        explanation="This detector checks with a central repository to see if there are newer versions available for the dependencies used by this project. This is similar to the `GradleDependency` check, which checks for newer versions available in the Android SDK tools and libraries, but this works with any MavenCentral dependency, and connects to the library every time, which makes it more flexible but also **much** slower."
+        errorLine1=" implementation(&quot;org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2&quot;)"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/build.gradle.kts"
+            line="60"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        severity="Warning"
+        message="A newer version of com.microsoft.onnxruntime:onnxruntime-android than 1.23.2 is available: 1.32.0"
+        category="Correctness"
+        priority="4"
+        summary="Newer Library Versions Available"
+        explanation="This detector checks with a central repository to see if there are newer versions available for the dependencies used by this project. This is similar to the `GradleDependency` check, which checks for newer versions available in the Android SDK tools and libraries, but this works with any MavenCentral dependency, and connects to the library every time, which makes it more flexible but also **much** slower."
+        errorLine1=" implementation(&quot;com.microsoft.onnxruntime:onnxruntime-android:1.23.2&quot;)"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/build.gradle.kts"
+            line="61"
             column="17"/>
     </issue>
 
@@ -269,7 +301,7 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="47"
+            line="64"
             column="21"/>
     </issue>
 
@@ -285,7 +317,7 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="48"
+            line="65"
             column="21"/>
     </issue>
 
@@ -303,7 +335,7 @@
         errorLine2="                      ~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/build.gradle.kts"
-            line="19"
+            line="22"
             column="23"/>
     </issue>
 
@@ -321,7 +353,7 @@
         errorLine2="  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="305"
+            line="351"
             column="3"/>
     </issue>
 
@@ -433,7 +465,7 @@
         errorLine2="                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="260"
+            line="306"
             column="534"/>
     </issue>
 
@@ -545,8 +577,56 @@
         errorLine2="                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
-            line="207"
+            line="211"
             column="74"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX extension function `String.toUri` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="     TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(&quot;https://creativecommons.org/licenses/by-sa/4.0/&quot;))) }) { Text(&quot;Weights license ↗&quot;) }"
+        errorLine2="                                                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkApp.kt"
+            line="252"
+            column="78"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX function `createBitmap` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        val bounds = page.bounds ?: return Bitmap.createBitmap(600, 800, Bitmap.Config.ARGB_8888)"
+        errorLine2="                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ink/InkPage.kt"
+            line="37"
+            column="44"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX function `createBitmap` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        val bitmap = Bitmap.createBitmap("
+        errorLine2="                     ^">
+        <location
+            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ink/InkPage.kt"
+            line="41"
+            column="22"/>
     </issue>
 
     <issue
@@ -561,7 +641,7 @@
         errorLine2="   ~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt"
-            line="69"
+            line="71"
             column="4"/>
     </issue>
 
@@ -577,7 +657,7 @@
         errorLine2="                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ui/InkViewModel.kt"
-            line="75"
+            line="77"
             column="23"/>
     </issue>
 
@@ -659,6 +739,22 @@
             file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/storage/TrainingLabels.kt"
             line="86"
             column="15"/>
+    </issue>
+
+    <issue
+        id="UseKtx"
+        severity="Warning"
+        message="Use the KTX function `createBitmap` instead?"
+        category="Productivity"
+        priority="6"
+        summary="Use KTX extension function"
+        explanation="The Android KTX libraries decorates the Android platform SDK as well as various libraries with more convenient extension functions available from Kotlin, allowing you to use default parameters, named parameters, and more."
+        errorLine1="        val image = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="/workspace/Ink2TeX/app/src/main/java/dev/ink2tex/ink/VectorImport.kt"
+            line="96"
+            column="21"/>
     </issue>
 
     <issue

@@ -8,6 +8,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import dev.ink2tex.InkApplication
+import dev.ink2tex.ink.StrokeModels
+import dev.ink2tex.ink.StrokeRecognitionWorker
 import dev.ink2tex.crop.*
 import dev.ink2tex.ocr.RecognitionWorker
 import dev.ink2tex.ocr.HandwritingTrainingWorker
@@ -95,6 +97,10 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
   repository.documents.put(result);return result
  }
  fun convert(document:Document,model:String=settings.value.model,deduplicate:Boolean=false,fallback:Boolean=false,useExamples:Boolean=true,trainedWeights:Boolean=true) {
+  if (StrokeModels.isStroke(model)) {
+   StrokeRecognitionWorker.enqueue(app, document.id, model)
+   return
+  }
   if(model!="auto" && !app.models.ready(model)) { message.value="Download a compatible model in Model Store before converting.";go("models");return }
   RecognitionWorker.enqueue(app,document.id,model,deduplicate,fallback,useExamples,trainedWeights)
  }
@@ -106,7 +112,7 @@ class InkViewModel(application:Application):AndroidViewModel(application) {
  fun append(current:Document,target:Document) { viewModelScope.launch { repository.documents.put(target.copy(markdown=target.markdown.trimEnd()+"\n\n"+current.markdown,source=target.source+"\n"+current.source,status="Review"));go("editor",target.id) } }
  fun mergeWith(current:Document,target:Document) { viewModelScope.launch { val merged=combine(listOf(target,current),"Scrolling proof");go("editor",merged.id) } }
  fun compare(doc:Document,other:String,useExamples:Boolean=true,trainedWeights:Boolean=true) { viewModelScope.launch {
-  val label=if(!trainedWeights) "stock model" else if(useExamples) "comparison" else "without examples"
+  val label=if(StrokeModels.isStroke(other)) StrokeModels.name(other) else if(!trainedWeights) "stock model" else if(useExamples) "comparison" else "without examples"
   val comparison=doc.copy(id=UUID.randomUUID().toString(),title="${doc.title} · $label",
    markdown="",modelId=other,status="Captured",error=null,durationMs=null,tokens=null,warnings="")
   repository.documents.put(comparison)

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.InferenceProgressTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-19T16:08:33.123Z" hostname="4060979d6adb" time="0.024">
+<testsuite name="dev.ink2tex.InferenceProgressTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-21T07:27:54.091Z" hostname="fbd2e28e2438" time="0.007">
   <properties/>
-  <testcase name="ruledLinesArePreserved" classname="dev.ink2tex.InferenceProgressTest" time="0.002"/>
-  <testcase name="imageAnalysisDoesNotPretendToHaveGeneratedTokens" classname="dev.ink2tex.InferenceProgressTest" time="0.007"/>
-  <testcase name="trimRetainsEvenAlmostInvisibleMarks" classname="dev.ink2tex.InferenceProgressTest" time="0.008"/>
+  <testcase name="ruledLinesArePreserved" classname="dev.ink2tex.InferenceProgressTest" time="0.001"/>
+  <testcase name="imageAnalysisDoesNotPretendToHaveGeneratedTokens" classname="dev.ink2tex.InferenceProgressTest" time="0.001"/>
+  <testcase name="trimRetainsEvenAlmostInvisibleMarks" classname="dev.ink2tex.InferenceProgressTest" time="0.003"/>
   <testcase name="nonuniformCornersPreventTrimming" classname="dev.ink2tex.InferenceProgressTest" time="0.0"/>
-  <testcase name="generationReportsActualNativeTokenCount" classname="dev.ink2tex.InferenceProgressTest" time="0.0"/>
+  <testcase name="generationReportsActualNativeTokenCount" classname="dev.ink2tex.InferenceProgressTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

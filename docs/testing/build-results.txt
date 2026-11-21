@@ -1,3 +1,4 @@
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir=/dev/shm/ink2tex-stroke
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
@@ -80,17 +81,20 @@
 > Task :app:generateDebugLintReportModel
 > Task :app:generateDebugUnitTestLintModel
 > Task :app:kspDebugUnitTestKotlin
-> Task :app:compileDebugUnitTestKotlin UP-TO-DATE
+> Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes UP-TO-DATE
-> Task :app:lintAnalyzeDebug
+
 > Task :app:testDebugUnitTest
+Picked up JAVA_TOOL_OPTIONS: -Djava.io.tmpdir=/dev/shm/ink2tex-stroke
+
+> Task :app:lintAnalyzeDebug
 > Task :app:lintAnalyzeDebugAndroidTest
 > Task :app:lintAnalyzeDebugUnitTest
 > Task :app:lintReportDebug UP-TO-DATE
 > Task :app:lintDebug
 > Task :app:kspDebugAndroidTestKotlin
-> Task :app:compileDebugAndroidTestKotlin UP-TO-DATE
+> Task :app:compileDebugAndroidTestKotlin
 > Task :app:compileDebugAndroidTestJavaWithJavac UP-TO-DATE
 > Task :app:dexBuilderDebugAndroidTest UP-TO-DATE
 > Task :app:mergeDebugAndroidTestGlobalSynthetics UP-TO-DATE
@@ -101,5 +105,5 @@
 > Task :app:createDebugAndroidTestApkListingFileRedirect UP-TO-DATE
 > Task :app:assembleDebugAndroidTest UP-TO-DATE
 
-BUILD SUCCESSFUL in 3m 14s
-87 actionable tasks: 19 executed, 68 up-to-date
+BUILD SUCCESSFUL in 1m 43s
+87 actionable tasks: 21 executed, 66 up-to-date

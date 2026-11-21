@@ -1,6 +1,10 @@
 # Ink2TeX
 
-A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.7.**
+A real Android/Kotlin application for a floating, user-authorized handwriting scanner with local mathematical-document OCR. **Engineering build 0.1.8.**
+
+## Import handwritten strokes
+
+Import a compatible MyScript Notes (.nebo) export, then choose a recognition engine. **Model Store → Set up stroke models** installs the ML Kit English and Abel Notes assets. The optional licensed build adds MyScript iink. Both routes are experiments for mixed prose and equations. SVG import uses image OCR. [Setup, supported files, and acceptance tests](docs/STROKE_PILOT.md)
 
 ## Train handwriting weights on Android
 

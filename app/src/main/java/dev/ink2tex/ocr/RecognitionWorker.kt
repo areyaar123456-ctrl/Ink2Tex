@@ -6,6 +6,7 @@ import androidx.work.*
 import androidx.room.withTransaction
 import dev.ink2tex.storage.TrainingDraft
 import dev.ink2tex.InkApplication
+import dev.ink2tex.ink.VectorImport
 import dev.ink2tex.preprocessing.ImagePipeline
 import dev.ink2tex.preprocessing.PdfImport
 import dev.ink2tex.stitching.ProofSequence
@@ -22,6 +23,7 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
   val settings=app.repository.settings.flow.first()
   val sources=doc.source.lines().filter { it.isNotBlank() }
   val includesPdf=sources.any(PdfImport::isSection)
+  val includesNebo=sources.any { it.endsWith(VectorImport.PREVIEW_SUFFIX) }
   var modelId=inputData.getString("model") ?: settings.model
   if(modelId=="auto") modelId=app.models.available().firstOrNull()?.id ?: ""
   val candidateModels=if(inputData.getBoolean("fallback",false)) listOf(modelId)+app.models.available().map { it.id }.filter { it!=modelId } else listOf(modelId)
@@ -52,7 +54,7 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
      try {
       dao.put(doc.copy(status="Converting",modelId=candidate,error=null))
       setProgress(workDataOf("stage" to "Loading selected model"))
-      app.engine.loadModel(candidate,false,if(settings.fastScan && !includesPdf)256 else 1600)
+      app.engine.loadModel(candidate,false,if(settings.fastScan && !includesPdf && !includesNebo)256 else 1600)
       val pages=mutableListOf<String>();var elapsed=0L;var tokens=0;val warnings=mutableListOf<String>();var tileCount=0
       val pdfWarnings=mutableListOf<String>()
       val drafts=mutableListOf<TrainingDraft>()
@@ -64,8 +66,8 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
         tileCount++
         section.value="Section $tileCount · tile ${index+1}/$total · "
         val result=app.engine.recognize(bitmap,options)
-        if(PdfImport.isSection(path) && (result.markdown.isBlank() || result.truncated)) {
-         pdfWarnings+="Review section ${sourceIndex+1}. OCR returned ${if(result.truncated) "incomplete text" else "no text"}."
+        if((PdfImport.isSection(path) || path.endsWith(VectorImport.PREVIEW_SUFFIX)) && (result.markdown.isBlank() || result.truncated)) {
+         pdfWarnings+="Review page ${sourceIndex+1}, section ${index+1}. OCR returned ${if(result.truncated) "incomplete text" else "no text"}."
         }
         imageText+=result.markdown
         incomplete=incomplete || result.truncated || result.markdown.isBlank()
@@ -77,6 +79,9 @@ class RecognitionWorker(context: Context, params: WorkerParameters): CoroutineWo
       val merged=ProofSequence.merge(pages,inputData.getBoolean("deduplicate",false))
       if(pdfWarnings.isNotEmpty()) {
        warnings.addAll(0,pdfWarnings)
+      }
+      if (includesNebo) {
+       warnings.add(0, "Image OCR rendered the pen strokes in sections. Check MyScript Notes for typed text, images and other elements.")
       }
       if(sources.any(PdfImport::hasOverlap)) {
        warnings.add(0,"Some PDF sections overlap. Compare those boundaries for repeated lines.")

@@ -101,7 +101,7 @@ internal fun TrainingScreen(vm: InkViewModel) {
                 if (next != null) Button(onClick = { reviewTarget = next.first.id; reviewPath = next.second }, enabled = !running) {
                     Text("Review next image")
                 }
-                OutlinedButton(onClick = { import.launch(arrayOf("image/png", "image/jpeg", "image/webp", "application/pdf")) }) {
+                OutlinedButton(onClick = { import.launch(arrayOf("*/*")) }) {
                     Text("Import another note")
                 }
             }

@@ -1,5 +1,11 @@
 # Changes
 
+## 0.1.8 — Nebo stroke recognition pilot
+
+- Import supported .nebo archives with ordered, private stroke data and render a page preview. Import local SVG paths and shapes through image OCR.
+- Set up ML Kit English and Abel Notes formula recognition in Model Store. Choose either an image model or the mixed stroke route from a Nebo note, with full-line image fallback and review details.
+- Add a separately licensed MyScript iink build for the same mixed-document workflow. The public APK retains stroke recognition through ML Kit and Abel Notes.
+
 ## 0.1.7 — Smaller snips for long training notes
 
 - Split long evaluation images at clear horizontal gaps. Current and candidate weights read the same snips in order against the existing checked source.

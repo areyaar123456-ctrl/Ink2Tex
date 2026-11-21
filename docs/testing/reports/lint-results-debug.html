@@ -177,9 +177,9 @@ document.getElementById(id).style.display = 'none';
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <span class="mdl-layout-title">Lint Report: 42 warnings</span>
+      <span class="mdl-layout-title">Lint Report: 48 warnings</span>
       <div class="mdl-layout-spacer"></div>
-      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Thu Nov 19 16:04:55 UTC 2026 by AGP (8.11.1)</nav>
+      <nav class="mdl-navigation mdl-layout--large-screen-only">Check performed at Sat Nov 21 07:25:03 UTC 2026 by AGP (8.11.1)</nav>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -188,12 +188,12 @@ document.getElementById(id).style.display = 'none';
       <a class="mdl-navigation__link" href="#overview"><i class="material-icons">dashboard</i>Overview</a>
       <a class="mdl-navigation__link" href="#AndroidGradlePluginVersion"><i class="material-icons warning-icon">warning</i>Obsolete Android Gradle Plugin Version (1)</a>
       <a class="mdl-navigation__link" href="#GradleDependency"><i class="material-icons warning-icon">warning</i>Obsolete Gradle Dependency (14)</a>
-      <a class="mdl-navigation__link" href="#NewerVersionAvailable"><i class="material-icons warning-icon">warning</i>Newer Library Versions Available (3)</a>
+      <a class="mdl-navigation__link" href="#NewerVersionAvailable"><i class="material-icons warning-icon">warning</i>Newer Library Versions Available (5)</a>
       <a class="mdl-navigation__link" href="#ChromeOsAbiSupport"><i class="material-icons warning-icon">warning</i>Missing ABI Support for ChromeOS (1)</a>
       <a class="mdl-navigation__link" href="#SetJavaScriptEnabled"><i class="material-icons warning-icon">warning</i>Using <code>setJavaScriptEnabled</code> (1)</a>
       <a class="mdl-navigation__link" href="#DrawAllocation"><i class="material-icons warning-icon">warning</i>Memory allocations within drawing code (6)</a>
       <a class="mdl-navigation__link" href="#UsableSpace"><i class="material-icons warning-icon">warning</i>Using getUsableSpace() (3)</a>
-      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (12)</a>
+      <a class="mdl-navigation__link" href="#UseKtx"><i class="material-icons warning-icon">warning</i>Use KTX extension function (16)</a>
       <a class="mdl-navigation__link" href="#RtlHardcoded"><i class="material-icons warning-icon">warning</i>Using left/right instead of start/end attributes (1)</a>
     </nav>
   </div>
@@ -216,7 +216,7 @@ document.getElementById(id).style.display = 'none';
 <td class="countColumn">14</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#GradleDependency">GradleDependency</a>: Obsolete Gradle Dependency</td></tr>
 <tr>
-<td class="countColumn">3</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">5</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#NewerVersionAvailable">NewerVersionAvailable</a>: Newer Library Versions Available</td></tr>
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Correctness:Chrome OS">Correctness:Chrome OS</a>
 </td></tr>
@@ -239,14 +239,14 @@ document.getElementById(id).style.display = 'none';
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Productivity">Productivity</a>
 </td></tr>
 <tr>
-<td class="countColumn">12</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
+<td class="countColumn">16</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#UseKtx">UseKtx</a>: Use KTX extension function</td></tr>
 <tr><td class="countColumn"></td><td class="categoryColumn"><a href="#Internationalization:Bidirectional Text">Internationalization:Bidirectional Text</a>
 </td></tr>
 <tr>
 <td class="countColumn">1</td><td class="issueColumn"><i class="material-icons warning-icon">warning</i>
 <a href="#RtlHardcoded">RtlHardcoded</a>: Using left/right instead of start/end attributes</td></tr>
-<tr><td></td><td class="categoryColumn"><a href="#ExtraIssues">Included Additional Checks (69)</a>
+<tr><td></td><td class="categoryColumn"><a href="#ExtraIssues">Included Additional Checks (83)</a>
 </td></tr>
 <tr><td></td><td class="categoryColumn"><a href="#MissingIssues">Disabled Checks (41)</a>
 </td></tr>
@@ -312,145 +312,145 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:31</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2025.05.01 is available: 2026.09.00</span><br /><pre class="errorlines">
-<span class="lineno"> 28 </span>}
-<span class="lineno"> 29 </span>ksp { arg("room.schemaLocation", "$projectDir/schemas") }
-<span class="lineno"> 30 </span>dependencies {
-<span class="caretline"><span class="lineno"> 31 </span> implementation(<span class="warning">platform("androidx.compose:compose-bom:2025.05.01")</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 32 </span> implementation("androidx.activity:activity-compose:1.10.1")
-<span class="lineno"> 33 </span> implementation("androidx.compose.material3:material3")
-<span class="lineno"> 34 </span> implementation("androidx.compose.ui:ui-tooling-preview")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:43</span>: <span class="message">A newer version of androidx.compose:compose-bom than 2025.05.01 is available: 2026.11.01</span><br /><pre class="errorlines">
+<span class="lineno"> 40 </span>}
+<span class="lineno"> 41 </span>ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+<span class="lineno"> 42 </span>dependencies {
+<span class="caretline"><span class="lineno"> 43 </span> implementation(<span class="warning">platform("androidx.compose:compose-bom:2025.05.01")</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 44 </span> implementation("androidx.activity:activity-compose:1.10.1")
+<span class="lineno"> 45 </span> implementation("androidx.compose.material3:material3")
+<span class="lineno"> 46 </span> implementation("androidx.compose.ui:ui-tooling-preview")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:32</span>: <span class="message">A newer version of androidx.activity:activity-compose than 1.10.1 is available: 1.13.0</span><br /><pre class="errorlines">
-<span class="lineno"> 29 </span>ksp { arg("room.schemaLocation", "$projectDir/schemas") }
-<span class="lineno"> 30 </span>dependencies {
-<span class="lineno"> 31 </span> implementation(platform("androidx.compose:compose-bom:2025.05.01"))
-<span class="caretline"><span class="lineno"> 32 </span> implementation(<span class="warning">"androidx.activity:activity-compose:1.10.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 33 </span> implementation("androidx.compose.material3:material3")
-<span class="lineno"> 34 </span> implementation("androidx.compose.ui:ui-tooling-preview")
-<span class="lineno"> 35 </span> debugImplementation("androidx.compose.ui:ui-tooling")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:44</span>: <span class="message">A newer version of androidx.activity:activity-compose than 1.10.1 is available: 1.13.0</span><br /><pre class="errorlines">
+<span class="lineno"> 41 </span>ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+<span class="lineno"> 42 </span>dependencies {
+<span class="lineno"> 43 </span> implementation(platform("androidx.compose:compose-bom:2025.05.01"))
+<span class="caretline"><span class="lineno"> 44 </span> implementation(<span class="warning">"androidx.activity:activity-compose:1.10.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 45 </span> implementation("androidx.compose.material3:material3")
+<span class="lineno"> 46 </span> implementation("androidx.compose.ui:ui-tooling-preview")
+<span class="lineno"> 47 </span> debugImplementation("androidx.compose.ui:ui-tooling")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:36</span>: <span class="message">A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.0 is available: 2.11.0</span><br /><pre class="errorlines">
-<span class="lineno"> 33 </span> implementation("androidx.compose.material3:material3")
-<span class="lineno"> 34 </span> implementation("androidx.compose.ui:ui-tooling-preview")
-<span class="lineno"> 35 </span> debugImplementation("androidx.compose.ui:ui-tooling")
-<span class="caretline"><span class="lineno"> 36 </span> implementation(<span class="warning">"androidx.lifecycle:lifecycle-runtime-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 37 </span> implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
-<span class="lineno"> 38 </span> implementation("androidx.room:room-runtime:2.7.1")
-<span class="lineno"> 39 </span> implementation("androidx.room:room-ktx:2.7.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:48</span>: <span class="message">A newer version of androidx.lifecycle:lifecycle-runtime-compose than 2.9.0 is available: 2.11.1</span><br /><pre class="errorlines">
+<span class="lineno"> 45 </span> implementation("androidx.compose.material3:material3")
+<span class="lineno"> 46 </span> implementation("androidx.compose.ui:ui-tooling-preview")
+<span class="lineno"> 47 </span> debugImplementation("androidx.compose.ui:ui-tooling")
+<span class="caretline"><span class="lineno"> 48 </span> implementation(<span class="warning">"androidx.lifecycle:lifecycle-runtime-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 49 </span> implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+<span class="lineno"> 50 </span> implementation("androidx.room:room-runtime:2.7.1")
+<span class="lineno"> 51 </span> implementation("androidx.room:room-ktx:2.7.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:37</span>: <span class="message">A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.0 is available: 2.11.0</span><br /><pre class="errorlines">
-<span class="lineno"> 34 </span> implementation("androidx.compose.ui:ui-tooling-preview")
-<span class="lineno"> 35 </span> debugImplementation("androidx.compose.ui:ui-tooling")
-<span class="lineno"> 36 </span> implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
-<span class="caretline"><span class="lineno"> 37 </span> implementation(<span class="warning">"androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 38 </span> implementation("androidx.room:room-runtime:2.7.1")
-<span class="lineno"> 39 </span> implementation("androidx.room:room-ktx:2.7.1")
-<span class="lineno"> 40 </span> ksp("androidx.room:room-compiler:2.7.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:49</span>: <span class="message">A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.9.0 is available: 2.11.1</span><br /><pre class="errorlines">
+<span class="lineno"> 46 </span> implementation("androidx.compose.ui:ui-tooling-preview")
+<span class="lineno"> 47 </span> debugImplementation("androidx.compose.ui:ui-tooling")
+<span class="lineno"> 48 </span> implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+<span class="caretline"><span class="lineno"> 49 </span> implementation(<span class="warning">"androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 50 </span> implementation("androidx.room:room-runtime:2.7.1")
+<span class="lineno"> 51 </span> implementation("androidx.room:room-ktx:2.7.1")
+<span class="lineno"> 52 </span> ksp("androidx.room:room-compiler:2.7.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:38</span>: <span class="message">A newer version of androidx.room:room-runtime than 2.7.1 is available: 2.8.5</span><br /><pre class="errorlines">
-<span class="lineno"> 35 </span> debugImplementation("androidx.compose.ui:ui-tooling")
-<span class="lineno"> 36 </span> implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
-<span class="lineno"> 37 </span> implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
-<span class="caretline"><span class="lineno"> 38 </span> implementation(<span class="warning">"androidx.room:room-runtime:2.7.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 39 </span> implementation("androidx.room:room-ktx:2.7.1")
-<span class="lineno"> 40 </span> ksp("androidx.room:room-compiler:2.7.1")
-<span class="lineno"> 41 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:50</span>: <span class="message">A newer version of androidx.room:room-runtime than 2.7.1 is available: 2.8.5</span><br /><pre class="errorlines">
+<span class="lineno"> 47 </span> debugImplementation("androidx.compose.ui:ui-tooling")
+<span class="lineno"> 48 </span> implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+<span class="lineno"> 49 </span> implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+<span class="caretline"><span class="lineno"> 50 </span> implementation(<span class="warning">"androidx.room:room-runtime:2.7.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 51 </span> implementation("androidx.room:room-ktx:2.7.1")
+<span class="lineno"> 52 </span> ksp("androidx.room:room-compiler:2.7.1")
+<span class="lineno"> 53 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
 </pre>
 
 <button class="mdl-button mdl-js-button mdl-button--primary" id="GradleDependencyDivLink" onclick="reveal('GradleDependencyDiv');" />+ 9 More Occurrences...</button>
 <div id="GradleDependencyDiv" style="display: none">
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:39</span>: <span class="message">A newer version of androidx.room:room-ktx than 2.7.1 is available: 2.8.5</span><br /><pre class="errorlines">
-<span class="lineno"> 36 </span> implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
-<span class="lineno"> 37 </span> implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
-<span class="lineno"> 38 </span> implementation("androidx.room:room-runtime:2.7.1")
-<span class="caretline"><span class="lineno"> 39 </span> implementation(<span class="warning">"androidx.room:room-ktx:2.7.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 40 </span> ksp("androidx.room:room-compiler:2.7.1")
-<span class="lineno"> 41 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
-<span class="lineno"> 42 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:51</span>: <span class="message">A newer version of androidx.room:room-ktx than 2.7.1 is available: 2.8.5</span><br /><pre class="errorlines">
+<span class="lineno"> 48 </span> implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.0")
+<span class="lineno"> 49 </span> implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+<span class="lineno"> 50 </span> implementation("androidx.room:room-runtime:2.7.1")
+<span class="caretline"><span class="lineno"> 51 </span> implementation(<span class="warning">"androidx.room:room-ktx:2.7.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 52 </span> ksp("androidx.room:room-compiler:2.7.1")
+<span class="lineno"> 53 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="lineno"> 54 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:40</span>: <span class="message">A newer version of androidx.room:room-compiler than 2.7.1 is available: 2.8.5</span><br /><pre class="errorlines">
-<span class="lineno"> 37 </span> implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
-<span class="lineno"> 38 </span> implementation("androidx.room:room-runtime:2.7.1")
-<span class="lineno"> 39 </span> implementation("androidx.room:room-ktx:2.7.1")
-<span class="caretline"><span class="lineno"> 40 </span> ksp(<span class="warning">"androidx.room:room-compiler:2.7.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 41 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
-<span class="lineno"> 42 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
-<span class="lineno"> 43 </span> implementation("androidx.core:core-ktx:1.16.0")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:52</span>: <span class="message">A newer version of androidx.room:room-compiler than 2.7.1 is available: 2.8.5</span><br /><pre class="errorlines">
+<span class="lineno"> 49 </span> implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+<span class="lineno"> 50 </span> implementation("androidx.room:room-runtime:2.7.1")
+<span class="lineno"> 51 </span> implementation("androidx.room:room-ktx:2.7.1")
+<span class="caretline"><span class="lineno"> 52 </span> ksp(<span class="warning">"androidx.room:room-compiler:2.7.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 53 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="lineno"> 54 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
+<span class="lineno"> 55 </span> implementation("androidx.core:core-ktx:1.16.0")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:41</span>: <span class="message">A newer version of androidx.datastore:datastore-preferences than 1.1.7 is available: 1.3.0</span><br /><pre class="errorlines">
-<span class="lineno"> 38 </span> implementation("androidx.room:room-runtime:2.7.1")
-<span class="lineno"> 39 </span> implementation("androidx.room:room-ktx:2.7.1")
-<span class="lineno"> 40 </span> ksp("androidx.room:room-compiler:2.7.1")
-<span class="caretline"><span class="lineno"> 41 </span> implementation(<span class="warning">"androidx.datastore:datastore-preferences:1.1.7"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 42 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
-<span class="lineno"> 43 </span> implementation("androidx.core:core-ktx:1.16.0")
-<span class="lineno"> 44 </span> implementation("androidx.webkit:webkit:1.13.0")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:53</span>: <span class="message">A newer version of androidx.datastore:datastore-preferences than 1.1.7 is available: 1.3.0</span><br /><pre class="errorlines">
+<span class="lineno"> 50 </span> implementation("androidx.room:room-runtime:2.7.1")
+<span class="lineno"> 51 </span> implementation("androidx.room:room-ktx:2.7.1")
+<span class="lineno"> 52 </span> ksp("androidx.room:room-compiler:2.7.1")
+<span class="caretline"><span class="lineno"> 53 </span> implementation(<span class="warning">"androidx.datastore:datastore-preferences:1.1.7"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 54 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
+<span class="lineno"> 55 </span> implementation("androidx.core:core-ktx:1.16.0")
+<span class="lineno"> 56 </span> implementation("androidx.webkit:webkit:1.13.0")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:42</span>: <span class="message">A newer version of androidx.work:work-runtime-ktx than 2.10.1 is available: 2.12.0</span><br /><pre class="errorlines">
-<span class="lineno"> 39 </span> implementation("androidx.room:room-ktx:2.7.1")
-<span class="lineno"> 40 </span> ksp("androidx.room:room-compiler:2.7.1")
-<span class="lineno"> 41 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
-<span class="caretline"><span class="lineno"> 42 </span> implementation(<span class="warning">"androidx.work:work-runtime-ktx:2.10.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 43 </span> implementation("androidx.core:core-ktx:1.16.0")
-<span class="lineno"> 44 </span> implementation("androidx.webkit:webkit:1.13.0")
-<span class="lineno"> 45 </span> implementation("org.commonmark:commonmark:0.24.0")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:54</span>: <span class="message">A newer version of androidx.work:work-runtime-ktx than 2.10.1 is available: 2.12.0</span><br /><pre class="errorlines">
+<span class="lineno"> 51 </span> implementation("androidx.room:room-ktx:2.7.1")
+<span class="lineno"> 52 </span> ksp("androidx.room:room-compiler:2.7.1")
+<span class="lineno"> 53 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="caretline"><span class="lineno"> 54 </span> implementation(<span class="warning">"androidx.work:work-runtime-ktx:2.10.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 55 </span> implementation("androidx.core:core-ktx:1.16.0")
+<span class="lineno"> 56 </span> implementation("androidx.webkit:webkit:1.13.0")
+<span class="lineno"> 57 </span> implementation("org.commonmark:commonmark:0.24.0")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:43</span>: <span class="message">A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.19.1</span><br /><pre class="errorlines">
-<span class="lineno"> 40 </span> ksp("androidx.room:room-compiler:2.7.1")
-<span class="lineno"> 41 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
-<span class="lineno"> 42 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
-<span class="caretline"><span class="lineno"> 43 </span> implementation(<span class="warning">"androidx.core:core-ktx:1.16.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 44 </span> implementation("androidx.webkit:webkit:1.13.0")
-<span class="lineno"> 45 </span> implementation("org.commonmark:commonmark:0.24.0")
-<span class="lineno"> 46 </span> testImplementation("junit:junit:4.13.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:55</span>: <span class="message">A newer version of androidx.core:core-ktx than 1.16.0 is available: 1.19.1</span><br /><pre class="errorlines">
+<span class="lineno"> 52 </span> ksp("androidx.room:room-compiler:2.7.1")
+<span class="lineno"> 53 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="lineno"> 54 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
+<span class="caretline"><span class="lineno"> 55 </span> implementation(<span class="warning">"androidx.core:core-ktx:1.16.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 56 </span> implementation("androidx.webkit:webkit:1.13.0")
+<span class="lineno"> 57 </span> implementation("org.commonmark:commonmark:0.24.0")
+<span class="lineno"> 58 </span> implementation("com.caverock:androidsvg-aar:1.4")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:44</span>: <span class="message">A newer version of androidx.webkit:webkit than 1.13.0 is available: 1.18.0</span><br /><pre class="errorlines">
-<span class="lineno"> 41 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
-<span class="lineno"> 42 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
-<span class="lineno"> 43 </span> implementation("androidx.core:core-ktx:1.16.0")
-<span class="caretline"><span class="lineno"> 44 </span> implementation(<span class="warning">"androidx.webkit:webkit:1.13.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 45 </span> implementation("org.commonmark:commonmark:0.24.0")
-<span class="lineno"> 46 </span> testImplementation("junit:junit:4.13.2")
-<span class="lineno"> 47 </span> testImplementation("org.robolectric:robolectric:4.14.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:56</span>: <span class="message">A newer version of androidx.webkit:webkit than 1.13.0 is available: 1.18.0</span><br /><pre class="errorlines">
+<span class="lineno"> 53 </span> implementation("androidx.datastore:datastore-preferences:1.1.7")
+<span class="lineno"> 54 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
+<span class="lineno"> 55 </span> implementation("androidx.core:core-ktx:1.16.0")
+<span class="caretline"><span class="lineno"> 56 </span> implementation(<span class="warning">"androidx.webkit:webkit:1.13.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 57 </span> implementation("org.commonmark:commonmark:0.24.0")
+<span class="lineno"> 58 </span> implementation("com.caverock:androidsvg-aar:1.4")
+<span class="lineno"> 59 </span> implementation("com.google.mlkit:digital-ink-recognition:19.0.0")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:49</span>: <span class="message">A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0</span><br /><pre class="errorlines">
-<span class="lineno"> 46 </span> testImplementation("junit:junit:4.13.2")
-<span class="lineno"> 47 </span> testImplementation("org.robolectric:robolectric:4.14.1")
-<span class="lineno"> 48 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-<span class="caretline"><span class="lineno"> 49 </span> androidTestImplementation(<span class="warning">"androidx.test.ext:junit:1.2.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 50 </span> androidTestImplementation("androidx.test:runner:1.6.2")
-<span class="lineno"> 51 </span> androidTestImplementation("androidx.test:rules:1.6.1")
-<span class="lineno"> 52 </span>}
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:66</span>: <span class="message">A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0</span><br /><pre class="errorlines">
+<span class="lineno"> 63 </span> testImplementation("junit:junit:4.13.2")
+<span class="lineno"> 64 </span> testImplementation("org.robolectric:robolectric:4.14.1")
+<span class="lineno"> 65 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+<span class="caretline"><span class="lineno"> 66 </span> androidTestImplementation(<span class="warning">"androidx.test.ext:junit:1.2.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 67 </span> androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="lineno"> 68 </span> androidTestImplementation("androidx.test:rules:1.6.1")
+<span class="lineno"> 69 </span>}
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:50</span>: <span class="message">A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0</span><br /><pre class="errorlines">
-<span class="lineno"> 47 </span> testImplementation("org.robolectric:robolectric:4.14.1")
-<span class="lineno"> 48 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-<span class="lineno"> 49 </span> androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="caretline"><span class="lineno"> 50 </span> androidTestImplementation(<span class="warning">"androidx.test:runner:1.6.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 51 </span> androidTestImplementation("androidx.test:rules:1.6.1")
-<span class="lineno"> 52 </span>}
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:67</span>: <span class="message">A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 64 </span> testImplementation("org.robolectric:robolectric:4.14.1")
+<span class="lineno"> 65 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+<span class="lineno"> 66 </span> androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="caretline"><span class="lineno"> 67 </span> androidTestImplementation(<span class="warning">"androidx.test:runner:1.6.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 68 </span> androidTestImplementation("androidx.test:rules:1.6.1")
+<span class="lineno"> 69 </span>}
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:51</span>: <span class="message">A newer version of androidx.test:rules than 1.6.1 is available: 1.7.0</span><br /><pre class="errorlines">
-<span class="lineno"> 48 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-<span class="lineno"> 49 </span> androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="lineno"> 50 </span> androidTestImplementation("androidx.test:runner:1.6.2")
-<span class="caretline"><span class="lineno"> 51 </span> androidTestImplementation(<span class="warning">"androidx.test:rules:1.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 52 </span>}
-<span class="lineno"> 53 </span>
-<span class="lineno"> 54 </span>tasks.withType&lt;Test>().configureEach {
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:68</span>: <span class="message">A newer version of androidx.test:rules than 1.6.1 is available: 1.7.0</span><br /><pre class="errorlines">
+<span class="lineno"> 65 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+<span class="lineno"> 66 </span> androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="lineno"> 67 </span> androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="caretline"><span class="lineno"> 68 </span> androidTestImplementation(<span class="warning">"androidx.test:rules:1.6.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 69 </span>}
+<span class="lineno"> 70 </span>
+<span class="lineno"> 71 </span>tasks.withType&lt;Test>().configureEach {
 </pre>
 
 </div>
@@ -490,34 +490,54 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:45</span>: <span class="message">A newer version of org.commonmark:commonmark than 0.24.0 is available: 0.32.0</span><br /><pre class="errorlines">
-<span class="lineno"> 42 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
-<span class="lineno"> 43 </span> implementation("androidx.core:core-ktx:1.16.0")
-<span class="lineno"> 44 </span> implementation("androidx.webkit:webkit:1.13.0")
-<span class="caretline"><span class="lineno"> 45 </span> implementation(<span class="warning">"org.commonmark:commonmark:0.24.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 46 </span> testImplementation("junit:junit:4.13.2")
-<span class="lineno"> 47 </span> testImplementation("org.robolectric:robolectric:4.14.1")
-<span class="lineno"> 48 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:57</span>: <span class="message">A newer version of org.commonmark:commonmark than 0.24.0 is available: 0.32.0</span><br /><pre class="errorlines">
+<span class="lineno"> 54 </span> implementation("androidx.work:work-runtime-ktx:2.10.1")
+<span class="lineno"> 55 </span> implementation("androidx.core:core-ktx:1.16.0")
+<span class="lineno"> 56 </span> implementation("androidx.webkit:webkit:1.13.0")
+<span class="caretline"><span class="lineno"> 57 </span> implementation(<span class="warning">"org.commonmark:commonmark:0.24.0"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 58 </span> implementation("com.caverock:androidsvg-aar:1.4")
+<span class="lineno"> 59 </span> implementation("com.google.mlkit:digital-ink-recognition:19.0.0")
+<span class="lineno"> 60 </span> implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:47</span>: <span class="message">A newer version of org.robolectric:robolectric than 4.14.1 is available: 4.18</span><br /><pre class="errorlines">
-<span class="lineno"> 44 </span> implementation("androidx.webkit:webkit:1.13.0")
-<span class="lineno"> 45 </span> implementation("org.commonmark:commonmark:0.24.0")
-<span class="lineno"> 46 </span> testImplementation("junit:junit:4.13.2")
-<span class="caretline"><span class="lineno"> 47 </span> testImplementation(<span class="warning">"org.robolectric:robolectric:4.14.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 48 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-<span class="lineno"> 49 </span> androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="lineno"> 50 </span> androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:60</span>: <span class="message">A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-play-services than 1.10.2 is available: 1.11.0</span><br /><pre class="errorlines">
+<span class="lineno"> 57 </span> implementation("org.commonmark:commonmark:0.24.0")
+<span class="lineno"> 58 </span> implementation("com.caverock:androidsvg-aar:1.4")
+<span class="lineno"> 59 </span> implementation("com.google.mlkit:digital-ink-recognition:19.0.0")
+<span class="caretline"><span class="lineno"> 60 </span> implementation(<span class="warning">"org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 61 </span> implementation("com.microsoft.onnxruntime:onnxruntime-android:1.23.2")
+<span class="lineno"> 62 </span> if (myScriptPilot) implementation("com.myscript:iink:4.5.1")
+<span class="lineno"> 63 </span> testImplementation("junit:junit:4.13.2")
 </pre>
 
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:48</span>: <span class="message">A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-test than 1.10.2 is available: 1.11.0</span><br /><pre class="errorlines">
-<span class="lineno"> 45 </span> implementation("org.commonmark:commonmark:0.24.0")
-<span class="lineno"> 46 </span> testImplementation("junit:junit:4.13.2")
-<span class="lineno"> 47 </span> testImplementation("org.robolectric:robolectric:4.14.1")
-<span class="caretline"><span class="lineno"> 48 </span> testImplementation(<span class="warning">"org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 49 </span> androidTestImplementation("androidx.test.ext:junit:1.2.1")
-<span class="lineno"> 50 </span> androidTestImplementation("androidx.test:runner:1.6.2")
-<span class="lineno"> 51 </span> androidTestImplementation("androidx.test:rules:1.6.1")
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:61</span>: <span class="message">A newer version of com.microsoft.onnxruntime:onnxruntime-android than 1.23.2 is available: 1.32.0</span><br /><pre class="errorlines">
+<span class="lineno"> 58 </span> implementation("com.caverock:androidsvg-aar:1.4")
+<span class="lineno"> 59 </span> implementation("com.google.mlkit:digital-ink-recognition:19.0.0")
+<span class="lineno"> 60 </span> implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.10.2")
+<span class="caretline"><span class="lineno"> 61 </span> implementation(<span class="warning">"com.microsoft.onnxruntime:onnxruntime-android:1.23.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 62 </span> if (myScriptPilot) implementation("com.myscript:iink:4.5.1")
+<span class="lineno"> 63 </span> testImplementation("junit:junit:4.13.2")
+<span class="lineno"> 64 </span> testImplementation("org.robolectric:robolectric:4.14.1")
+</pre>
+
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:64</span>: <span class="message">A newer version of org.robolectric:robolectric than 4.14.1 is available: 4.18</span><br /><pre class="errorlines">
+<span class="lineno"> 61 </span> implementation("com.microsoft.onnxruntime:onnxruntime-android:1.23.2")
+<span class="lineno"> 62 </span> if (myScriptPilot) implementation("com.myscript:iink:4.5.1")
+<span class="lineno"> 63 </span> testImplementation("junit:junit:4.13.2")
+<span class="caretline"><span class="lineno"> 64 </span> testImplementation(<span class="warning">"org.robolectric:robolectric:4.14.1"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 65 </span> testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+<span class="lineno"> 66 </span> androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="lineno"> 67 </span> androidTestImplementation("androidx.test:runner:1.6.2")
+</pre>
+
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:65</span>: <span class="message">A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-test than 1.10.2 is available: 1.11.0</span><br /><pre class="errorlines">
+<span class="lineno"> 62 </span> if (myScriptPilot) implementation("com.myscript:iink:4.5.1")
+<span class="lineno"> 63 </span> testImplementation("junit:junit:4.13.2")
+<span class="lineno"> 64 </span> testImplementation("org.robolectric:robolectric:4.14.1")
+<span class="caretline"><span class="lineno"> 65 </span> testImplementation(<span class="warning">"org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2"</span>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 66 </span> androidTestImplementation("androidx.test.ext:junit:1.2.1")
+<span class="lineno"> 67 </span> androidTestImplementation("androidx.test:runner:1.6.2")
+<span class="lineno"> 68 </span> androidTestImplementation("androidx.test:rules:1.6.1")
 </pre>
 
 </div>
@@ -558,14 +578,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:19</span>: <span class="message">Missing x86_64 ABI support for ChromeOS</span><br /><pre class="errorlines">
-<span class="lineno"> 16 </span>  versionCode = 8
-<span class="lineno"> 17 </span>  versionName = "0.1.7"
-<span class="lineno"> 18 </span>  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-<span class="caretline"><span class="lineno"> 19 </span>  ndk { abiFilters += <span class="warning">"arm64-v8a"</span> }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno"> 20 </span>  externalNativeBuild { cmake { cppFlags += listOf("-std=c++17", "-O2"); arguments += "-DANDROID_STL=c++_shared" } }
-<span class="lineno"> 21 </span> }
-<span class="lineno"> 22 </span> buildFeatures { compose = true; buildConfig = true }
+<span class="location"><a href="../../build.gradle.kts">../../build.gradle.kts</a>:22</span>: <span class="message">Missing x86_64 ABI support for ChromeOS</span><br /><pre class="errorlines">
+<span class="lineno"> 19 </span>  versionName = "0.1.8"
+<span class="lineno"> 20 </span>  buildConfigField("boolean", "MYSCRIPT_PILOT", myScriptPilot.toString())
+<span class="lineno"> 21 </span>  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+<span class="caretline"><span class="lineno"> 22 </span>  ndk { abiFilters += <span class="warning">"arm64-v8a"</span> }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 23 </span>  externalNativeBuild { cmake { cppFlags += listOf("-std=c++17", "-O2"); arguments += "-DANDROID_STL=c++_shared" } }
+<span class="lineno"> 24 </span> }
+<span class="lineno"> 25 </span> buildFeatures { compose = true; buildConfig = true }
 </pre>
 
 </div>
@@ -610,14 +630,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:305</span>: <span class="message">Using <code>setJavaScriptEnabled</code> can introduce XSS vulnerabilities into your application, review carefully</span><br /><pre class="errorlines">
-<span class="lineno"> 302 </span> <span class="keyword">val</span> loader=remember { WebViewAssetLoader.Builder().addPathHandler(<span class="string">"/assets/"</span>,WebViewAssetLoader.AssetsPathHandler(context)).build() }
-<span class="lineno"> 303 </span> <span class="keyword">val</span> html=remember(text,dark) { DocumentExport.html(text,dark) }
-<span class="lineno"> 304 </span> AndroidView(factory={ WebView(it).apply {
-<span class="caretline"><span class="lineno"> 305 </span>  <span class="warning">settings.javaScriptEnabled=<span class="keyword">true</span></span>;settings.allowFileAccess=<span class="keyword">false</span>;settings.allowContentAccess=<span class="keyword">false</span>;settings.domStorageEnabled=<span class="keyword">false</span>;settings.blockNetworkLoads=<span class="keyword">true</span></span>
-<span class="lineno"> 306 </span>  webViewClient=<span class="keyword">object</span>:WebViewClient() {
-<span class="lineno"> 307 </span>   override <span class="keyword">fun</span> shouldInterceptRequest(view:WebView,request:WebResourceRequest):WebResourceResponse? = loader.shouldInterceptRequest(request.url) ?: WebResourceResponse(<span class="string">"text/plain"</span>,<span class="string">"utf-8"</span>,java.io.ByteArrayInputStream(ByteArray(<span class="number">0</span>)))
-<span class="lineno"> 308 </span>   override <span class="keyword">fun</span> shouldOverrideUrlLoading(view:WebView,request:WebResourceRequest)=<span class="keyword">true</span></pre>
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:351</span>: <span class="message">Using <code>setJavaScriptEnabled</code> can introduce XSS vulnerabilities into your application, review carefully</span><br /><pre class="errorlines">
+<span class="lineno"> 348 </span> <span class="keyword">val</span> loader=remember { WebViewAssetLoader.Builder().addPathHandler(<span class="string">"/assets/"</span>,WebViewAssetLoader.AssetsPathHandler(context)).build() }
+<span class="lineno"> 349 </span> <span class="keyword">val</span> html=remember(text,dark) { DocumentExport.html(text,dark) }
+<span class="lineno"> 350 </span> AndroidView(factory={ WebView(it).apply {
+<span class="caretline"><span class="lineno"> 351 </span>  <span class="warning">settings.javaScriptEnabled=<span class="keyword">true</span></span>;settings.allowFileAccess=<span class="keyword">false</span>;settings.allowContentAccess=<span class="keyword">false</span>;settings.domStorageEnabled=<span class="keyword">false</span>;settings.blockNetworkLoads=<span class="keyword">true</span></span>
+<span class="lineno"> 352 </span>  webViewClient=<span class="keyword">object</span>:WebViewClient() {
+<span class="lineno"> 353 </span>   override <span class="keyword">fun</span> shouldInterceptRequest(view:WebView,request:WebResourceRequest):WebResourceResponse? = loader.shouldInterceptRequest(request.url) ?: WebResourceResponse(<span class="string">"text/plain"</span>,<span class="string">"utf-8"</span>,java.io.ByteArrayInputStream(ByteArray(<span class="number">0</span>)))
+<span class="lineno"> 354 </span>   override <span class="keyword">fun</span> shouldOverrideUrlLoading(view:WebView,request:WebResourceRequest)=<span class="keyword">true</span></pre>
 
 </div>
 <div class="metadata"><div class="explanation" id="explanationSetJavaScriptEnabled" style="display: none;">
@@ -757,14 +777,14 @@ Dismiss</button>            </div>
               <div class="mdl-card__supporting-text">
 <div class="issue">
 <div class="warningslist">
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:260</span>: <span class="message">Consider also using <code>StorageManager#getAllocatableBytes</code> and <code>allocateBytes</code> which will consider clearable cached data</span><br /><pre class="errorlines">
-<span class="lineno"> 257 </span> LaunchedEffect(Unit) { <span class="keyword">while</span>(<span class="keyword">true</span>) { memory=ActivityManager.MemoryInfo().also { context.getSystemService(ActivityManager::<span class="keyword">class</span>.java).getMemoryInfo(it) };javaMemory=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();nativeMemory=Debug.getNativeHeapAllocatedSize();delay(<span class="number">2000</span>) } }
-<span class="lineno"> 258 </span> LazyColumn(verticalArrangement=Arrangement.spacedBy(<span class="number">14.d</span>p)) {
-<span class="lineno"> 259 </span>  item { PageTitle(<span class="string">"Diagnostics"</span>,<span class="string">"Measured values from this running process"</span>) }
-<span class="caretline"><span class="lineno"> 260 </span>  <span class="keyword">val</span> entries=listOf(<span class="string">"Device"</span> to <span class="string">"${</span>android.os.Build.MANUFACTURER<span class="string">} ${</span>android.os.Build.MODEL<span class="string">}"</span>,<span class="string">"Android / ABI"</span> to <span class="string">"${</span>android.os.Build.VERSION.RELEASE<span class="string">} / ${</span>android.os.Build.SUPPORTED_ABIS.joinToString()<span class="string">}"</span>,<span class="string">"Engine"</span> to diagnostic.stage,<span class="string">"Loaded model"</span> to (diagnostic.loadedModel ?: <span class="string">"None"</span>),<span class="string">"CPU backend capabilities"</span> to (diagnostic.backendInfo ?: <span class="string">"Not loaded"</span>),<span class="string">"Available RAM"</span> to bytes(memory.availMem),<span class="string">"Java heap allocated"</span> to bytes(javaMemory),<span class="string">"Native heap allocated"</span> to bytes(nativeMemory),<span class="string">"Free app storage"</span> to bytes(context.filesDir.<span class="warning">usableSpace</span>),<span class="string">"Model initialization"</span> to (diagnostic.initializationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>),<span class="string">"Last inference"</span> to (diagnostic.inferenceMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>),<span class="string">"Last image budget"</span> to <span class="string">"${</span>diagnostic.imageTokenBudget<span class="string">} image tokens maximum"</span>, <span class="string">"Last input tokens"</span> to (diagnostic.inputTokens?.toString() ?: <span class="string">"Not measured"</span>), <span class="string">"Image preparation"</span> to (diagnostic.preprocessingMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Image and prompt analysis"</span> to (diagnostic.evaluationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Text generation"</span> to (diagnostic.generationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Last output tokens"</span> to (diagnostic.outputTokens?.toString() ?: <span class="string">"Not measured"</span>),<span class="string">"Queued / running conversions"</span> to queue.count { !it.state.isFinished }.toString(),<span class="string">"Last engine error"</span> to (diagnostic.lastError ?: <span class="string">"None"</span>))</span>
-<span class="lineno"> 261 </span>  items(entries) { (key,value) -> Surface(shape=RoundedCornerShape(<span class="number">12.d</span>p)) { Row(Modifier.fillMaxWidth().padding(<span class="number">16.d</span>p)) { Text(key,Modifier.weight(<span class="number">1f</span>),fontSize=<span class="number">13.</span>sp);Text(value,Modifier.weight(<span class="number">1f</span>),fontSize=<span class="number">13.</span>sp,fontWeight=FontWeight.Medium) } } }
-<span class="lineno"> 262 </span>  item { Hint(<span class="string">"Heap allocation is not total process RSS or peak model memory. Benchmark timings include real local execution. The bundled printed smoke page tests the runtime, not handwritten-math accuracy."</span>) }
-<span class="lineno"> 263 </span> }
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:306</span>: <span class="message">Consider also using <code>StorageManager#getAllocatableBytes</code> and <code>allocateBytes</code> which will consider clearable cached data</span><br /><pre class="errorlines">
+<span class="lineno"> 303 </span> LaunchedEffect(Unit) { <span class="keyword">while</span>(<span class="keyword">true</span>) { memory=ActivityManager.MemoryInfo().also { context.getSystemService(ActivityManager::<span class="keyword">class</span>.java).getMemoryInfo(it) };javaMemory=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();nativeMemory=Debug.getNativeHeapAllocatedSize();delay(<span class="number">2000</span>) } }
+<span class="lineno"> 304 </span> LazyColumn(verticalArrangement=Arrangement.spacedBy(<span class="number">14.d</span>p)) {
+<span class="lineno"> 305 </span>  item { PageTitle(<span class="string">"Diagnostics"</span>,<span class="string">"Measured values from this running process"</span>) }
+<span class="caretline"><span class="lineno"> 306 </span>  <span class="keyword">val</span> entries=listOf(<span class="string">"Device"</span> to <span class="string">"${</span>android.os.Build.MANUFACTURER<span class="string">} ${</span>android.os.Build.MODEL<span class="string">}"</span>,<span class="string">"Android / ABI"</span> to <span class="string">"${</span>android.os.Build.VERSION.RELEASE<span class="string">} / ${</span>android.os.Build.SUPPORTED_ABIS.joinToString()<span class="string">}"</span>,<span class="string">"Engine"</span> to diagnostic.stage,<span class="string">"Loaded model"</span> to (diagnostic.loadedModel ?: <span class="string">"None"</span>),<span class="string">"CPU backend capabilities"</span> to (diagnostic.backendInfo ?: <span class="string">"Not loaded"</span>),<span class="string">"Available RAM"</span> to bytes(memory.availMem),<span class="string">"Java heap allocated"</span> to bytes(javaMemory),<span class="string">"Native heap allocated"</span> to bytes(nativeMemory),<span class="string">"Free app storage"</span> to bytes(context.filesDir.<span class="warning">usableSpace</span>),<span class="string">"Model initialization"</span> to (diagnostic.initializationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>),<span class="string">"Last inference"</span> to (diagnostic.inferenceMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>),<span class="string">"Last image budget"</span> to <span class="string">"${</span>diagnostic.imageTokenBudget<span class="string">} image tokens maximum"</span>, <span class="string">"Last input tokens"</span> to (diagnostic.inputTokens?.toString() ?: <span class="string">"Not measured"</span>), <span class="string">"Image preparation"</span> to (diagnostic.preprocessingMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Image and prompt analysis"</span> to (diagnostic.evaluationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Text generation"</span> to (diagnostic.generationMs?.let { <span class="string">"$it ms"</span> } ?: <span class="string">"Not measured"</span>), <span class="string">"Last output tokens"</span> to (diagnostic.outputTokens?.toString() ?: <span class="string">"Not measured"</span>),<span class="string">"Queued / running conversions"</span> to queue.count { !it.state.isFinished }.toString(),<span class="string">"Last engine error"</span> to (diagnostic.lastError ?: <span class="string">"None"</span>))</span>
+<span class="lineno"> 307 </span>  items(entries) { (key,value) -> Surface(shape=RoundedCornerShape(<span class="number">12.d</span>p)) { Row(Modifier.fillMaxWidth().padding(<span class="number">16.d</span>p)) { Text(key,Modifier.weight(<span class="number">1f</span>),fontSize=<span class="number">13.</span>sp);Text(value,Modifier.weight(<span class="number">1f</span>),fontSize=<span class="number">13.</span>sp,fontWeight=FontWeight.Medium) } } }
+<span class="lineno"> 308 </span>  item { Hint(<span class="string">"Heap allocation is not total process RSS or peak model memory. Benchmark timings include real local execution. The bundled printed smoke page tests the runtime, not handwritten-math accuracy."</span>) }
+<span class="lineno"> 309 </span> }
 </pre>
 
 <span class="location"><a href="../../src/main/java/dev/ink2tex/modelmanager/ModelDownloadWorker.kt">../../src/main/java/dev/ink2tex/modelmanager/ModelDownloadWorker.kt</a>:30</span>: <span class="message">Consider also using <code>StorageManager#getAllocatableBytes</code> and <code>allocateBytes</code> which will consider clearable cached data</span><br /><pre class="errorlines">
@@ -867,36 +887,65 @@ Dismiss</button>            </div>
 <span class="lineno"> 110 </span>
 <span class="lineno"> 111 </span>  <span class="comment">// Shared corners also support off-white and dark pages. Treat every color variation as ink.</span></pre>
 
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:207</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno"> 204 </span>      <span class="keyword">if</span>(installed || partial) TextButton(onClick={vm.removeModel(model.id);refresh++}){Text(<span class="string">"Delete"</span>)}
-<span class="lineno"> 205 </span>     }
-<span class="lineno"> 206 </span>     <span class="keyword">val</span> context=LocalContext.current
-<span class="caretline"><span class="lineno"> 207 </span>     TextButton(onClick={context.startActivity(Intent(Intent.ACTION_VIEW,<span class="warning">Uri.parse(model.licenseUrl)</span>))}) { Text(model.license+<span class="string">" ↗"</span>) }</span>
-<span class="lineno"> 208 </span>    }
-<span class="lineno"> 209 </span>   } }
-<span class="lineno"> 210 </span>  }
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:211</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 208 </span>      <span class="keyword">if</span>(installed || partial) TextButton(onClick={vm.removeModel(model.id);refresh++}){Text(<span class="string">"Delete"</span>)}
+<span class="lineno"> 209 </span>     }
+<span class="lineno"> 210 </span>     <span class="keyword">val</span> context=LocalContext.current
+<span class="caretline"><span class="lineno"> 211 </span>     TextButton(onClick={context.startActivity(Intent(Intent.ACTION_VIEW,<span class="warning">Uri.parse(model.licenseUrl)</span>))}) { Text(model.license+<span class="string">" ↗"</span>) }</span>
+<span class="lineno"> 212 </span>    }
+<span class="lineno"> 213 </span>   } }
+<span class="lineno"> 214 </span>  }
 </pre>
 
-<button class="mdl-button mdl-js-button mdl-button--primary" id="UseKtxDivLink" onclick="reveal('UseKtxDiv');" />+ 7 More Occurrences...</button>
+<button class="mdl-button mdl-js-button mdl-button--primary" id="UseKtxDivLink" onclick="reveal('UseKtxDiv');" />+ 11 More Occurrences...</button>
 <div id="UseKtxDiv" style="display: none">
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:69</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno">  66 </span>    result=previous.copy(source=previous.source+<span class="string">"\n"</span>+document.source,status=<span class="string">"Captured"</span>,error=<span class="keyword">null</span>)
-<span class="lineno">  67 </span>    repository.documents.put(result)
-<span class="lineno">  68 </span>   }
-<span class="caretline"><span class="lineno">  69 </span>   <span class="warning">preferences.edit()</span>.putString(<span class="string">"target"</span>,result.id).apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<span class="lineno">  70 </span>   message.value=<span class="string">"Section added. Scroll Nebo manually, then tap Scrolling Proof Scan again. Finish when all sections are captured."</span>
-<span class="lineno">  71 </span>  }
-<span class="lineno">  72 </span>  go(<span class="string">"editor"</span>,result.id)
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkApp.kt">../../src/main/java/dev/ink2tex/ui/InkApp.kt</a>:252</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 249 </span>      finally { removing = <span class="keyword">false</span> }
+<span class="lineno"> 250 </span>     }
+<span class="lineno"> 251 </span>    }, enabled = !removing) { Text(<span class="string">"Remove"</span>) }
+<span class="caretline"><span class="lineno"> 252 </span>    TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, <span class="warning">Uri.parse(<span class="string">"https://creativecommons.org/licenses/by-sa/4.0/"</span>)</span>)) }) { Text(<span class="string">"Weights license ↗"</span>) }</span>
+<span class="lineno"> 253 </span>   }
+<span class="lineno"> 254 </span>  }
+<span class="lineno"> 255 </span>  Text(<span class="keyword">if</span> (MyScriptStroke.available(context)) <span class="string">"MyScript iink · licensed pilot · activation may require a connection"</span></pre>
+
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ink/InkPage.kt">../../src/main/java/dev/ink2tex/ink/InkPage.kt</a>:37</span>: <span class="message">Use the KTX function <code>createBitmap</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 34 </span>
+<span class="lineno"> 35 </span>internal <span class="keyword">object</span> InkRaster {
+<span class="lineno"> 36 </span>    <span class="keyword">fun</span> render(page: InkPage, maxEdge: Int = <span class="number">1800</span>): Bitmap {
+<span class="caretline"><span class="lineno"> 37 </span>        <span class="keyword">val</span> bounds = page.bounds ?: <span class="keyword">return</span> <span class="warning">Bitmap.createBitmap(<span class="number">600</span>, <span class="number">800</span>, Bitmap.Config.ARGB_8888)</span>&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 38 </span>            .apply { eraseColor(Color.WHITE) }
+<span class="lineno"> 39 </span>        <span class="keyword">val</span> margin = <span class="number">3f</span>
+<span class="lineno"> 40 </span>        <span class="keyword">val</span> scale = minOf(<span class="number">12f</span>, maxEdge / (maxOf(bounds.height, bounds.width) + margin * <span class="number">2</span>))
 </pre>
 
-<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:75</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
-<span class="lineno">  72 </span>  go(<span class="string">"editor"</span>,result.id)
-<span class="lineno">  73 </span>  <span class="keyword">if</span>(!guided &amp;&amp; app.models.available().isNotEmpty())convert(result)
-<span class="lineno">  74 </span> }
-<span class="caretline"><span class="lineno">  75 </span> <span class="keyword">fun</span> finishScroll() { <span class="warning">app.getSharedPreferences(<span class="string">"guided-proof"</span>,<span class="number">0</span>).edit()</span>.remove(<span class="string">"target"</span>).apply();message.value=<span class="string">"Guided capture finished. Review the section order, then convert."</span> }</span>
-<span class="lineno">  76 </span> <span class="keyword">fun</span> useWholeCapture() { viewModelScope.launch { repository.documents.get(navigation.value.documentId ?: <span class="string">""</span>)?.let { finishCropDocument(it) } } }
-<span class="lineno">  77 </span>
-<span class="lineno">  78 </span> <span class="keyword">fun</span> addCrop(selection:CropSelection,finish:Boolean) { viewModelScope.launch {
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ink/InkPage.kt">../../src/main/java/dev/ink2tex/ink/InkPage.kt</a>:41</span>: <span class="message">Use the KTX function <code>createBitmap</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno"> 38 </span>           .apply { eraseColor(Color.WHITE) }
+<span class="lineno"> 39 </span>       <span class="keyword">val</span> margin = <span class="number">3f</span>
+<span class="lineno"> 40 </span>       <span class="keyword">val</span> scale = minOf(<span class="number">12f</span>, maxEdge / (maxOf(bounds.height, bounds.width) + margin * <span class="number">2</span>))
+<span class="caretline"><span class="lineno"> 41 </span>       <span class="keyword">val</span> bitmap = <span class="warning">Bitmap.createBitmap(</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno"> 42 </span>           ceil((bounds.width + margin * <span class="number">2</span>) * scale).toInt().coerceAtLeast(<span class="number">1</span>),
+<span class="lineno"> 43 </span>           ceil((bounds.height + margin * <span class="number">2</span>) * scale).toInt().coerceAtLeast(<span class="number">1</span>),
+<span class="lineno"> 44 </span>           Bitmap.Config.ARGB_8888
+</pre>
+
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:71</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  68 </span>    result=previous.copy(source=previous.source+<span class="string">"\n"</span>+document.source,status=<span class="string">"Captured"</span>,error=<span class="keyword">null</span>)
+<span class="lineno">  69 </span>    repository.documents.put(result)
+<span class="lineno">  70 </span>   }
+<span class="caretline"><span class="lineno">  71 </span>   <span class="warning">preferences.edit()</span>.putString(<span class="string">"target"</span>,result.id).apply()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  72 </span>   message.value=<span class="string">"Section added. Scroll Nebo manually, then tap Scrolling Proof Scan again. Finish when all sections are captured."</span>
+<span class="lineno">  73 </span>  }
+<span class="lineno">  74 </span>  go(<span class="string">"editor"</span>,result.id)
+</pre>
+
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ui/InkViewModel.kt">../../src/main/java/dev/ink2tex/ui/InkViewModel.kt</a>:77</span>: <span class="message">Use the KTX extension function <code>SharedPreferences.edit</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  74 </span>  go(<span class="string">"editor"</span>,result.id)
+<span class="lineno">  75 </span>  <span class="keyword">if</span>(!guided &amp;&amp; app.models.available().isNotEmpty())convert(result)
+<span class="lineno">  76 </span> }
+<span class="caretline"><span class="lineno">  77 </span> <span class="keyword">fun</span> finishScroll() { <span class="warning">app.getSharedPreferences(<span class="string">"guided-proof"</span>,<span class="number">0</span>).edit()</span>.remove(<span class="string">"target"</span>).apply();message.value=<span class="string">"Guided capture finished. Review the section order, then convert."</span> }</span>
+<span class="lineno">  78 </span> <span class="keyword">fun</span> useWholeCapture() { viewModelScope.launch { repository.documents.get(navigation.value.documentId ?: <span class="string">""</span>)?.let { finishCropDocument(it) } } }
+<span class="lineno">  79 </span>
+<span class="lineno">  80 </span> <span class="keyword">fun</span> addCrop(selection:CropSelection,finish:Boolean) { viewModelScope.launch {
 </pre>
 
 <span class="location"><a href="../../src/main/java/dev/ink2tex/MainActivity.kt">../../src/main/java/dev/ink2tex/MainActivity.kt</a>:62</span>: <span class="message">Use the KTX extension function <code>String.toUri</code> instead?</span><br /><pre class="errorlines">
@@ -947,6 +996,16 @@ Dismiss</button>            </div>
 <span class="lineno">  87 </span>          <span class="string">"Unable to lock the evaluation set."</span>
 <span class="lineno">  88 </span>      }
 <span class="lineno">  89 </span>  }
+</pre>
+
+<span class="location"><a href="../../src/main/java/dev/ink2tex/ink/VectorImport.kt">../../src/main/java/dev/ink2tex/ink/VectorImport.kt</a>:96</span>: <span class="message">Use the KTX function <code>createBitmap</code> instead?</span><br /><pre class="errorlines">
+<span class="lineno">  93 </span>        <span class="keyword">if</span> (viewBox == <span class="keyword">null</span>) svg.setDocumentViewBox(<span class="number">0f</span>, <span class="number">0f</span>, width, height)
+<span class="lineno">  94 </span>        svg.documentWidth = w.toFloat()
+<span class="lineno">  95 </span>        svg.documentHeight = h.toFloat()
+<span class="caretline"><span class="lineno">  96 </span>        <span class="keyword">val</span> image = <span class="warning">Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+<span class="lineno">  97 </span>        <span class="keyword">return</span> <span class="keyword">try</span> {
+<span class="lineno">  98 </span>            image.eraseColor(Color.WHITE)
+<span class="lineno">  99 </span>            svg.renderToCanvas(Canvas(image))
 </pre>
 
 </div>
@@ -1297,6 +1356,46 @@ Calling a Flow operator function within composition will result in a new Flow be
 Vendor: Jetpack Compose<br/>
 Identifier: androidx.compose.runtime<br/>
 Feedback: <a href="https://issuetracker.google.com/issues/new?component=612128">https://issuetracker.google.com/issues/new?component=612128</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">FragmentBackPressedCallback<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+The Fragment lifecycle can result in a Fragment being active                 longer than its view. This can lead to unexpected behavior from lifecycle aware                 objects remaining active longer than the Fragment's view. To solve this issue,                 getViewLifecycleOwner() should be used as a LifecycleOwner rather than the                 Fragment instance once it is safe to access the view lifecycle in a                 Fragment's onCreateView, onViewCreated, onActivityCreated, or                 onViewStateRestored methods.<br/><div class="vendor">
+Vendor: Android Open Source Project (androidx.fragment.lint.fragment)<br/>
+Identifier: androidx.fragment.lint.fragment<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=192731">https://issuetracker.google.com/issues/new?component=192731</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">FragmentLiveDataObserve<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+When observing a LiveData object from a fragment's onCreateView,                 onViewCreated, onActivityCreated, or onViewStateRestored method                 getViewLifecycleOwner() should be used as the LifecycleOwner rather than the                 Fragment instance. The Fragment lifecycle can result in the Fragment being                 active longer than its view. This can lead to unexpected behavior from                 LiveData objects being observed longer than the Fragment's view is active.<br/><div class="vendor">
+Vendor: Android Open Source Project (androidx.fragment.lint.fragment)<br/>
+Identifier: androidx.fragment.lint.fragment<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=192731">https://issuetracker.google.com/issues/new?component=192731</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">FragmentTagUsage<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+FragmentContainerView replaces the &lt;fragment> tag as the preferred                 way of adding fragments via XML. Unlike the &lt;fragment> tag, FragmentContainerView                 uses a normal <code>FragmentTransaction</code> under the hood to add the initial fragment,                 allowing further FragmentTransaction operations on the FragmentContainerView                 and providing a consistent timing for lifecycle events.<br/><div class="moreinfo">More info: <a href="https://developer.android.com/reference/androidx/fragment/app/FragmentContainerView.html">https://developer.android.com/reference/androidx/fragment/app/FragmentContainerView.html</a>
+</div><div class="vendor">
+Vendor: Android Open Source Project (androidx.fragment.lint.fragment)<br/>
+Identifier: androidx.fragment.lint.fragment<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=192731">https://issuetracker.google.com/issues/new?component=192731</a><br/>
 </div>
 <br/>
 <br/></div>
@@ -1963,6 +2062,84 @@ Feedback: <a href="https://issuetracker.google.com/issues/new?component=612128">
 </div>
 </div>
 <div class="issue">
+<div class="id">UseAndroidAlpha<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+<code>ColorStateList</code> uses app:alpha without <code>android:alpha</code><br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UseAppTint<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+<code>ImageView</code> or <code>ImageButton</code> uses <code>android:tint</code> instead of <code>app:tint</code><br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UseCompatLoadingForColorStateLists<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+Use Compat loading of color state lists<br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UseCompatLoadingForDrawables<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+Use Compat loading of drawables<br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UseCompatTextViewDrawableApis<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+Use Compat loading of compound text view drawables<br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UseCompatTextViewDrawableXml<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+<code>TextView</code> uses <code>android:</code> compound drawable attributes instead of <code>app:</code> ones<br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
 <div class="id">UseOfNonLambdaOffsetOverload<div class="issueSeparator"></div>
 </div>
 <div class="metadata"><div class="explanation">
@@ -1970,6 +2147,19 @@ Feedback: <a href="https://issuetracker.google.com/issues/new?component=612128">
 Vendor: Jetpack Compose<br/>
 Identifier: androidx.compose.foundation<br/>
 Feedback: <a href="https://issuetracker.google.com/issues/new?component=612128">https://issuetracker.google.com/issues/new?component=612128</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UseRequireInsteadOfGet<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+AndroidX added new "require____()" versions of common "get___()" APIs, such as getContext/getActivity/getArguments/etc. Rather than wrap these in something like requireNotNull(), using these APIs will allow the underlying component to try to tell you _why_ it was null, and thus yield a better error message.<br/><div class="vendor">
+Vendor: Android Open Source Project (androidx.fragment.lint.fragment)<br/>
+Identifier: androidx.fragment.lint.fragment<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=192731">https://issuetracker.google.com/issues/new?component=192731</a><br/>
 </div>
 <br/>
 <br/></div>
@@ -1989,6 +2179,45 @@ Feedback: <a href="https://issuetracker.google.com/issues/new?component=409906">
 </div>
 </div>
 <div class="issue">
+<div class="id">UseSupportActionBar<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+Use <code>AppCompatActivity.setSupportActionBar</code><br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UseSwitchCompatOrMaterialCode<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+Use <code>SwitchCompat</code> from AppCompat or <code>SwitchMaterial</code> from Material library<br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UseSwitchCompatOrMaterialXml<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+Use <code>SwitchCompat</code> from AppCompat or <code>SwitchMaterial</code> from Material library<br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
 <div class="id">UsingMaterialAndMaterial3Libraries<div class="issueSeparator"></div>
 </div>
 <div class="metadata"><div class="explanation">
@@ -1996,6 +2225,19 @@ material and material3 are separate design system libraries that are incompatibl
 Vendor: Jetpack Compose<br/>
 Identifier: androidx.compose.material3<br/>
 Feedback: <a href="https://issuetracker.google.com/issues/new?component=612128">https://issuetracker.google.com/issues/new?component=612128</a><br/>
+</div>
+<br/>
+<br/></div>
+</div>
+</div>
+<div class="issue">
+<div class="id">UsingOnClickInXml<div class="issueSeparator"></div>
+</div>
+<div class="metadata"><div class="explanation">
+Old versions of the platform do not properly support resolving <code>android:onClick</code><br/><div class="vendor">
+Vendor: Android Open Source Project<br/>
+Identifier: androidx.appcompat<br/>
+Feedback: <a href="https://issuetracker.google.com/issues/new?component=460343">https://issuetracker.google.com/issues/new?component=460343</a><br/>
 </div>
 <br/>
 <br/></div>

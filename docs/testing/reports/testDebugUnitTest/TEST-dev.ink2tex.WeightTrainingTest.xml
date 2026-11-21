@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dev.ink2tex.WeightTrainingTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-19T16:09:02.371Z" hostname="4060979d6adb" time="0.758">
+<testsuite name="dev.ink2tex.WeightTrainingTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-21T07:27:58.640Z" hostname="fbd2e28e2438" time="0.252">
   <properties/>
-  <testcase name="upgradingVersionTwoKeepsPreviouslyReviewedImages" classname="dev.ink2tex.WeightTrainingTest" time="0.374"/>
-  <testcase name="checkedLabelsAreUpdatedPerImageAndOriginalDeletionClearsThem" classname="dev.ink2tex.WeightTrainingTest" time="0.147"/>
-  <testcase name="evaluationPenalizesChangedSymbolsAndRejectsRegressions" classname="dev.ink2tex.WeightTrainingTest" time="0.086"/>
-  <testcase name="upgradingTheNotebookPreservesPreviousSourceAndTranscript" classname="dev.ink2tex.WeightTrainingTest" time="0.15"/>
+  <testcase name="upgradingVersionTwoKeepsPreviouslyReviewedImages" classname="dev.ink2tex.WeightTrainingTest" time="0.098"/>
+  <testcase name="checkedLabelsAreUpdatedPerImageAndOriginalDeletionClearsThem" classname="dev.ink2tex.WeightTrainingTest" time="0.066"/>
+  <testcase name="evaluationPenalizesChangedSymbolsAndRejectsRegressions" classname="dev.ink2tex.WeightTrainingTest" time="0.026"/>
+  <testcase name="upgradingTheNotebookPreservesPreviousSourceAndTranscript" classname="dev.ink2tex.WeightTrainingTest" time="0.061"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

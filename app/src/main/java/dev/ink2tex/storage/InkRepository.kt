@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import androidx.room.withTransaction
 import dev.ink2tex.preprocessing.ImagePipeline
 import dev.ink2tex.preprocessing.ImageSections
+import dev.ink2tex.ink.NeboInk
 import java.io.File
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
@@ -81,8 +82,12 @@ class InkRepository(val context: Context, val database: InkDatabase) {
   }
   val remaining=documents.sources().flatMap { it.lines() }.toSet()
   document.source.lines().filter { it.isNotBlank() && it !in remaining }.forEach { path ->
-   val file=File(path);if(file.canonicalFile.parentFile==images.canonicalFile)file.delete()
+   val file=File(path);if(file.canonicalFile.parentFile==images.canonicalFile)deleteImage(file)
   }
+ }
+ private fun deleteImage(file: File) {
+  file.delete()
+  NeboInk.sidecar(file).delete()
  }
  suspend fun delete(document: Document) = withContext(Dispatchers.IO) {
   handwriting.remove(document.id)
@@ -93,7 +98,7 @@ class InkRepository(val context: Context, val database: InkDatabase) {
   }
   val remaining=documents.sources().flatMap { it.lines() }.toSet()
   document.source.split("\n").filter { it.isNotBlank() }.forEach { path ->
-   val f = File(path); if (path !in remaining && f.canonicalFile.parentFile == images.canonicalFile) f.delete()
+   val f = File(path); if (path !in remaining && f.canonicalFile.parentFile == images.canonicalFile) deleteImage(f)
   }
  }
 }

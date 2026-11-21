@@ -2,11 +2,11 @@
 
 Download `Ink2TeX-debug-arm64.apk` to install the engineering build on an ARM64 Android 12+ device. `Ink2TeX-device-tests.apk` contains instrumentation tests and is intended for development.
 
-The app targets Android 16. APK signature and 16 KB alignment were verified. 55 JVM/Robolectric tests passed. Device tests await an Android target.
+The app targets Android 16. APK signature and 16 KB alignment were verified. 63 JVM/Robolectric tests passed. Device tests await an Android target.
 
 `SHA256SUMS.txt` verifies the exact APKs here. Model weights are downloaded inside the app and are not stored in this repository.
 
-Current application is **0.1.7 (versionCode 8)**. Install over the previous build to preserve models and history. See `CHANGELOG.md` for fixes and limits.
+Current application is **0.1.8 (versionCode 9)**. Install over the previous build to preserve models and history. See `CHANGELOG.md` for fixes and limits.
 
 `Ink2TeX-All-Files.zip` is the refreshed complete bundle with project source, built APKs, reports and checksums. It excludes this mirrored downloads directory to avoid recursive archives. Download directly from GitHub when Cloud workspace downloads are unavailable.
 
@@ -21,3 +21,5 @@ Current application is **0.1.7 (versionCode 8)**. Install over the previous buil
 0.1.6 guides image review, reserves evaluation data automatically, keeps training scorecards, and supports checkpoint restoration.
 
 0.1.7 evaluates long images in smaller snips. For training labels, use **Review → Split into snips**, then check each crop.
+
+0.1.8 adds compatible Nebo and SVG import plus the opt-in ML Kit + Abel Notes stroke route. The separate MyScript pilot needs vendor assets and activation.

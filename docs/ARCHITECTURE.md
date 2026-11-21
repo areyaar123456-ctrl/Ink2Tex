@@ -48,3 +48,9 @@ The first batch reserves a separate note automatically unless explicit evaluatio
 For long evaluation images, the worker finds blank horizontal gaps with a bounded region decoder. It visits each non-overlapping crop in reading order and feeds it to both weights. It joins each set of results in that order and retains repeated lines. Empty or truncated output in either set prevents promotion and appears in the scorecard with its snip number. Review can also save the crops as a separate note for per-image labeling. Crop ancestry keeps related notes within a single training or evaluation group.
 
 Drafts are local starting points for review. Unchecked output never becomes a label. Existing multi-image notes without per-image drafts can be rerun or reviewed with manually supplied source.
+
+## Native ink input
+
+The Nebo importer validates a ZIP index and bounded BINK records before committing ordered preview paths. Each preview owns a private companion ink file. Comparisons and appended documents share the same source references, and deletion removes the companion only when the last preview reference goes away. Bitmap recognition can render large pen pages at full detail in ordered line groups. SVG imports accept local paths and shapes via a restricted document parser and use bitmap OCR.
+
+Stroke workers use the existing OCR queue and session lock. They report their recognizer, incomplete pages, and the line groups sent to the image fallback. The separate MyScript build consumes raw ink and reads JIIX blocks with stroke coverage. The independent route uses ML Kit English, Abel's pinned ABLM weights with CPU ONNX Runtime and opt-in Ovis fallback. The public APK excludes the licensed SDK and any credential. See [pilot setup and acceptance](STROKE_PILOT.md).
